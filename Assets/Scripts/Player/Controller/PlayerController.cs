@@ -30,7 +30,6 @@ namespace Soulslike.Player.Controller
         
         private void Awake()
         {
-            Debug.Log("WOW");
 
             // Set default values for objects if not already initialized
             if (!characterController && !TryGetComponent(out characterController))
