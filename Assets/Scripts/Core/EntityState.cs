@@ -8,6 +8,7 @@ namespace Soulslike.Core
     {
         Idle,
         Walking,
+        Falling,
         Sprinting,
         Rolling,
     }

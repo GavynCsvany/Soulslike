@@ -31,9 +31,9 @@ namespace Soulslike.Player.States
         protected float speed = 4f;
 
         // Controller variables
-        private readonly Transform cam;
-        private readonly CharacterController characterController;
-        private readonly Transform transform;
+        protected readonly Transform cam;
+        protected readonly CharacterController characterController;
+        protected readonly Transform transform;
         protected readonly InputController input;
 
         #endregion
@@ -71,6 +71,7 @@ namespace Soulslike.Player.States
 
             // Move the player
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            moveDir.y = -0.1f; // Add some slight gravity
             characterController.Move(moveDir.normalized * (speed * Time.deltaTime));
         }
 

@@ -21,7 +21,8 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Idle, new PlayerIdle(controller) }, // Idle state
                 { StateTypes.Walking, new PlayerWalking(controller) }, // Walking State
                 { StateTypes.Sprinting, new PlayerSprinting(controller) }, // Sprinting State
-                { StateTypes.Rolling, new PlayerRoll(controller)} // Rolling state
+                { StateTypes.Rolling, new PlayerRoll(controller)}, // Rolling state
+                { StateTypes.Falling , new PlayerFalling(controller) }, // Falling state
             };
             sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();
             

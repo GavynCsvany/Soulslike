@@ -21,7 +21,7 @@ namespace Soulslike.Player.Controller
         [FormerlySerializedAs("_currentState")]
         [Header("State")] // Player states
         [SerializeField, Tooltip("Current state (read-only)")] private StateTypes currentState;
-        private PlayerStateController stateController; // The state handler 
+        public PlayerStateController StateController { get; private set; } // The state handler 
 
         // Player stats
         public PlayerStats Stats;
@@ -55,10 +55,10 @@ namespace Soulslike.Player.Controller
         {
             
             // Create the state controller
-            stateController = new PlayerStateController(this);
+            StateController = new PlayerStateController(this);
             
             // Reflect the current state in the inspector field
-            stateController.StateChanged += (_, value) => currentState = value.StateType;
+            StateController.StateChanged += (_, value) => currentState = value.StateType;
         }
 
         private void OnEnable()
@@ -71,7 +71,7 @@ namespace Soulslike.Player.Controller
         {
 
             // Update the current state
-            stateController.Update();
+            StateController.Update();
             
             // Reset any variables as needed
             InputScheme.ResetAfterUpdate();

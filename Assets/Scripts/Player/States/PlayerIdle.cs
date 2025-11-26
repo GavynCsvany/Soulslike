@@ -21,7 +21,7 @@ namespace Soulslike.Player.States
         public override void OnStart()
         {
             // Change the animation
-            Controller.animator.CrossFadeInFixedTime("Idle", 0.1f);
+            Controller.animator.CrossFadeInFixedTime("Idle", 0.2f);
         }
 
         public override void Update()
