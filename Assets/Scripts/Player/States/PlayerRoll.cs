@@ -19,12 +19,19 @@ namespace Soulslike.Player.States
             cam = controller.cam.transform;
             transform = controller.transform;
             input = controller.InputScheme;
+            characterController = controller.characterController;
         }
         
         // Controller variables
         private readonly Transform cam;
         private readonly Transform transform;
         private readonly InputController input;
+        private readonly CharacterController characterController;
+        
+        // Roll variables
+        private readonly float additiveRollSpeed = 5f;
+        private const float gravity = -25;
+        private bool backstep;
         
         #region Methods
 
@@ -56,16 +63,37 @@ namespace Soulslike.Player.States
             
                 // Change the animation
                 Controller.animator.CrossFadeInFixedTime("Roll", 0.1f);
+                backstep = false;
             }
             else
             {
                 // Change the animation
                 Controller.animator.CrossFadeInFixedTime("Backstep", 0.1f);
+                backstep = true;
             }
         }
 
         public override void Update()
         {
+            
+            // Move the player forward
+            Vector3 rollDir = (backstep) ? -transform.forward : transform.forward;
+            if (!characterController.isGrounded) rollDir.y += gravity * Time.deltaTime; // Add gravity if not grounded
+            characterController.Move( rollDir * additiveRollSpeed * Time.deltaTime);
+            
+            // Check if finished
+            CheckFinished();
+        }
+
+        public override void OnFinished()
+        {
+            Controller.animator.applyRootMotion = false;
+        }
+
+        // Called every frame to check if the roll animation is finished playing
+        private void CheckFinished()
+        {
+            
             // Set variable names for ease of access
             Animator anim = Controller.animator;
             AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
@@ -83,12 +111,7 @@ namespace Soulslike.Player.States
                 IsFinished = true;
             }
         }
-
-        public override void OnFinished()
-        {
-            Controller.animator.applyRootMotion = false;
-        }
-
+        
         #endregion
     }
 }

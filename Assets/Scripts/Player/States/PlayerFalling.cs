@@ -30,7 +30,7 @@ namespace Soulslike.Player.States
         public bool IsGrounded {get; private set;}
         
         // Gravity variables
-        private readonly float gravity = -19.6f;
+        private readonly float gravity = -25f;
         private Vector3 velocity = new Vector3(0, 0, 0);
         
         #region Methods
@@ -54,7 +54,7 @@ namespace Soulslike.Player.States
         public override void OnStart()
         {
             // Play the falling animation
-            Controller.animator.CrossFadeInFixedTime("Fall", 0.2f);
+            Controller.animator.CrossFadeInFixedTime("Fall", 0.5f);
         }
 
         public override void Update()

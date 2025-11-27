@@ -28,7 +28,7 @@ namespace Soulslike.Player.States
         private float turnVelocity;
 
         // Speed variables
-        protected float speed = 4f;
+        protected float speed = 6f;
 
         // Controller variables
         protected readonly Transform cam;
@@ -67,7 +67,7 @@ namespace Soulslike.Player.States
             // Find the target angle and apply it to our rotation
             float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, turnTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            transform.rotation = (dir.magnitude >= 0.1f) ? Quaternion.Euler(0f, angle, 0f) : transform.rotation;
 
             // Move the player
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
