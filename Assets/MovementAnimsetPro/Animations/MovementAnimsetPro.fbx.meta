@@ -5,8 +5,15 @@ labels:
 - Animation
 - Male
 - Character
+AssetOrigin:
+  serializedVersion: 1
+  productId: 14047
+  packageName: Movement Animset Pro
+  packageVersion: 2.0.0
+  assetPath: Assets/MovementAnimsetPro/Animations/MovementAnimsetPro.fbx
+  uploadId: 644874
 ModelImporter:
-  serializedVersion: 20101
+  serializedVersion: 24200
   internalIDToNameTable:
   - first:
       1: 100000
@@ -757,19 +764,10 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: Root
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'JumpIdleStart' has import animation warnings
-      that might lower retargeting quality:\nNote: Activate translation DOF on avatar
-      to improve retargeting quality.\n\t'Spine' has translation animation that will
-      be discarded.\n\t'Spine1' has translation animation that will be discarded.\n\t'LeftShoulder'
-      has translation animation that will be discarded.\n\t'LeftArm' has translation
-      animation that will be discarded.\n\t'Neck' has translation animation that
-      will be discarded.\n\t'Head' has translation animation that will be discarded.\n\t'RightShoulder'
-      has translation animation that will be discarded.\n\t'RightArm' has translation
-      animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -8389,7 +8387,7 @@ ModelImporter:
       takeName: JumpIdleLand
       internalID: 0
       firstFrame: 37
-      lastFrame: 68
+      lastFrame: 60
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -8564,7 +8562,7 @@ ModelImporter:
         weight: 1
       maskType: 0
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 36.9
     - serializedVersion: 16
       name: JumpIdleLand2Walk
       takeName: JumpIdleLand2Walk
@@ -8751,7 +8749,7 @@ ModelImporter:
       takeName: JumpIdleLandHard
       internalID: 0
       firstFrame: 0
-      lastFrame: 47
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -17261,10 +17259,12 @@ ModelImporter:
     addColliders: 0
     useSRGBMaterialColor: 1
     sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    nodeNameCollisionStrategy: 0
     fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -17276,6 +17276,10 @@ ModelImporter:
     skinWeightsMode: 0
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
+    optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
@@ -17286,6 +17290,7 @@ ModelImporter:
     secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 0
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -17736,8 +17741,7 @@ ModelImporter:
     - name: RightUpLegRoll
       parentName: 
       position: {x: 0.25699177, y: 0.000000017943513, z: 0.00000022397667}
-      rotation: {x: -0.000000037983202, y: -0.00000003613614, z: 0.00000005009321,
-        w: 1}
+      rotation: {x: -0.000000037983202, y: -0.00000003613614, z: 0.00000005009321, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: RightLeg
       parentName: 
@@ -17772,8 +17776,7 @@ ModelImporter:
     - name: LeftUpLegRoll
       parentName: 
       position: {x: -0.25699112, y: 4.440892e-18, z: -1.7763568e-17}
-      rotation: {x: -0.0000003726248, y: -0.00000022873148, z: -0.00000007801417,
-        w: 1}
+      rotation: {x: -0.0000003726248, y: -0.00000022873148, z: -0.00000007801417, w: 1}
       scale: {x: 1, y: 1, z: 1}
     - name: LeftLeg
       parentName: 
@@ -17823,8 +17826,7 @@ ModelImporter:
     - name: RightArmRoll
       parentName: 
       position: {x: 0.12099669, y: 0.00000457359, z: 0.00000093895443}
-      rotation: {x: -0.0000002104309, y: -0.00000029665108, z: -0.000000015340492,
-        w: 1}
+      rotation: {x: -0.0000002104309, y: -0.00000029665108, z: -0.000000015340492, w: 1}
       scale: {x: 1.0000001, y: 1, z: 1.0000002}
     - name: RightForeArm
       parentName: 
@@ -17844,8 +17846,7 @@ ModelImporter:
     - name: RightHandProp
       parentName: 
       position: {x: 0.07249579, y: 0.020210598, z: -0.0037980953}
-      rotation: {x: 0.00000002245396, y: -0.000000014289001, z: -0.0000000056911436,
-        w: 1}
+      rotation: {x: 0.00000002245396, y: -0.000000014289001, z: -0.0000000056911436, w: 1}
       scale: {x: 1, y: 1.0000002, z: 1}
     - name: RightHandThumb1
       parentName: 
@@ -17925,8 +17926,7 @@ ModelImporter:
     - name: RightHandMiddle4
       parentName: 
       position: {x: 0.026083775, y: -0.0000036223148, z: -0.0000006955289}
-      rotation: {x: -0.000000021378272, y: -0.0000019941228, z: -0.0000006359559,
-        w: 1}
+      rotation: {x: -0.000000021378272, y: -0.0000019941228, z: -0.0000006359559, w: 1}
       scale: {x: 1.0000001, y: 1, z: 1.0000001}
     - name: RightHandIndex1
       parentName: 
@@ -17971,8 +17971,7 @@ ModelImporter:
     - name: LeftArmRoll
       parentName: 
       position: {x: -0.12099714, y: -0.000003967285, z: -0.00000091453967}
-      rotation: {x: -0.00000016138416, y: -0.00000026877396, z: -0.00000034783926,
-        w: 1}
+      rotation: {x: -0.00000016138416, y: -0.00000026877396, z: -0.00000034783926, w: 1}
       scale: {x: 1.0000001, y: 1, z: 1.0000002}
     - name: LeftForeArm
       parentName: 
@@ -17982,8 +17981,7 @@ ModelImporter:
     - name: LeftForeArmRoll
       parentName: 
       position: {x: -0.14891969, y: 0.0000021362305, z: 0.0000022411346}
-      rotation: {x: -0.00000050798593, y: -0.00000013528394, z: -0.0000011502489,
-        w: 1}
+      rotation: {x: -0.00000050798593, y: -0.00000013528394, z: -0.0000011502489, w: 1}
       scale: {x: 1, y: 1.0000001, z: 1.0000001}
     - name: LeftHand
       parentName: 
@@ -17993,8 +17991,7 @@ ModelImporter:
     - name: LeftHandProp
       parentName: 
       position: {x: -0.07249725, y: -0.02020166, z: 0.0037999721}
-      rotation: {x: 0.000000022226013, y: 0.0000000037368815, z: -0.000000014416183,
-        w: 1}
+      rotation: {x: 0.000000022226013, y: 0.0000000037368815, z: -0.000000014416183, w: 1}
       scale: {x: 1, y: 1.0000002, z: 1}
     - name: LeftHandThumb1
       parentName: 
@@ -18113,14 +18110,10 @@ ModelImporter:
   animationType: 3
   humanoidOversampling: 1
   avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 14047
-  packageName: Movement Animset Pro
-  packageVersion: 2.0.0
-  assetPath: Assets/MovementAnimsetPro/Animations/MovementAnimsetPro.fbx
-  uploadId: 644874

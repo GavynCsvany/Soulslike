@@ -9,6 +9,7 @@ namespace Soulslike.Core
         Idle,
         Walking,
         Falling,
+        Landed,
         Sprinting,
         Rolling,
     }

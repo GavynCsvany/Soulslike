@@ -6,21 +6,21 @@ namespace Soulslike.Player.States
 {
     public class PlayerFalling : PlayerWalking
     {
-        
+
         // Class constructor
         public PlayerFalling(PlayerController controller) : base(controller)
         {
             // Assign the state variables
             StateType =  StateTypes.Falling;
-            Priority = 8;
+            Priority = 10;
             
             // Assign variables
             groundCheck = controller.transform.Find("root");
             groundMask = LayerMask.GetMask("Default");
             
             // Change the speed and turn time
-            speed = 3;
-            turnTime = 1f;
+            speed = 5;
+            turnTime = 0.7f;
         }
         
         // Ground variables
@@ -32,6 +32,11 @@ namespace Soulslike.Player.States
         // Gravity variables
         private readonly float gravity = -25f;
         private Vector3 velocity = new Vector3(0, 0, 0);
+        
+        // Animation variables
+        private static readonly int FallTimeParam = Animator.StringToHash("FallTime");
+
+        private float fallTime;
         
         #region Methods
 
@@ -53,6 +58,9 @@ namespace Soulslike.Player.States
 
         public override void OnStart()
         {
+            // Reset the fall time
+            fallTime = 0f;
+            
             // Play the falling animation
             Controller.animator.CrossFadeInFixedTime("Fall", 0.5f);
         }
@@ -60,6 +68,12 @@ namespace Soulslike.Player.States
         public override void Update()
         {
             base.Update();
+            
+            // Update the fall time
+            fallTime += Time.deltaTime;
+            
+            // Update the fall time variable in the animator
+            Controller.animator.SetFloat(FallTimeParam, fallTime);
     
             // Update the velocity and move the player
             velocity.y += gravity * Time.deltaTime;
@@ -68,6 +82,8 @@ namespace Soulslike.Player.States
 
         public override void OnFinished()
         {
+            
+            // Reset the y velocity
             velocity.y = 0;
         }
 

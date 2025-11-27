@@ -23,6 +23,7 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Sprinting, new PlayerSprinting(controller) }, // Sprinting State
                 { StateTypes.Rolling, new PlayerRoll(controller)}, // Rolling state
                 { StateTypes.Falling , new PlayerFalling(controller) }, // Falling state
+                { StateTypes.Landed,  new PlayerLanded(controller) }, // Landed state
             };
             sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();
             
@@ -64,6 +65,5 @@ namespace Soulslike.Player.Controller
         {
 
         }
-        
     }
 }
