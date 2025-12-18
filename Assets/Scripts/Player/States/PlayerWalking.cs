@@ -81,6 +81,9 @@ namespace Soulslike.Player.States
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, turnTime);
             transform.rotation = (dir.magnitude >= 0.1f) ? Quaternion.Euler(0f, angle, 0f) : transform.rotation;
 
+            // Check if the player wants to move
+            if (dir.magnitude <= 0.1f) return;
+            
             // Move the player
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             characterController.Move(moveDir.normalized * (speed * Time.deltaTime));

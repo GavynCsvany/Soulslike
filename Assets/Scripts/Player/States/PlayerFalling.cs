@@ -68,9 +68,8 @@ namespace Soulslike.Player.States
 
         public override void Update()
         {
-            // Apply movement if the player is trying to move
-            if(Controller.InputScheme.desiredMovementVector.magnitude > 0.1f)
-                base.Update();
+            // Apply movement
+            base.Update();
             
             // Update the fall time
             fallTime += Time.deltaTime;

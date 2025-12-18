@@ -15,12 +15,6 @@ namespace Soulslike.Player.States
             Priority = 11;
             
             HasExitTime = true;
-
-            // Get the camera
-            cam = controller.cam.transform;
-            transform = controller.transform;
-            input = controller.InputScheme;
-            characterController = controller.characterController;
         }
         
         // Class construction with priority
@@ -29,22 +23,10 @@ namespace Soulslike.Player.States
             StateType = StateTypes.Jumping;
             
             HasExitTime = true;
-
-            // Get the camera
-            cam = controller.cam.transform;
-            transform = controller.transform;
-            input = controller.InputScheme;
-            characterController = controller.characterController;
         }
         
         // When the jump began
         private float jumpStart;
-        
-        // Controller variables
-        private readonly Transform cam;
-        private readonly Transform transform;
-        private readonly InputController input;
-        private readonly CharacterController characterController;
         
         #region Methods
 
@@ -72,7 +54,7 @@ namespace Soulslike.Player.States
         public override void Update()
         {
             // Move if desired
-            if(Controller.InputScheme.desiredMovementVector.magnitude > 0.1f) base.Update();
+            base.Update();
             
             // Check if the jumping animation has finished playing
             CheckFinished();
@@ -80,7 +62,7 @@ namespace Soulslike.Player.States
 
         public override void OnFinished() { }
 
-        // Called every frame to check if the roll animation is finished playing
+        // Called every frame to check if the jump animation is finished playing
         private void CheckFinished()
         {
             // Check if the player is grounded and enough time has passed since first jumping
@@ -95,13 +77,13 @@ namespace Soulslike.Player.States
             Animator anim = Controller.animator;
             AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
-            // If we're not playing the Roll animation, just return
+            // If we're not playing the Jump animation, just return
             if (!stateInfo.IsName("Jump")) return;
 
-            // Do not check normalizedTime during a transition!
+            // Do not check normalizedTime during a transition
             if (anim.IsInTransition(0)) return;
 
-            // When Roll is done, normalizedTime will be >= 1
+            // When Jump is done, normalizedTime will be >= 1
             if (stateInfo.normalizedTime >= 1f)
             {
                 // Finish the state
