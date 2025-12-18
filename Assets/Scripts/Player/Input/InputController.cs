@@ -43,6 +43,7 @@ namespace Soulslike.Player.Input
         public void ResetAfterUpdate()
         {
             wantToRoll = false;
+            wantToJump = false;
         }
         
         // Called to set up the input handling
@@ -62,8 +63,7 @@ namespace Soulslike.Player.Input
             inputScheme.BasicLocomotion.Roll.canceled += _ => RequestRoll(false);
             
             // Jump input
-            inputScheme.BasicLocomotion.Jump.performed += _ => RequestJump(true);
-            inputScheme.BasicLocomotion.Jump.canceled += _ => RequestJump(false);
+            inputScheme.BasicLocomotion.Jump.started += _ => RequestJump(true);
         }
 
         // Called when the player changes their movement input
