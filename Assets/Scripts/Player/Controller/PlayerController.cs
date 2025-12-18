@@ -26,12 +26,13 @@ namespace Soulslike.Player.Controller
         
         [Header("Ground Detection")]
         public Transform groundCheck;
-        public float groundDistance = 0.5f;
+        public float groundSphereRadius = 0.4f;
+        public float groundRaycastDistance = 0.5f;
         public LayerMask groundMask;
 
         [Header("Gravity")] 
         [SerializeField()] private bool isGrounded_;
-        public float GravityMultiplier_ = 1;
+        public float GravityMultiplier = 1;
         [SerializeField()] float gravity = -9.81f;
         public Vector3 velocity;
 
@@ -106,9 +107,19 @@ namespace Soulslike.Player.Controller
         // Check whether the player is grounded
         public bool IsGrounded()
         {
+            int weight = 0;
+            
             // Create a sphere cast looking for the ground
-            //return characterController.isGrounded; Not reliable when moving
-            return Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+            weight += (Physics.CheckSphere(groundCheck.position, groundSphereRadius, groundMask)) ? 1 : 0;
+            
+            // Check the character controller
+            weight += (characterController.isGrounded) ? 1 : 0;
+            
+            // Raycast downward
+            weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
+            
+            // Check if there is enough weight
+            return weight >= 2;
         }
         
         // Apply gravity to the player
@@ -125,7 +136,7 @@ namespace Soulslike.Player.Controller
             else
             {
                 // Set the y velocity to the gravity
-                velocity.y += gravity * GravityMultiplier_ *  Time.deltaTime;
+                velocity.y += gravity * GravityMultiplier *  Time.deltaTime;
             }
         }
         
