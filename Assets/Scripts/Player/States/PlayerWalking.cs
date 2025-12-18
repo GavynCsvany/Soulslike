@@ -21,6 +21,18 @@ namespace Soulslike.Player.States
             input = controller.InputScheme; // Input
         }
         
+        // Class construction with priority
+        public PlayerWalking(PlayerController controller, int priority) : base(controller, priority)
+        {
+            // Assign the state variables
+            StateType =  StateTypes.Walking;
+            
+            cam = controller.cam.transform; // Camera
+            characterController = controller.characterController; // Character controller
+            transform = controller.transform; // Transform
+            input = controller.InputScheme; // Input
+        }
+        
         #region Walking Variables
 
         // Turning variables

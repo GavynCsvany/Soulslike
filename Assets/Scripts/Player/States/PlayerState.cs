@@ -16,5 +16,13 @@ namespace Soulslike.Player.States
             // Assign the controller variable
             this.Controller = controller;
         }
+        
+        // Class construction with priority
+        protected PlayerState(PlayerController controller, int priority) : base(priority)
+        {
+            
+            // Assign the controller variable
+            this.Controller = controller;
+        }
     }
 }

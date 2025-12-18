@@ -23,6 +23,21 @@ namespace Soulslike.Player.States
             turnTime = 0.7f;
         }
         
+        // Class constructor
+        public PlayerFalling(PlayerController controller, int priority) : base(controller, priority)
+        {
+            // Assign the state variables
+            StateType =  StateTypes.Falling;
+            
+            // Assign variables
+            groundCheck = controller.transform.Find("root");
+            groundMask = LayerMask.GetMask("Default");
+            
+            // Change the speed and turn time
+            speed = 5;
+            turnTime = 0.7f;
+        }
+        
         // Ground variables
         private readonly Transform groundCheck;
         private readonly float groundDistance = 0.4f;

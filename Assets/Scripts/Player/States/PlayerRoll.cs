@@ -22,6 +22,19 @@ namespace Soulslike.Player.States
             characterController = controller.characterController;
         }
         
+        // Class construction with priority
+        public PlayerRoll(PlayerController controller, int priority) : base(controller, priority)
+        {
+            StateType = StateTypes.Rolling;
+            HasExitTime = true;
+
+            // Get the camera
+            cam = controller.cam.transform;
+            transform = controller.transform;
+            input = controller.InputScheme;
+            characterController = controller.characterController;
+        }
+        
         // Controller variables
         private readonly Transform cam;
         private readonly Transform transform;

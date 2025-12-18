@@ -42,6 +42,12 @@ namespace Soulslike.Core
             
         }
 
+        // Clas construction with priority
+        protected EntityState(int priority)
+        {
+            Priority =  priority;
+        }
+
         // Method called to check if the state can be transitioned away from
         public virtual bool CanTransition()
         {

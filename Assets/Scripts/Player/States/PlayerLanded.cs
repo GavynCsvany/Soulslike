@@ -15,6 +15,13 @@ namespace Soulslike.Player.States
             HasExitTime = true;
         }
         
+        // Class construction with priority
+        public PlayerLanded(PlayerController controller, int priority) : base(controller,  priority)
+        {
+            StateType = StateTypes.Landed;
+            HasExitTime = true;
+        }
+        
         private static readonly int FallTimeParam = Animator.StringToHash("FallTime");
         
         #region Methods

@@ -20,6 +20,17 @@ namespace Soulslike.Player.States
             turnTime = 0.06f;
         }
         
+        // Class construction with priority
+        public PlayerSprinting(PlayerController controller, int priority) : base(controller, priority)
+        {
+            // Change the state variables
+            StateType = StateTypes.Sprinting;
+            
+            // Change the speed and turn time
+            speed = 8;
+            turnTime = 0.06f;
+        }
+        
         public override void OnStart()
         {
         

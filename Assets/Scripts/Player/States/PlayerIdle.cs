@@ -13,6 +13,12 @@ namespace Soulslike.Player.States
             Priority = 0;
         }
         
+        // Class construction with priority
+        public PlayerIdle(PlayerController controller, int priority) : base(controller,  priority)
+        {
+            StateType = StateTypes.Idle;
+        }
+        
         #region Methods
 
         // Since this is the default state and only called as least resort, always default to true
