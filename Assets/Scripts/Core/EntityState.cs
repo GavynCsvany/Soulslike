@@ -12,6 +12,7 @@ namespace Soulslike.Core
         Landed,
         Sprinting,
         Rolling,
+        Jumping,
     }
     
     public abstract class EntityState

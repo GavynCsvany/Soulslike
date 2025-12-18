@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace Soulslike.Player.States
 {
-    public class PlayerRoll :  PlayerState
+    public class PlayerJump : PlayerWalking
     {
         // Class construction
-        public PlayerRoll(PlayerController controller) : base(controller)
+        public PlayerJump(PlayerController controller) : base(controller)
         {
-            StateType = StateTypes.Rolling;
-            Priority = 4;
+            StateType = StateTypes.Jumping;
+            Priority = 11;
+            
             HasExitTime = true;
 
             // Get the camera
@@ -23,9 +24,10 @@ namespace Soulslike.Player.States
         }
         
         // Class construction with priority
-        public PlayerRoll(PlayerController controller, int priority) : base(controller, priority)
+        public PlayerJump(PlayerController controller, int priority) : base(controller, priority)
         {
-            StateType = StateTypes.Rolling;
+            StateType = StateTypes.Jumping;
+            
             HasExitTime = true;
 
             // Get the camera
@@ -35,22 +37,21 @@ namespace Soulslike.Player.States
             characterController = controller.characterController;
         }
         
+        // When the jump began
+        private float jumpStart;
+        
         // Controller variables
         private readonly Transform cam;
         private readonly Transform transform;
         private readonly InputController input;
         private readonly CharacterController characterController;
         
-        // Roll variables
-        private readonly float additiveRollSpeed = 5f;
-        private bool backstep;
-        
         #region Methods
 
         public override bool CanUse()
         {
             // Check if the player wants to roll
-            if (input.wantToRoll)
+            if (input.wantToJump)
                 return true;
 
             // Return false
@@ -60,57 +61,42 @@ namespace Soulslike.Player.States
         public override void OnStart()
         {
             
-            // Create a local value for ease of use
-            Vector2 dir = input.desiredMovementVector.normalized;
-
-            // Apply root motion
-            Controller.animator.applyRootMotion = true;
+            // Make the player jump
+            Controller.velocity.y += 12;
+            jumpStart = Time.time;
             
-            // Check if the player is moving
-            if (dir.magnitude > 0.1f)
-            {
-                // Find the target angle and apply it to our rotation
-                float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
-                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
-            
-                // Change the animation
-                Controller.animator.CrossFadeInFixedTime("Roll", 0.1f);
-                backstep = false;
-            }
-            else
-            {
-                // Change the animation
-                Controller.animator.CrossFadeInFixedTime("Backstep", 0.1f);
-                backstep = true;
-            }
+            // Change the animation
+            Controller.animator.CrossFadeInFixedTime("Jump", 0.1f);
         }
 
         public override void Update()
         {
+            // Move if desired
+            if(Controller.InputScheme.desiredMovementVector.magnitude > 0.1f) base.Update();
             
-            // Move the player forward
-            Vector3 rollDir = (backstep) ? -transform.forward : transform.forward;
-            characterController.Move( rollDir * additiveRollSpeed * Time.deltaTime);
-            
-            // Check if finished
+            // Check if the jumping animation has finished playing
             CheckFinished();
         }
 
-        public override void OnFinished()
-        {
-            Controller.animator.applyRootMotion = false;
-        }
+        public override void OnFinished() { }
 
         // Called every frame to check if the roll animation is finished playing
         private void CheckFinished()
         {
+            // Check if the player is grounded and enough time has passed since first jumping
+            if (Controller.IsGrounded() && Time.time - jumpStart > 0.5f)
+            {
+                // Finish the state
+                IsFinished = true;
+                return;
+            }
             
             // Set variable names for ease of access
             Animator anim = Controller.animator;
             AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
             // If we're not playing the Roll animation, just return
-            if (!stateInfo.IsName("Roll") && !stateInfo.IsName("Backstep")) return;
+            if (!stateInfo.IsName("Jump")) return;
 
             // Do not check normalizedTime during a transition!
             if (anim.IsInTransition(0)) return;

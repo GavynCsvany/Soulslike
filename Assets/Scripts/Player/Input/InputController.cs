@@ -17,6 +17,9 @@ namespace Soulslike.Player.Input
         private const float rollWindow = 0.2f;
         private float rollInputStartTime = 0f;
         
+        // Jump input
+        public bool wantToJump { get; private set; } = false;
+        
         // The input scheme the player is using
         private readonly PlayerActions inputScheme;
         
@@ -57,6 +60,10 @@ namespace Soulslike.Player.Input
             // Roll input
             inputScheme.BasicLocomotion.Roll.performed += _ => RequestRoll(true);
             inputScheme.BasicLocomotion.Roll.canceled += _ => RequestRoll(false);
+            
+            // Jump input
+            inputScheme.BasicLocomotion.Jump.performed += _ => RequestJump(true);
+            inputScheme.BasicLocomotion.Jump.canceled += _ => RequestJump(false);
         }
 
         // Called when the player changes their movement input
@@ -86,6 +93,13 @@ namespace Soulslike.Player.Input
 
             // Check if the player can roll
             wantToRoll = Time.time - rollInputStartTime <= rollWindow;
+        }
+        
+        // Called when the player changes their jumping input
+        private void RequestJump(bool pressed)
+        {
+            // Assign the variable
+            wantToJump = pressed;
         }
     }
 }

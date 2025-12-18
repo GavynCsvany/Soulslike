@@ -118,6 +118,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""ba8d8a67-bfd1-4ec2-a930-b4382a0d67e2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -230,6 +239,28 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Roll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""65fc7162-1449-4dc3-a5b4-580a3a4d47a1"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3945c2de-56ea-4a91-b8e3-9a026c25df7e"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -280,6 +311,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_BasicLocomotion_Movement = m_BasicLocomotion.FindAction("Movement", throwIfNotFound: true);
         m_BasicLocomotion_Sprint = m_BasicLocomotion.FindAction("Sprint", throwIfNotFound: true);
         m_BasicLocomotion_Roll = m_BasicLocomotion.FindAction("Roll", throwIfNotFound: true);
+        m_BasicLocomotion_Jump = m_BasicLocomotion.FindAction("Jump", throwIfNotFound: true);
         // Camera Locomotion
         m_CameraLocomotion = asset.FindActionMap("Camera Locomotion", throwIfNotFound: true);
         m_CameraLocomotion_CameraMovement = m_CameraLocomotion.FindAction("Camera Movement", throwIfNotFound: true);
@@ -367,6 +399,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_BasicLocomotion_Movement;
     private readonly InputAction m_BasicLocomotion_Sprint;
     private readonly InputAction m_BasicLocomotion_Roll;
+    private readonly InputAction m_BasicLocomotion_Jump;
     /// <summary>
     /// Provides access to input actions defined in input action map "Basic Locomotion".
     /// </summary>
@@ -390,6 +423,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "BasicLocomotion/Roll".
         /// </summary>
         public InputAction @Roll => m_Wrapper.m_BasicLocomotion_Roll;
+        /// <summary>
+        /// Provides access to the underlying input action "BasicLocomotion/Jump".
+        /// </summary>
+        public InputAction @Jump => m_Wrapper.m_BasicLocomotion_Jump;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -425,6 +462,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Roll.started += instance.OnRoll;
             @Roll.performed += instance.OnRoll;
             @Roll.canceled += instance.OnRoll;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         /// <summary>
@@ -445,6 +485,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Roll.started -= instance.OnRoll;
             @Roll.performed -= instance.OnRoll;
             @Roll.canceled -= instance.OnRoll;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         /// <summary>
@@ -602,6 +645,13 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRoll(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJump(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Camera Locomotion" which allows adding and removing callbacks.
