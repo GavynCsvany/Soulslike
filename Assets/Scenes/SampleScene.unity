@@ -3574,7 +3574,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   isGrounded_: 0
-  GravityMultiplier: 2.75
+  GravityMultiplier: 3.5
   gravity: -9.81
   velocity: {x: 0, y: 0, z: 0}
 --- !u!143 &9156275857939649018
