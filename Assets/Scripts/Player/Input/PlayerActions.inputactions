@@ -113,7 +113,7 @@
                 {
                     "name": "",
                     "id": "3f4370ad-1711-4301-a771-6ec7e3278ccd",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -146,7 +146,7 @@
                 {
                     "name": "",
                     "id": "2327343d-9a50-4c81-84e8-ca2f2fe58022",
-                    "path": "<Keyboard>/space",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -173,6 +173,45 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Ledge Locomotion",
+            "id": "1c020215-88e0-4bda-b1e3-1bcbf11ac38d",
+            "actions": [
+                {
+                    "name": "Leave Ledge",
+                    "type": "Button",
+                    "id": "96c25eb1-0118-47e3-8a3c-67e6258021da",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "407b0105-dcf8-4fb6-85c5-a717f2acdd04",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Leave Ledge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "15716070-5675-4952-a229-544bcafa3385",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Leave Ledge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

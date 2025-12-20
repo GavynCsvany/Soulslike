@@ -199,7 +199,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3f4370ad-1711-4301-a771-6ec7e3278ccd"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -232,7 +232,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2327343d-9a50-4c81-84e8-ca2f2fe58022"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -259,6 +259,45 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Ledge Locomotion"",
+            ""id"": ""1c020215-88e0-4bda-b1e3-1bcbf11ac38d"",
+            ""actions"": [
+                {
+                    ""name"": ""Leave Ledge"",
+                    ""type"": ""Button"",
+                    ""id"": ""96c25eb1-0118-47e3-8a3c-67e6258021da"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""407b0105-dcf8-4fb6-85c5-a717f2acdd04"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Leave Ledge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""15716070-5675-4952-a229-544bcafa3385"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Leave Ledge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -312,6 +351,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_BasicLocomotion_Sprint = m_BasicLocomotion.FindAction("Sprint", throwIfNotFound: true);
         m_BasicLocomotion_Roll = m_BasicLocomotion.FindAction("Roll", throwIfNotFound: true);
         m_BasicLocomotion_Jump = m_BasicLocomotion.FindAction("Jump", throwIfNotFound: true);
+        // Ledge Locomotion
+        m_LedgeLocomotion = asset.FindActionMap("Ledge Locomotion", throwIfNotFound: true);
+        m_LedgeLocomotion_LeaveLedge = m_LedgeLocomotion.FindAction("Leave Ledge", throwIfNotFound: true);
         // Camera Locomotion
         m_CameraLocomotion = asset.FindActionMap("Camera Locomotion", throwIfNotFound: true);
         m_CameraLocomotion_CameraMovement = m_CameraLocomotion.FindAction("Camera Movement", throwIfNotFound: true);
@@ -320,6 +362,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     ~@PlayerActions()
     {
         UnityEngine.Debug.Assert(!m_BasicLocomotion.enabled, "This will cause a leak and performance issues, PlayerActions.BasicLocomotion.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_LedgeLocomotion.enabled, "This will cause a leak and performance issues, PlayerActions.LedgeLocomotion.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_CameraLocomotion.enabled, "This will cause a leak and performance issues, PlayerActions.CameraLocomotion.Disable() has not been called.");
     }
 
@@ -522,6 +565,102 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     /// </summary>
     public BasicLocomotionActions @BasicLocomotion => new BasicLocomotionActions(this);
 
+    // Ledge Locomotion
+    private readonly InputActionMap m_LedgeLocomotion;
+    private List<ILedgeLocomotionActions> m_LedgeLocomotionActionsCallbackInterfaces = new List<ILedgeLocomotionActions>();
+    private readonly InputAction m_LedgeLocomotion_LeaveLedge;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "Ledge Locomotion".
+    /// </summary>
+    public struct LedgeLocomotionActions
+    {
+        private @PlayerActions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public LedgeLocomotionActions(@PlayerActions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "LedgeLocomotion/LeaveLedge".
+        /// </summary>
+        public InputAction @LeaveLedge => m_Wrapper.m_LedgeLocomotion_LeaveLedge;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_LedgeLocomotion; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="LedgeLocomotionActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(LedgeLocomotionActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="LedgeLocomotionActions" />
+        public void AddCallbacks(ILedgeLocomotionActions instance)
+        {
+            if (instance == null || m_Wrapper.m_LedgeLocomotionActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_LedgeLocomotionActionsCallbackInterfaces.Add(instance);
+            @LeaveLedge.started += instance.OnLeaveLedge;
+            @LeaveLedge.performed += instance.OnLeaveLedge;
+            @LeaveLedge.canceled += instance.OnLeaveLedge;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="LedgeLocomotionActions" />
+        private void UnregisterCallbacks(ILedgeLocomotionActions instance)
+        {
+            @LeaveLedge.started -= instance.OnLeaveLedge;
+            @LeaveLedge.performed -= instance.OnLeaveLedge;
+            @LeaveLedge.canceled -= instance.OnLeaveLedge;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="LedgeLocomotionActions.UnregisterCallbacks(ILedgeLocomotionActions)" />.
+        /// </summary>
+        /// <seealso cref="LedgeLocomotionActions.UnregisterCallbacks(ILedgeLocomotionActions)" />
+        public void RemoveCallbacks(ILedgeLocomotionActions instance)
+        {
+            if (m_Wrapper.m_LedgeLocomotionActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="LedgeLocomotionActions.AddCallbacks(ILedgeLocomotionActions)" />
+        /// <seealso cref="LedgeLocomotionActions.RemoveCallbacks(ILedgeLocomotionActions)" />
+        /// <seealso cref="LedgeLocomotionActions.UnregisterCallbacks(ILedgeLocomotionActions)" />
+        public void SetCallbacks(ILedgeLocomotionActions instance)
+        {
+            foreach (var item in m_Wrapper.m_LedgeLocomotionActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_LedgeLocomotionActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="LedgeLocomotionActions" /> instance referencing this action map.
+    /// </summary>
+    public LedgeLocomotionActions @LedgeLocomotion => new LedgeLocomotionActions(this);
+
     // Camera Locomotion
     private readonly InputActionMap m_CameraLocomotion;
     private List<ICameraLocomotionActions> m_CameraLocomotionActionsCallbackInterfaces = new List<ICameraLocomotionActions>();
@@ -652,6 +791,21 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ledge Locomotion" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="LedgeLocomotionActions.AddCallbacks(ILedgeLocomotionActions)" />
+    /// <seealso cref="LedgeLocomotionActions.RemoveCallbacks(ILedgeLocomotionActions)" />
+    public interface ILedgeLocomotionActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Leave Ledge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnLeaveLedge(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Camera Locomotion" which allows adding and removing callbacks.

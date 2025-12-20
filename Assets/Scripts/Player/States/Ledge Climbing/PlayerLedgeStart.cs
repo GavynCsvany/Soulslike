@@ -105,7 +105,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             {
                 // Check for a ledge
                 if (Controller.LedgeController.DetectLedge(Controller.transform.forward, Vector3.up * 1.5f,
-                        out ledgeHit, 10, 0.05f, 0.5f))
+                        out ledgeHit, 10, 0.05f, 0.7f))
                 {
                     
                     // Set the detected ledge variables
@@ -193,7 +193,6 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
             hasMatched = true;
         }
-
         
         // Called every frame to check if the animation is finished playing
         private void CheckFinished()
