@@ -115,7 +115,6 @@ namespace Soulslike.Player.States.Ledge_Climbing
                     return true;
                 }
             }
-
             
             return false;
         }
@@ -139,6 +138,8 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         public override void Update() 
         {
+            
+            // Rotate the player towards the ledge
             var tarRot = Quaternion.LookRotation(-Controller.LedgeController.DetectedLedge.forward);
             Controller.transform.rotation = Quaternion.RotateTowards(Controller.transform.rotation, tarRot, 100 * Time.deltaTime);
             
@@ -151,6 +152,8 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         public override void OnFinished()
         {
+            
+            // Disable root motion
             animator.applyRootMotion = false;
         }
         
@@ -158,34 +161,39 @@ namespace Soulslike.Player.States.Ledge_Climbing
         private void TargetMatch(TargetMatchingParameters parameters)
         {
             
-            if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < parameters.startTime)
+            // Get the current animation info
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            // Make sure we can continue
+            if (!stateInfo.IsName(chosenType.AnimationName)) return;
+            if (animator.IsInTransition(0)) return;
+            if (hasMatched) return;
+
+            // Get the normalized time and check if enough time has passed
+            float t = stateInfo.normalizedTime;
+            if (t < parameters.startTime || t > parameters.endTime)
                 return;
 
-            // Make sure we are not in transition
-            if (animator.IsInTransition(0)) return;
-            
-            // Check if we are already motion matching 
-            if (animator.isMatchingTarget) return;
-            
-            // Only match once
-            //if (hasMatched) return;
-            hasMatched = true;
-            
-            // Match to target
-            Vector3 targetOffset = detectedLedge.right * chosenType.finalOffset.x + // X offset
-                                   Vector3.down * chosenType.finalOffset.y + // Y offset
-                                   detectedLedge.forward * chosenType.finalOffset.z;  // Z offset
-            
+            // Create the offset
+            Vector3 targetOffset =
+                detectedLedge.right * chosenType.finalOffset.x +
+                Vector3.down * chosenType.finalOffset.y +
+                detectedLedge.forward * chosenType.finalOffset.z;
+
+            // Match the target to the desired position
             animator.MatchTarget(
-                parameters.targetPosition + targetOffset, // Target position
-                Controller.transform.rotation, // Target rotation
-                parameters.targetJoint, // Joint to match
-                new MatchTargetWeightMask(parameters.positionWeight, 0), // Match weight
-                parameters.startTime, // When to start
-                parameters.endTime, // When to end
+                parameters.targetPosition + targetOffset,
+                Quaternion.LookRotation(-detectedLedge.forward),
+                parameters.targetJoint,
+                new MatchTargetWeightMask(parameters.positionWeight, 1f),
+                parameters.startTime,
+                parameters.endTime,
                 true
             );
+
+            hasMatched = true;
         }
+
         
         // Called every frame to check if the animation is finished playing
         private void CheckFinished()
