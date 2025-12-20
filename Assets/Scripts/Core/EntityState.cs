@@ -6,6 +6,8 @@ namespace Soulslike.Core
     // The different types of states
     public enum StateTypes
     {
+        
+        // Base States
         Idle,
         Walking,
         Falling,
@@ -13,6 +15,11 @@ namespace Soulslike.Core
         Sprinting,
         Rolling,
         Jumping,
+        
+        // Ledge Climbing
+        LedgeStart,
+        LedgeIdle,
+        LedgeEnd,
     }
     
     public abstract class EntityState

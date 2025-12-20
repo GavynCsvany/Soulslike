@@ -2,6 +2,7 @@
 using System.Linq;
 using Soulslike.Core;
 using Soulslike.Player.States;
+using Soulslike.Player.States.Ledge_Climbing;
 
 namespace Soulslike.Player.Controller
 {
@@ -18,13 +19,19 @@ namespace Soulslike.Player.Controller
             // Construct the states
             Dictionary<StateTypes, PlayerState> states = new Dictionary<StateTypes, PlayerState>()
             {
-                { StateTypes.Idle, new PlayerIdle(controller) }, // Idle state
-                { StateTypes.Walking, new PlayerWalking(controller) }, // Walking State
-                { StateTypes.Sprinting, new PlayerSprinting(controller) }, // Sprinting State
-                { StateTypes.Rolling, new PlayerRoll(controller)}, // Rolling state
-                { StateTypes.Jumping , new PlayerJump(controller)},
-                { StateTypes.Falling , new PlayerFalling(controller) }, // Falling state
-                { StateTypes.Landed,  new PlayerLanded(controller) }, // Landed state
+                
+                // BASE STATES //
+                { StateTypes.Idle, new PlayerIdle(controller,  0) }, // Idle state
+                { StateTypes.Walking, new PlayerWalking(controller, 1) }, // Walking State
+                { StateTypes.Sprinting, new PlayerSprinting(controller, 2) }, // Sprinting State
+                { StateTypes.Falling , new PlayerFalling(controller, 3) }, // Falling state
+                { StateTypes.Landed,  new PlayerLanded(controller, 4) }, // Landed state
+                { StateTypes.Jumping , new PlayerJump(controller, 5)},
+                { StateTypes.Rolling, new PlayerRoll(controller, 6)}, // Rolling state
+                
+                // LEDGE CLIMBING STATES //
+                { StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) }, // Ledge climb starts
+                { StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) }, // Ledge climb idle
             };
             sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();
             
@@ -42,8 +49,7 @@ namespace Soulslike.Player.Controller
             if (CurrentState == null) return;
 
             // Check if we can change the current state
-            if (CurrentState.CanTransition())
-                CheckStateChange();
+            CheckStateChange();
 
             // Update the current state
             CurrentState.Update();
@@ -55,9 +61,21 @@ namespace Soulslike.Player.Controller
             // Loop through each state
             foreach (var state in sortedStates.Where(state => state.CanUse()).TakeWhile(state => state != CurrentState))
             {
-                // Attempt to override the current state
-                CurrentState = state;
-                break;
+                // Check if the new state has a higher priority than the current one
+                if (state.Priority > CurrentState.Priority)
+                {
+                    // Attempt to override the current state
+                    CurrentState = state;
+                    break;
+                }
+                
+                // Check if we can transition to the new state
+                if (CurrentState.CanTransition())
+                {
+                    // Attempt to override the current state
+                    CurrentState = state;
+                    break;
+                } 
             }
         }
         

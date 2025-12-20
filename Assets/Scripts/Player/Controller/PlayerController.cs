@@ -16,10 +16,9 @@ namespace Soulslike.Player.Controller
         [Header("Components")] // Player components
         public CharacterController characterController; // The character controller
         [SerializeField()] private CapsuleCollider bodyCollider; // The player's collider
-        public UnityEngine.Camera cam; // The camera
+        public Camera cam; // The camera
         public Animator animator; // The animator
 
-        [FormerlySerializedAs("_currentState")]
         [Header("State")] // Player states
         [SerializeField, Tooltip("Current state (read-only)")] private StateTypes currentState;
         public PlayerStateController StateController { get; private set; } // The state handler 
@@ -30,10 +29,15 @@ namespace Soulslike.Player.Controller
         public float groundRaycastDistance = 0.5f;
         public LayerMask groundMask;
 
+        [Header("Ledge Detection")] 
+        public bool IsOnLedge = false;
+        public LedgeController LedgeController;
+
         [Header("Gravity")] 
         [SerializeField()] private bool isGrounded_;
         public float GravityMultiplier = 1;
         [SerializeField()] float gravity = -9.81f;
+        public bool VelocityEnabled = true;
         public Vector3 velocity;
 
         // Player stats
@@ -58,6 +62,9 @@ namespace Soulslike.Player.Controller
             
             // Set up the input
             InputScheme =  new InputController();
+            
+            // Set up the ledge detection
+            LedgeController = new LedgeController(this);
             
             // Disable root motion
             animator.applyRootMotion = false;
@@ -84,7 +91,7 @@ namespace Soulslike.Player.Controller
         
         private void Update()
         {
-        
+            
             // Update the current state
             StateController.Update();
             
@@ -143,6 +150,9 @@ namespace Soulslike.Player.Controller
         // Apply the current velocity to the player
         private void ApplyVelocity()
         {
+            // Make sure velocity is enabled
+            if (!VelocityEnabled) return;
+            
             characterController.Move(velocity * Time.deltaTime);
         }
     }
