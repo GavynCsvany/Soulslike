@@ -1,53 +1,92 @@
-﻿using Unity.Mathematics;
+﻿using Soulslike.Core;
 using UnityEngine;
 
 namespace Soulslike.Player.Controller
 {
+    
+    // Outline for ledge detection settings
+    public struct LedgeDetectionSettings
+    {
+        public Vector3 direction;
+        public Vector3 originOffset;
+        
+        public int rayAmount;
+        public float rayOffset;
+        public float detectionDistance;
+    }
+    
     public class LedgeController
     {
 
         // The player controller
-        PlayerController controller;
+        PlayerController Controller;
+        
+        // Basic ledge settings
+        public bool IsLedgeGrabEnabled = true;
+        private readonly LayerMask ledgeMask;
         
         // The detected ledge
         public Transform DetectedLedge;
-        
-        // The ledge layer
-        private readonly LayerMask ledgeMask;
-
+ 
         // Class creation
         public LedgeController(PlayerController controller_)
         {
             // Assign the controller
-            controller = controller_;
+            Controller = controller_;
+            
+            // Assign the ledge mask
             ledgeMask = LayerMask.GetMask("Ledge");
         }
         
+        #region Methods
+
+        // Subscribe to state events
+        public void SubscribeToStateChangedEvent()
+        {
+            
+            // Add binding to state changed event
+            Controller.StateController.StateChanged += EnableLedgeGrabbingOnLand;
+        }
+        
+        // Enable the CanGrabLedge bool
+        private void EnableLedgeGrabbingOnLand(object sender, EntityState state)
+        {
+
+            if (state.StateType == StateTypes.Landed)
+            {
+                Debug.Log("WW");
+                IsLedgeGrabEnabled = true;
+            }
+        }
+        
         // Ledge detection
-        public bool DetectLedge(Vector3 direction, Vector3 originOffset, out RaycastHit ledgeHit, 
-            int rayAmount = 10, float rayOffset = 0.2f, float detectionDistance = 1f)
+        public bool DetectLedge(LedgeDetectionSettings detectionSettings, out RaycastHit ledgeHit)
         {
             
             // Create the raycast
             ledgeHit = new RaycastHit();
             
             // Make sure the direction is valid
-            if (direction == Vector3.zero) return false;
+            Vector3 dir = detectionSettings.direction;
+            if (detectionSettings.direction == Vector3.zero)
+                dir = Controller.transform.forward;
             
             // Get the origin of the raycast
-            Vector3 origin = controller.transform.position + originOffset;
-            Vector3 offset = new Vector3(0, rayOffset, 0);
+            Vector3 origin = Controller.transform.position + detectionSettings.originOffset;
+            Vector3 offset = new Vector3(0, detectionSettings.rayOffset, 0);
             
             // Create the rays
-            for (int i = 0; i < rayAmount; i++)
+            for (int i = 0; i < detectionSettings.rayAmount; i++)
             {
-
-                // Draw the ray for debug
-                //Debug.DrawRay(origin + offset * i, direction * detectionDistance, Color.red);
+                
+                // Variable assignments for shorter code
+                Vector3 rayOrigin = origin + offset * i;
+                RaycastHit hit;
                 
                 // Check if the ray hits anything
-                if (Physics.Raycast(origin + offset * i, direction, out RaycastHit hit, detectionDistance, ledgeMask))
+                if (Physics.Raycast(rayOrigin, dir, out hit, detectionSettings.detectionDistance, ledgeMask))
                 {
+                    // Assign the detected ledge
                     DetectedLedge = hit.transform;
                     
                     // Return true
@@ -58,5 +97,7 @@ namespace Soulslike.Player.Controller
             
             return false;
         }
+        
+        #endregion
     }
 }

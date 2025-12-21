@@ -20,6 +20,9 @@ namespace Soulslike.Player.Input
         // Jump input
         public bool wantToJump { get; private set; } = false;
         
+        // Ledge input
+        public bool wantToLeaveLedge { get; private set; } = false;
+        
         // The input scheme the player is using
         private readonly PlayerActions inputScheme;
         
@@ -44,12 +47,24 @@ namespace Soulslike.Player.Input
         {
             wantToRoll = false;
             wantToJump = false;
+            wantToLeaveLedge = false;
         }
         
         // Called to set up the input handling
         private void BindInput()
         {
             
+            // Basic locomotion
+            BindBasicLocomotion();
+            
+            // Ledge locomotion
+            BindLedgeLocomotion();
+        }
+
+        #region Basic Locomotion
+        
+        private void BindBasicLocomotion()
+        {
             // Movement input
             inputScheme.BasicLocomotion.Movement.performed += context => RequestMovement(context.ReadValue<Vector2>());
             inputScheme.BasicLocomotion.Movement.canceled += context => RequestMovement(context.ReadValue<Vector2>());
@@ -101,5 +116,17 @@ namespace Soulslike.Player.Input
             // Assign the variable
             wantToJump = pressed;
         }
+        
+        #endregion
+        
+        #region Ledge Locomotion
+
+        private void BindLedgeLocomotion()
+        {
+            // Leave ledge input
+            inputScheme.LedgeLocomotion.LeaveLedge.started += _ => wantToLeaveLedge = true;
+        }
+        
+        #endregion
     }
 }

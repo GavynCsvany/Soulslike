@@ -25,12 +25,13 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Walking, new PlayerWalking(controller, 1) }, // Walking State
                 { StateTypes.Sprinting, new PlayerSprinting(controller, 2) }, // Sprinting State
                 { StateTypes.Falling , new PlayerFalling(controller, 3) }, // Falling state
-                { StateTypes.Landed,  new PlayerLanded(controller, 4) }, // Landed state
                 { StateTypes.Jumping , new PlayerJump(controller, 5)},
                 { StateTypes.Rolling, new PlayerRoll(controller, 6)}, // Rolling state
+                { StateTypes.Landed,  new PlayerLanded(controller, 7) }, // Landed state
                 
                 // LEDGE CLIMBING STATES //
                 { StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) }, // Ledge climb starts
+                { StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },
                 { StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) }, // Ledge climb idle
             };
             sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();

@@ -63,14 +63,21 @@ namespace Soulslike.Player.Controller
             // Set up the input
             InputScheme =  new InputController();
             
-            // Set up the ledge detection
-            LedgeController = new LedgeController(this);
-            
             // Disable root motion
             animator.applyRootMotion = false;
             
+            // Set up the ledge detection
+            LedgeController = new LedgeController(this);
+        }
+
+        private void Start()
+        {
+            
             // Set up the state controller
             InitializeStateController();
+
+            // Subscribe to state changes
+            LedgeController.SubscribeToStateChangedEvent();
         }
         
         private void InitializeStateController()
@@ -151,7 +158,11 @@ namespace Soulslike.Player.Controller
         private void ApplyVelocity()
         {
             // Make sure velocity is enabled
-            if (!VelocityEnabled) return;
+            if (!VelocityEnabled)
+            {
+                velocity = Vector3.zero;
+                return;
+            }
             
             characterController.Move(velocity * Time.deltaTime);
         }
