@@ -44,7 +44,7 @@ namespace Soulslike.Player.States
         {
             
             // Make the player jump
-            Controller.velocity.y += 12;
+            Controller.GroundController.ApplyImpulse(new Vector3(0, 12, 0));
             jumpStart = Time.time;
             
             // Change the animation
@@ -66,7 +66,7 @@ namespace Soulslike.Player.States
         private void CheckFinished()
         {
             // Check if the player is grounded and enough time has passed since first jumping
-            if (Controller.IsGrounded() && Time.time - jumpStart > 0.5f)
+            if (Controller.IsGrounded && Time.time - jumpStart > 0.5f)
             {
                 // Finish the state
                 IsFinished = true;

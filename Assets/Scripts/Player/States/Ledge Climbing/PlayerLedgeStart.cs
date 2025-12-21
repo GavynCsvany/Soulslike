@@ -25,7 +25,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             HasExitTime = true;
             
             animator = Controller.animator;
-            playerLedgeController = Controller.PlayerLedgeController;
+            playerLedgeController = Controller.LedgeController;
             CreateStartTypes();
         }
         
@@ -37,9 +37,9 @@ namespace Soulslike.Player.States.Ledge_Climbing
         private PlayerLedgeController playerLedgeController;
         private Transform detectedLedge;
         
-        LedgeStartType chosenType; // Chosen start type
-        LedgeStartType groundLeap; // Small grounded leap upwards
-        LedgeStartType airCollision; // Colliding with a ledge in air
+        private LedgeStartType chosenType; // Chosen start type
+        private LedgeStartType groundLeap; // Small grounded leap upwards
+        private LedgeStartType airCollision; // Colliding with a ledge in air
         
         #region Methods
 
@@ -104,7 +104,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             if (!playerLedgeController.IsLedgeGrabEnabled) return false;
             
             // Grounded leap
-            if (Controller.IsGrounded() && Controller.InputScheme.wantToJump)
+            if (Controller.IsGrounded && Controller.InputScheme.wantToJump)
             {
                 
                 // Check for a ledge
@@ -120,7 +120,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             }
             
             // In Air Collision
-            if (!Controller.IsGrounded())
+            if (!Controller.IsGrounded)
             {
                 // Check for a ledge
                 if (playerLedgeController.DetectLedge(airCollision.LedgeDetectionSettings, out ledgeHit))
@@ -146,7 +146,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.IsOnLedge = true;
             
             // Disable gravity / velocity
-            Controller.VelocityEnabled = false;
+            Controller.GravityEnabled = false;
             
             // Play the ledge animation
             animator.applyRootMotion = true;

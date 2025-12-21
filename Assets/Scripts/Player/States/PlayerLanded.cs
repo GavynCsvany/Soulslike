@@ -26,21 +26,17 @@ namespace Soulslike.Player.States
         
         #region Methods
 
-        public override bool CanUse()
-        {
-            // Check if the player is no longer falling
-            if (Controller.StateController.CurrentState.StateType != StateTypes.Falling) return false;
-            
-            // Check if enough time has passed since the player started falling
-            Debug.Log(Controller.animator.GetFloat(FallTimeParam));
-            if (Controller.animator.GetFloat(FallTimeParam) >= 0.5f) return true;
-
-            // Return false
-            return false;
-        }
+        public override bool CanUse() => Controller.GroundController.JustGrounded;
 
         public override void OnStart()
         {
+            
+            // Check if enough time has passed to play the animation
+            if (Controller.animator.GetFloat(FallTimeParam) <= 0.5f)
+            {
+                IsFinished = true;
+                return;
+            }
             
             // Change the animation
             Controller.animator.CrossFadeInFixedTime("Land", 0.1f);
@@ -53,7 +49,11 @@ namespace Soulslike.Player.States
             CheckFinished();
         }
 
-        public override void OnFinished() { }
+        public override void OnFinished()
+        {
+            // Reset the fall time
+            Controller.animator.SetFloat(FallTimeParam, 0);
+        }
 
         // Called every frame to check if the roll animation is finished playing
         private void CheckFinished()

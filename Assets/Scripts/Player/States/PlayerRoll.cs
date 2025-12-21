@@ -50,7 +50,7 @@ namespace Soulslike.Player.States
         public override bool CanUse()
         {
             // Check if the player is grounded
-            if (!Controller.IsGrounded()) return false;
+            if (!Controller.IsGrounded) return false;
             
             // Check if the player wants to roll
             if (input.wantToRoll)

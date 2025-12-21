@@ -52,9 +52,9 @@ namespace Soulslike.Player.Controller
         private void EnableLedgeGrabbingOnLand(object sender, EntityState state)
         {
 
+            // Check if the player has landed
             if (state.StateType == StateTypes.Landed)
             {
-                Debug.Log("WW");
                 IsLedgeGrabEnabled = true;
             }
         }

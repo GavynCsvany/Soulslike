@@ -25,25 +25,18 @@ namespace Soulslike.Player.Controller
         
         [Header("Ground Detection")]
         public Transform groundCheck;
-        public float groundSphereRadius = 0.4f;
-        public float groundRaycastDistance = 0.5f;
         public LayerMask groundMask;
+        public PlayerGroundController GroundController;
+        public bool IsGrounded => GroundController.IsGrounded;
+        public bool GravityEnabled
+        {
+            get => GroundController.GravityEnabled;
+            set => GroundController.GravityEnabled = value;
+        }
 
         [Header("Ledge Detection")] 
         public bool IsOnLedge = false;
-        public PlayerLedgeController PlayerLedgeController;
-
-        [Header("Gravity")] 
-        [SerializeField()] private bool isGrounded_;
-        public float GravityMultiplier = 1;
-        [SerializeField()] float gravity = -9.81f;
-        public bool VelocityEnabled = true;
-        public Vector3 velocity;
-
-        // Player stats
-        public PlayerStats Stats;
-        public float Health => Stats.Health;
-        public float Stamina => Stats.Stamina;
+        public PlayerLedgeController LedgeController;
 
         #region Base Methods
 
@@ -56,9 +49,9 @@ namespace Soulslike.Player.Controller
             if (!bodyCollider && !TryGetComponent(out bodyCollider))
                 bodyCollider = GetComponentInParent<CapsuleCollider>();
             if (!cam) cam = Camera.main;
-        
-            // Set up the stats
-            Stats =  new PlayerStats();
+            
+            // Create the ground controller
+            GroundController = new PlayerGroundController(this);
             
             // Set up the input
             InputScheme =  new InputController();
@@ -67,7 +60,7 @@ namespace Soulslike.Player.Controller
             animator.applyRootMotion = false;
             
             // Set up the ledge detection
-            PlayerLedgeController = new PlayerLedgeController(this);
+            LedgeController = new PlayerLedgeController(this);
         }
 
         private void Start()
@@ -77,7 +70,7 @@ namespace Soulslike.Player.Controller
             InitializeStateController();
 
             // Subscribe to state changes
-            PlayerLedgeController.SubscribeToStateChangedEvent();
+            LedgeController.SubscribeToStateChangedEvent();
         }
         
         private void InitializeStateController()
@@ -103,8 +96,7 @@ namespace Soulslike.Player.Controller
             StateController.Update();
             
             // Update the gravity and velocity
-            ApplyGravity();
-            ApplyVelocity();
+            GroundController.Update();
             
             // Reset any variables as needed
             InputScheme.ResetAfterUpdate();
@@ -117,54 +109,5 @@ namespace Soulslike.Player.Controller
         }
 
         #endregion
-        
-        // Check whether the player is grounded
-        public bool IsGrounded()
-        {
-            int weight = 0;
-            
-            // Create a sphere cast looking for the ground
-            weight += (Physics.CheckSphere(groundCheck.position, groundSphereRadius, groundMask)) ? 1 : 0;
-            
-            // Check the character controller
-            weight += (characterController.isGrounded) ? 1 : 0;
-            
-            // Raycast downward
-            weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
-            
-            // Check if there is enough weight
-            return weight >= 2;
-        }
-        
-        // Apply gravity to the player
-        private void ApplyGravity()
-        {
-            isGrounded_ = IsGrounded();
-            
-            // Check if grounded
-            if (IsGrounded() && velocity.y < 0)
-            {
-                // Set the velocity to -1
-                velocity.y = -1;
-            }
-            else
-            {
-                // Set the y velocity to the gravity
-                velocity.y += gravity * GravityMultiplier *  Time.deltaTime;
-            }
-        }
-        
-        // Apply the current velocity to the player
-        private void ApplyVelocity()
-        {
-            // Make sure velocity is enabled
-            if (!VelocityEnabled)
-            {
-                velocity = Vector3.zero;
-                return;
-            }
-            
-            characterController.Move(velocity * Time.deltaTime);
-        }
     }
 }

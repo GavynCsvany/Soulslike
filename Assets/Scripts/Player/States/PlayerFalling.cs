@@ -54,7 +54,7 @@ namespace Soulslike.Player.States
             }
 
             // Check if grounded
-            return !Controller.IsGrounded();
+            return !Controller.IsGrounded;
         }
 
         public override void OnStart()
