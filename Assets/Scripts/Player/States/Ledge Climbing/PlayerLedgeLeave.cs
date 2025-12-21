@@ -43,7 +43,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.VelocityEnabled = true;
             
             // Do not allow any more ledge grabbing
-            Controller.LedgeController.IsLedgeGrabEnabled = false;
+            Controller.PlayerLedgeController.IsLedgeGrabEnabled = false;
         }
 
         public override void Update()

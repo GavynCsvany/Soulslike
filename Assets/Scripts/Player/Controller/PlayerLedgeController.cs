@@ -15,7 +15,7 @@ namespace Soulslike.Player.Controller
         public float detectionDistance;
     }
     
-    public class LedgeController
+    public class PlayerLedgeController
     {
 
         // The player controller
@@ -29,7 +29,7 @@ namespace Soulslike.Player.Controller
         public Transform DetectedLedge;
  
         // Class creation
-        public LedgeController(PlayerController controller_)
+        public PlayerLedgeController(PlayerController controller_)
         {
             // Assign the controller
             Controller = controller_;

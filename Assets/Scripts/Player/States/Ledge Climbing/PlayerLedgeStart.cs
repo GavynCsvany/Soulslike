@@ -25,7 +25,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             HasExitTime = true;
             
             animator = Controller.animator;
-            ledgeController = Controller.LedgeController;
+            playerLedgeController = Controller.PlayerLedgeController;
             CreateStartTypes();
         }
         
@@ -34,7 +34,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         private bool hasMatched;
         
         // Ledge detection
-        private LedgeController ledgeController;
+        private PlayerLedgeController playerLedgeController;
         private Transform detectedLedge;
         
         LedgeStartType chosenType; // Chosen start type
@@ -101,14 +101,14 @@ namespace Soulslike.Player.States.Ledge_Climbing
             RaycastHit ledgeHit;
             
             // Check whether ledge grabbing is enabled
-            if (!ledgeController.IsLedgeGrabEnabled) return false;
+            if (!playerLedgeController.IsLedgeGrabEnabled) return false;
             
             // Grounded leap
             if (Controller.IsGrounded() && Controller.InputScheme.wantToJump)
             {
                 
                 // Check for a ledge
-                if (ledgeController.DetectLedge(groundLeap.LedgeDetectionSettings, out ledgeHit))
+                if (playerLedgeController.DetectLedge(groundLeap.LedgeDetectionSettings, out ledgeHit))
                 {
                     
                     // Set the detected ledge variables
@@ -123,7 +123,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             if (!Controller.IsGrounded())
             {
                 // Check for a ledge
-                if (ledgeController.DetectLedge(airCollision.LedgeDetectionSettings, out ledgeHit))
+                if (playerLedgeController.DetectLedge(airCollision.LedgeDetectionSettings, out ledgeHit))
                 {
                     
                     // Set the detected ledge variables
@@ -158,7 +158,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Rotate the player towards the ledge
-            var tarRot = Quaternion.LookRotation(-ledgeController.DetectedLedge.forward);
+            var tarRot = Quaternion.LookRotation(-playerLedgeController.DetectedLedge.forward);
             Controller.transform.rotation = Quaternion.RotateTowards(Controller.transform.rotation, tarRot, 100 * Time.deltaTime);
             
             // Apply target matching

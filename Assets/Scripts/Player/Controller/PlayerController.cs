@@ -31,7 +31,7 @@ namespace Soulslike.Player.Controller
 
         [Header("Ledge Detection")] 
         public bool IsOnLedge = false;
-        public LedgeController LedgeController;
+        public PlayerLedgeController PlayerLedgeController;
 
         [Header("Gravity")] 
         [SerializeField()] private bool isGrounded_;
@@ -67,7 +67,7 @@ namespace Soulslike.Player.Controller
             animator.applyRootMotion = false;
             
             // Set up the ledge detection
-            LedgeController = new LedgeController(this);
+            PlayerLedgeController = new PlayerLedgeController(this);
         }
 
         private void Start()
@@ -77,7 +77,7 @@ namespace Soulslike.Player.Controller
             InitializeStateController();
 
             // Subscribe to state changes
-            LedgeController.SubscribeToStateChangedEvent();
+            PlayerLedgeController.SubscribeToStateChangedEvent();
         }
         
         private void InitializeStateController()
