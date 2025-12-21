@@ -143,7 +143,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.characterController.enabled = false;
 
             // Let the controller know we are on a ledge
-            Controller.IsOnLedge = true;
+            Controller.OnLedge = true;
             
             // Disable gravity / velocity
             Controller.GravityEnabled = false;

@@ -718,7 +718,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1448482778}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!114 &410087042
 MonoBehaviour:
@@ -957,6 +957,9 @@ Transform:
   - {fileID: 1852327733}
   - {fileID: 614808001}
   - {fileID: 107042354}
+  - {fileID: 1878594222}
+  - {fileID: 1719039412}
+  - {fileID: 410087041}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1492355276
@@ -1175,12 +1178,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1719039408}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -4.38, y: 4.398, z: 4.72}
-  m_LocalScale: {x: 0.73475903, y: 0.18202, z: 0.16328}
+  m_LocalScale: {x: 0.734759, y: 0.18202, z: 0.16327998}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1448482778}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &1852327732
 GameObject:
@@ -1397,12 +1400,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878594218}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: -4.38, y: 3.89, z: -0.19}
-  m_LocalScale: {x: 0.73475903, y: 0.18202, z: 0.16328}
+  m_LocalScale: {x: 0.734759, y: 0.18202, z: 0.16327998}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1448482778}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &2085913107
 GameObject:
@@ -3858,23 +3861,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 560c7d3b00054beaa7cc8e567af3a7cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Soulslike.Player.PlayerController
-  characterController: {fileID: 0}
-  bodyCollider: {fileID: 0}
+  characterController: {fileID: 9156275857939649018}
   cam: {fileID: 330585545}
   animator: {fileID: 3022351538196024194}
-  currentState: 0
-  groundCheck: {fileID: 947591845}
-  groundSphereRadius: 0.4
-  groundRaycastDistance: 0.5
-  groundMask:
+  GroundCheck: {fileID: 947591845}
+  GroundMask:
     serializedVersion: 2
-    m_Bits: 1
-  IsOnLedge: 0
-  isGrounded_: 0
-  GravityMultiplier: 3.5
-  gravity: -9.81
-  VelocityEnabled: 1
-  velocity: {x: 0, y: 0, z: 0}
+    m_Bits: 2147483648
+  LedgeMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!143 &9156275857939649018
 CharacterController:
   m_ObjectHideFlags: 0
@@ -4038,9 +4034,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 9156275857939649016}
-  - {fileID: 410087041}
   - {fileID: 1448482778}
   - {fileID: 330585546}
   - {fileID: 356613737}
-  - {fileID: 1878594222}
-  - {fileID: 1719039412}

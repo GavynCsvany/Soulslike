@@ -66,7 +66,7 @@ namespace Soulslike.Player.States
         private void CheckFinished()
         {
             // Check if the player is grounded and enough time has passed since first jumping
-            if (Controller.IsGrounded && Time.time - jumpStart > 0.5f)
+            if (Controller.JustGrounded && Time.time - jumpStart > 0.5f)
             {
                 // Finish the state
                 IsFinished = true;

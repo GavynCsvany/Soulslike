@@ -23,7 +23,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         
         public override bool CanUse()
         {
-            return Controller.IsOnLedge;
+            return Controller.OnLedge;
         }
 
         public override void OnStart()

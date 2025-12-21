@@ -26,6 +26,7 @@ namespace Soulslike.Player.Controller
         private readonly LayerMask ledgeMask;
         
         // The detected ledge
+        public bool OnLedge = false;
         public Transform DetectedLedge;
  
         // Class creation
@@ -35,7 +36,8 @@ namespace Soulslike.Player.Controller
             Controller = controller_;
             
             // Assign the ledge mask
-            ledgeMask = LayerMask.GetMask("Ledge");
+            ledgeMask = controller_.LedgeMask;
+            Debug.Log(ledgeMask.value);
         }
         
         #region Methods

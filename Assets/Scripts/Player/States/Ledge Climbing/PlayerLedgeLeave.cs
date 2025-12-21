@@ -23,7 +23,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public override bool CanUse()
         {
             // Make sure we are on a ledge
-            if (!Controller.IsOnLedge) return false;
+            if (!Controller.OnLedge) return false;
             return Controller.InputScheme.wantToLeaveLedge;
         }
 
@@ -34,7 +34,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.animator.applyRootMotion = false;
             
             // Remove self from ledge
-            Controller.IsOnLedge = false;
+            Controller.OnLedge = false;
             
             // Disable the character controller
             Controller.characterController.enabled = true;

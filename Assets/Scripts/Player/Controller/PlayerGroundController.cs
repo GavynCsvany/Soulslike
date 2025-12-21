@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Soulslike.Utility;
+using UnityEngine;
 
 namespace Soulslike.Player.Controller
 {
@@ -24,8 +25,8 @@ namespace Soulslike.Player.Controller
 
         // Ground detection
         private readonly Transform groundCheck;
-        private readonly float groundSphereRadius = 0.4f;
-        private readonly float groundRaycastDistance = 0.5f;
+        private float groundSphereRadius => Controller.GroundSphereRadius;
+        private float groundRaycastDistance => Controller.GroundRaycastDistance;
         private readonly LayerMask groundMask;
         
         public PlayerGroundController(PlayerController controller)
@@ -34,8 +35,9 @@ namespace Soulslike.Player.Controller
             // Assign variables
             Controller = controller;
             characterController = Controller.characterController;
-            groundCheck = Controller.groundCheck;
-            groundMask = Controller.groundMask;
+            
+            groundCheck = Controller.GroundCheck;
+            groundMask = Controller.GroundMask;
         }
         
         // Called every frame
@@ -56,12 +58,14 @@ namespace Soulslike.Player.Controller
             int weight = 0;
             
             // Create a sphere cast looking for the ground
+            DebugHelper.DrawSphere(groundCheck.position, new Quaternion(0, 0, 0, 0), groundSphereRadius, Color.green, 6);
             weight += (Physics.CheckSphere(groundCheck.position, groundSphereRadius, groundMask)) ? 1 : 0;
             
             // Check the character controller
             weight += (characterController.isGrounded) ? 1 : 0;
             
             // Raycast downward
+            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance, Color.red);
             weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
             
             // Check if there is enough weight

@@ -1,6 +1,7 @@
 ﻿using System;
 using Soulslike.Core;
 using Soulslike.Player.Input;
+using Soulslike.Player.States;
 using Soulslike.Player.Stats;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,32 +14,51 @@ namespace Soulslike.Player.Controller
         // Input
         public InputController InputScheme;
 
-        [Header("Components")] // Player components
+        // PLAYER COMPONENTS //
         public CharacterController characterController; // The character controller
-        [SerializeField()] private CapsuleCollider bodyCollider; // The player's collider
         public Camera cam; // The camera
         public Animator animator; // The animator
 
-        [Header("State")] // Player states
-        [SerializeField, Tooltip("Current state (read-only)")] private StateTypes currentState;
+        // PLAYER STATE //
         public PlayerStateController StateController { get; private set; } // The state handler 
+        public EntityState CurrentState => StateController.CurrentState;
         
-        [Header("Ground Detection")]
-        public Transform groundCheck;
-        public LayerMask groundMask;
+        // GROUND DETECTION //
+        public Transform GroundCheck;
+        public LayerMask GroundMask;
+        public float GroundRaycastDistance = 0.5f;
+        public float GroundSphereRadius = 0.4f;
         public PlayerGroundController GroundController;
         public bool IsGrounded => GroundController.IsGrounded;
+        
+        // GRAVITY //
+        public float GravityMultiplier
+        {
+            get => GroundController.GravityMultiplier;
+            set => GroundController.GravityMultiplier = value;
+        }
         public bool GravityEnabled
         {
             get => GroundController.GravityEnabled;
             set => GroundController.GravityEnabled = value;
         }
 
-        [Header("Ledge Detection")] 
-        public bool IsOnLedge = false;
-        public PlayerLedgeController LedgeController;
+        public bool JustGrounded => GroundController.JustGrounded;
 
-        #region Base Methods
+        // LEDGE DETECTION //
+        public LayerMask LedgeMask;
+        public PlayerLedgeController LedgeController;
+        public Transform DetectedLedge => LedgeController.DetectedLedge;
+        public bool OnLedge {
+            get => LedgeController.OnLedge;
+            set => LedgeController.OnLedge = value;
+        }
+        public bool IsLedgeGrabEnabled {
+            get => LedgeController.IsLedgeGrabEnabled;
+            set => LedgeController.IsLedgeGrabEnabled = value;
+        }
+
+        #region Unity Callbacks
 
         private void Awake()
         {
@@ -46,8 +66,6 @@ namespace Soulslike.Player.Controller
             // Set default values for objects if not already initialized
             if (!characterController && !TryGetComponent(out characterController))
                 characterController = GetComponentInParent<CharacterController>();
-            if (!bodyCollider && !TryGetComponent(out bodyCollider))
-                bodyCollider = GetComponentInParent<CapsuleCollider>();
             if (!cam) cam = Camera.main;
             
             // Create the ground controller
@@ -79,8 +97,6 @@ namespace Soulslike.Player.Controller
             // Create the state controller
             StateController = new PlayerStateController(this);
             
-            // Reflect the current state in the inspector field
-            StateController.StateChanged += (_, value) => currentState = value.StateType;
         }
         
         private void OnEnable()
