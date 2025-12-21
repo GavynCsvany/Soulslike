@@ -25,19 +25,27 @@ namespace Soulslike.Utility.Inspector
             EditorGUILayout.LabelField("Player Components", EditorStyles.boldLabel);
             script.characterController = (CharacterController)EditorGUILayout.ObjectField("Character Controller", script.characterController, typeof(CharacterController), true);
             script.cam = (Camera)EditorGUILayout.ObjectField("Camera", script.cam, typeof(Camera), true);
-            script.animator = (Animator)EditorGUILayout.ObjectField("Animator", script.animator, typeof(Animator), true);
             EditorGUILayout.Space();
 
+            
+            // ANIMATION //
+            EditorGUILayout.LabelField("Animation", EditorStyles.boldLabel);
+            script.animator = (Animator)EditorGUILayout.ObjectField("Animator", script.animator, typeof(Animator), true);
+            script.ApplyRootMotion = EditorGUILayout.Toggle("Apply Root Motion", script.ApplyRootMotion);
+            EditorGUILayout.Space();
+            
             
             // PLAYER STATE //
             EditorGUILayout.LabelField("Player State", EditorStyles.boldLabel);
             if (EditorApplication.isPlaying && script.StateController != null)
             {
                 EditorGUILayout.EnumPopup("Current State", script.CurrentState.StateType);
+                //DisplayStateSettings(script.CurrentState.StateType);
             }
             else
             {
                 currentState = (StateTypes)EditorGUILayout.EnumPopup("Current State", currentState);
+                DisplayStateSettings(currentState);
             }
             EditorGUILayout.Space();
             
@@ -79,6 +87,40 @@ namespace Soulslike.Utility.Inspector
                 script.IsLedgeGrabEnabled = EditorGUILayout.Toggle("Ledge Grabbing Enabled", script.IsLedgeGrabEnabled);
             }
             EditorGUILayout.Space();
+        }
+        
+        // Display the current state settings
+        private void DisplayStateSettings(StateTypes stateType)
+        {
+            
+            var script = target as PlayerController;
+            if(!script) return;
+
+            switch (stateType)
+            {
+                
+                // WALKING STATE
+                case StateTypes.Walking:
+                    script.WalkSpeed = EditorGUILayout.Slider("Walk Speed",  script.WalkSpeed, 0, 20);
+                    script.WalkTurnTime = EditorGUILayout.FloatField("Walk Turn Time",  script.WalkTurnTime);
+                    break;
+                
+                // SPRINTING STATE
+                case StateTypes.Sprinting:
+                    script.SprintSpeed = EditorGUILayout.Slider("Walk Speed",  script.SprintSpeed, 0, 20);
+                    script.SprintTurnTime = EditorGUILayout.FloatField("Walk Turn Time",  script.SprintTurnTime);
+                    break;
+                
+                // ROLLING STATE
+                case StateTypes.Rolling:
+                    script.AdditiveRollSpeed = EditorGUILayout.Slider("Additive Roll Speed",  script.AdditiveRollSpeed, 0, 20);
+                    break;
+                
+                // JUMPING STATE
+                case StateTypes.Jumping:
+                    script.JumpPower = EditorGUILayout.IntSlider("Jump power",  script.JumpPower, 0, 50);
+                    break;
+            }
         }
     }
 }

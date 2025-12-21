@@ -7,28 +7,37 @@ namespace Soulslike.Player.States
 {
     public class PlayerSprinting : PlayerWalking
     {
-
-        // Class construction
-        public PlayerSprinting(PlayerController controller) : base(controller)
-        {
-            // Change the state variables
-            StateType = StateTypes.Sprinting;
-            Priority = 2;
-            
-            // Change the speed and turn time
-            speed = 8;
-            turnTime = 0.06f;
-        }
         
         // Class construction with priority
-        public PlayerSprinting(PlayerController controller, int priority) : base(controller, priority)
+        public PlayerSprinting(PlayerController controller, int priority = 2) : base(controller, priority)
         {
-            // Change the state variables
+            // Change the state type
             StateType = StateTypes.Sprinting;
+        }
+        
+        // Sprint speed
+        protected override float speed {
+            get => Controller.SprintSpeed;
+            set => Controller.SprintSpeed = value;
+        }
+        
+        // Turning speed
+        protected override float turnTime {
+            get => Controller.SprintTurnTime;
+            set => Controller.SprintTurnTime = value;
+        }
+        
+        public override bool CanUse()
+        {
             
-            // Change the speed and turn time
-            speed = 8;
-            turnTime = 0.06f;
+            // Check if the player wants to move
+            if (input.desiredMovementVector.Equals(Vector2.zero)) return false;
+            
+            // Check if the player wants to sprint
+            if (input.wantToSprint) return true;
+
+            // Return false
+            return false;
         }
         
         public override void OnStart()
@@ -38,24 +47,5 @@ namespace Soulslike.Player.States
             Controller.animator.CrossFadeInFixedTime("Sprint", 0.2f);
         }
         
-        public override void Update()
-        {
-            base.Update();
-        }
-        
-        public override bool CanUse()
-        {
-            
-            // Check if the player wants to move
-            if (input.desiredMovementVector.Equals(Vector2.zero))
-                return false;
-            
-            // Check if the player wants to sprint
-            if (input.wantToSprint)
-                return true;
-
-            // Return false
-            return false;
-        }
     }
 }

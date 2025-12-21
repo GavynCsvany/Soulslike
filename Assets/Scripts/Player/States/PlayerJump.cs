@@ -8,27 +8,17 @@ namespace Soulslike.Player.States
 {
     public class PlayerJump : PlayerWalking
     {
+        
         // Class construction
-        public PlayerJump(PlayerController controller) : base(controller)
-        {
-            StateType = StateTypes.Jumping;
-            Priority = 11;
-            
-            HasExitTime = true;
-        }
-        
-        // Class construction with priority
-        public PlayerJump(PlayerController controller, int priority) : base(controller, priority)
+        public PlayerJump(PlayerController controller, int priority = 11) : base(controller, priority)
         {
             StateType = StateTypes.Jumping;
             
             HasExitTime = true;
         }
         
-        // When the jump began
-        private float jumpStart;
-        
-        #region Methods
+        // The jump force
+        public int JumpForce => Controller.JumpPower;
 
         public override bool CanUse()
         {
@@ -44,8 +34,7 @@ namespace Soulslike.Player.States
         {
             
             // Make the player jump
-            Controller.GroundController.ApplyImpulse(new Vector3(0, 12, 0));
-            jumpStart = Time.time;
+            Controller.GroundController.ApplyImpulse(new Vector3(0, JumpForce, 0));
             
             // Change the animation
             Controller.animator.CrossFadeInFixedTime("Jump", 0.1f);
@@ -66,31 +55,16 @@ namespace Soulslike.Player.States
         private void CheckFinished()
         {
             // Check if the player is grounded and enough time has passed since first jumping
-            if (Controller.JustGrounded && Time.time - jumpStart > 0.5f)
+            if (Controller.JustGrounded)
             {
                 // Finish the state
                 IsFinished = true;
                 return;
             }
-            
-            // Set variable names for ease of access
-            Animator anim = Controller.animator;
-            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
-            // If we're not playing the Jump animation, just return
-            if (!stateInfo.IsName("Jump")) return;
-
-            // Do not check normalizedTime during a transition
-            if (anim.IsInTransition(0)) return;
-
-            // When Jump is done, normalizedTime will be >= 1
-            if (stateInfo.normalizedTime >= 1f)
-            {
-                // Finish the state
-                IsFinished = true;
-            }
+            // Wait for the animation to finish
+            WaitForAnimation("Jump");
         }
         
-        #endregion
     }
 }

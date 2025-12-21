@@ -17,11 +17,32 @@ namespace Soulslike.Player.Controller
         // PLAYER COMPONENTS //
         public CharacterController characterController; // The character controller
         public Camera cam; // The camera
+        
+        // ANIMATION //
         public Animator animator; // The animator
+        public bool ApplyRootMotion
+        {
+            get => animator.applyRootMotion;
+            set => animator.applyRootMotion = value;
+        }
 
         // PLAYER STATE //
         public PlayerStateController StateController { get; private set; } // The state handler 
         public EntityState CurrentState => StateController.CurrentState;
+        
+        // WALKING STATE //
+        public float WalkSpeed = 6;
+        public float WalkTurnTime = 0.1f;
+        
+        // SPRINTING STATE //
+        public float SprintSpeed = 8;
+        public float SprintTurnTime = 0.06f;
+        
+        // ROLLING STATE //
+        public float AdditiveRollSpeed = 5f;
+        
+        // JUMPING STATE
+        public int JumpPower = 12;
         
         // GROUND DETECTION //
         public Transform GroundCheck;

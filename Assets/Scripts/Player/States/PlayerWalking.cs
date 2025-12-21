@@ -8,49 +8,37 @@ namespace Soulslike.Player.States
     public class PlayerWalking : PlayerState
     {
 
-        // Class construction
-        public PlayerWalking(PlayerController controller) : base(controller)
-        {
-            // Assign the state variables
-            StateType =  StateTypes.Walking;
-            Priority = 1;
-            
-            cam = controller.cam.transform; // Camera
-            characterController = controller.characterController; // Character controller
-            transform = controller.transform; // Transform
-            input = controller.InputScheme; // Input
-        }
-        
         // Class construction with priority
-        public PlayerWalking(PlayerController controller, int priority) : base(controller, priority)
+        public PlayerWalking(PlayerController controller, int priority = 1) : base(controller, priority)
         {
-            // Assign the state variables
-            StateType =  StateTypes.Walking;
+            // Change the state type
+            StateType = StateTypes.Walking;
             
+            // Assign the player components
             cam = controller.cam.transform; // Camera
             characterController = controller.characterController; // Character controller
             transform = controller.transform; // Transform
             input = controller.InputScheme; // Input
         }
-        
-        #region Walking Variables
 
         // Turning variables
-        protected float turnTime = 0.1f;
+        protected virtual float turnTime {
+            get => Controller.WalkTurnTime;
+            set => Controller.WalkTurnTime = value;
+        }
         private float turnVelocity;
 
         // Speed variables
-        protected float speed = 6f;
-
+        protected virtual float speed {
+            get => Controller.WalkSpeed;
+            set => Controller.WalkSpeed = value;
+        }
+        
         // Controller variables
         protected readonly Transform cam;
         protected readonly CharacterController characterController;
         protected readonly Transform transform;
         protected readonly InputController input;
-
-        #endregion
-        
-        #region Methods
 
         public override bool CanUse()
         {
@@ -89,11 +77,7 @@ namespace Soulslike.Player.States
             characterController.Move(moveDir.normalized * (speed * Time.deltaTime));
         }
 
-        public override void OnFinished()
-        {
+        public override void OnFinished() { }
 
-        }
-
-        #endregion
     }
 }

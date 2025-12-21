@@ -8,32 +8,23 @@ namespace Soulslike.Player.States
 {
     public class PlayerRoll :  PlayerState
     {
-        // Class construction
-        public PlayerRoll(PlayerController controller) : base(controller)
+        
+        // Class construction with priority
+        public PlayerRoll(PlayerController controller, int priority = 4) : base(controller, priority)
         {
             StateType = StateTypes.Rolling;
-            Priority = 4;
             HasExitTime = true;
 
-            // Get the camera
+            // Get the player components
             cam = controller.cam.transform;
             transform = controller.transform;
             input = controller.InputScheme;
             characterController = controller.characterController;
         }
         
-        // Class construction with priority
-        public PlayerRoll(PlayerController controller, int priority) : base(controller, priority)
-        {
-            StateType = StateTypes.Rolling;
-            HasExitTime = true;
-
-            // Get the camera
-            cam = controller.cam.transform;
-            transform = controller.transform;
-            input = controller.InputScheme;
-            characterController = controller.characterController;
-        }
+        // Roll variables
+        private float additiveRollSpeed => Controller.AdditiveRollSpeed;
+        private bool backstep;
         
         // Controller variables
         private readonly Transform cam;
@@ -41,12 +32,6 @@ namespace Soulslike.Player.States
         private readonly InputController input;
         private readonly CharacterController characterController;
         
-        // Roll variables
-        private readonly float additiveRollSpeed = 5f;
-        private bool backstep;
-        
-        #region Methods
-
         public override bool CanUse()
         {
             // Check if the player is grounded
@@ -67,7 +52,7 @@ namespace Soulslike.Player.States
             Vector2 dir = input.desiredMovementVector.normalized;
 
             // Apply root motion
-            Controller.animator.applyRootMotion = true;
+            Controller.ApplyRootMotion = true;
             
             // Check if the player is moving
             if (dir.magnitude > 0.1f)
@@ -95,37 +80,15 @@ namespace Soulslike.Player.States
             Vector3 rollDir = (backstep) ? -transform.forward : transform.forward;
             characterController.Move( rollDir * additiveRollSpeed * Time.deltaTime);
             
-            // Check if finished
-            CheckFinished();
+            // Check if the animation is finished
+            WaitForAnimation(backstep ? "Backstep" : "Roll", 1);
         }
 
         public override void OnFinished()
         {
-            Controller.animator.applyRootMotion = false;
-        }
-
-        // Called every frame to check if the roll animation is finished playing
-        private void CheckFinished()
-        {
             
-            // Set variable names for ease of access
-            Animator anim = Controller.animator;
-            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
-
-            // If we're not playing the Roll animation, just return
-            if (!stateInfo.IsName("Roll") && !stateInfo.IsName("Backstep")) return;
-
-            // Do not check normalizedTime during a transition!
-            if (anim.IsInTransition(0)) return;
-
-            // When Roll is done, normalizedTime will be >= 1
-            if (stateInfo.normalizedTime >= 1f)
-            {
-                // Finish the state
-                IsFinished = true;
-            }
+            // Disable root motion
+            Controller.ApplyRootMotion = false;
         }
-        
-        #endregion
     }
 }

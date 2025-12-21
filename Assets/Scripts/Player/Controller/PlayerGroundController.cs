@@ -65,7 +65,7 @@ namespace Soulslike.Player.Controller
             weight += (characterController.isGrounded) ? 1 : 0;
             
             // Raycast downward
-            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance, Color.red);
+            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance, Color.green);
             weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
             
             // Check if there is enough weight

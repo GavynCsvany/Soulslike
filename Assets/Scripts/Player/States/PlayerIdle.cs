@@ -6,15 +6,9 @@ namespace Soulslike.Player.States
 {
     public class PlayerIdle : PlayerState
     {
-        // Class construction
-        public PlayerIdle(PlayerController controller) : base(controller)
-        {
-            StateType = StateTypes.Idle;
-            Priority = 0;
-        }
         
-        // Class construction with priority
-        public PlayerIdle(PlayerController controller, int priority) : base(controller,  priority)
+        // Class construction
+        public PlayerIdle(PlayerController controller, int priority = 0) : base(controller,  priority)
         {
             StateType = StateTypes.Idle;
         }

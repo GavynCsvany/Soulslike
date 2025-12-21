@@ -916,7 +916,7 @@ Transform:
   m_GameObject: {fileID: 947591844}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.325, z: 0}
+  m_LocalPosition: {x: 0, y: 0.225, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -3864,10 +3864,18 @@ MonoBehaviour:
   characterController: {fileID: 9156275857939649018}
   cam: {fileID: 330585545}
   animator: {fileID: 3022351538196024194}
+  WalkSpeed: 5
+  WalkTurnTime: 0.1
+  SprintSpeed: 8
+  SprintTurnTime: 0.06
+  AdditiveRollSpeed: 5
+  JumpPower: 12
   GroundCheck: {fileID: 947591845}
   GroundMask:
     serializedVersion: 2
-    m_Bits: 2147483648
+    m_Bits: 1
+  GroundRaycastDistance: 0.3
+  GroundSphereRadius: 0.26
   LedgeMask:
     serializedVersion: 2
     m_Bits: 128

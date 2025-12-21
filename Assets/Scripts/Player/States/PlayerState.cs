@@ -1,5 +1,6 @@
 ﻿using Soulslike.Core;
 using Soulslike.Player.Controller;
+using UnityEngine;
 
 namespace Soulslike.Player.States
 {
@@ -23,6 +24,28 @@ namespace Soulslike.Player.States
             
             // Assign the controller variable
             this.Controller = controller;
+        }
+
+        // Wait for a given animation to finish (or get to a certain point)
+        protected void WaitForAnimation(string animationName, float time = 1f)
+        {
+            
+            // Set variable names for ease of access
+            Animator anim = Controller.animator;
+            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+
+            // If we're not playing the Jump animation, just return
+            if (!stateInfo.IsName(animationName)) return;
+
+            // Do not check normalizedTime during a transition
+            if (anim.IsInTransition(0)) return;
+
+            // When Jump is done, normalizedTime will be >= 1
+            if (stateInfo.normalizedTime >= time)
+            {
+                // Finish the state
+                IsFinished = true;
+            }
         }
     }
 }

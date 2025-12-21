@@ -9,21 +9,7 @@ namespace Soulslike.Player.States
     {
 
         // Class constructor
-        public PlayerFalling(PlayerController controller) : base(controller)
-        {
-            // Assign the state variables
-            StateType =  StateTypes.Falling;
-            Priority = 10;
-            
-            // Set the state to be incompatible with the jumping state
-            IncompatibleStates = new List<StateTypes>()
-            {
-                StateTypes.Jumping
-            };
-        }
-        
-        // Class constructor
-        public PlayerFalling(PlayerController controller, int priority) : base(controller, priority)
+        public PlayerFalling(PlayerController controller, int priority = 10) : base(controller, priority)
         {
             // Assign the state variables
             StateType =  StateTypes.Falling;
@@ -37,10 +23,7 @@ namespace Soulslike.Player.States
         
         // Animation variables
         private static readonly int FallTimeParam = Animator.StringToHash("FallTime");
-
         private float fallTime;
-        
-        #region Methods
 
         // Whether the state can be used
         public override bool CanUse()
@@ -63,7 +46,7 @@ namespace Soulslike.Player.States
             fallTime = 0f; 
             
             // Play the falling animation
-            Controller.animator.CrossFadeInFixedTime("Fall", 0.5f);
+            Controller.animator.CrossFadeInFixedTime("Fall", 0.2f);
         }
 
         public override void Update()
@@ -78,8 +61,5 @@ namespace Soulslike.Player.States
             Controller.animator.SetFloat(FallTimeParam, fallTime);
         }
 
-        public override void OnFinished() {}
-
-        #endregion
     }
 }
