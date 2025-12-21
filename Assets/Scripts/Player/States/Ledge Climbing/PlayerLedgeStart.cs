@@ -5,17 +5,8 @@ using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Climbing
 {
-
-    // Type of ledge starts
-    public struct LedgeStartType
-    {
-        public string AnimationName;
-        public Vector3 FinalOffset;
-        public LedgeDetectionSettings LedgeDetectionSettings;
-        public TargetMatchingParameters TargetMatchingParameters; 
-    }
     
-    public class PlayerLedgeStart: PlayerState
+    class PlayerLedgeStart: PlayerState
     {
         
         // Class construction with priority
@@ -25,116 +16,55 @@ namespace Soulslike.Player.States.Ledge_Climbing
             HasExitTime = true;
             
             animator = Controller.animator;
-            playerLedgeController = Controller.LedgeController;
-            CreateStartTypes();
+            ledgeController = Controller.LedgeController;
         }
         
-        // The animator
+        // Animation settings
         private Animator animator;
         private bool hasMatched;
+        private float startTime = 0.17f;
+        private float endTime = 0.30f;
+        
+        // Ledge settings
+        public Vector3 ledgeOffset => Controller.LedgeOffset; 
         
         // Ledge detection
-        private PlayerLedgeController playerLedgeController;
+        private PlayerLedgeController ledgeController;
         private Transform detectedLedge;
         
-        private LedgeStartType chosenType; // Chosen start type
-        private LedgeStartType groundLeap; // Small grounded leap upwards
-        private LedgeStartType airCollision; // Colliding with a ledge in air
-        
-        #region Methods
-
-        private void CreateStartTypes()
-        {
-            
-            // Small grounded leap upwards
-            groundLeap = new LedgeStartType
-            {
-                AnimationName = "Ledge Start Jump",
-                FinalOffset = new Vector3(0, 1.875f, 0.35f),
-            
-                LedgeDetectionSettings = new LedgeDetectionSettings()
-                {
-                    direction = Vector3.zero,
-                    originOffset = Vector3.up * 1.5f, 
-                    rayAmount = 16, 
-                    rayOffset = .2f, 
-                    detectionDistance = .75f
-                },
-            
-                TargetMatchingParameters =  new TargetMatchingParameters()
-                {
-                    targetJoint = AvatarTarget.Root,
-                    startTime = 0.36f,
-                    endTime = 0.58f,
-                    positionWeight = Vector3.one
-                },
-            };
-        
-            // Colliding with a ledge in air
-            airCollision =  new LedgeStartType()
-            {
-                AnimationName = "Ledge Start Air",
-                FinalOffset = new Vector3(0, 1.875f, 0.4f),
-                
-                LedgeDetectionSettings = new LedgeDetectionSettings()
-                {
-                    direction = Vector3.zero,
-                    originOffset = Vector3.up * 1.5f, 
-                    rayAmount = 16, 
-                    rayOffset = .2f, 
-                    detectionDistance = .75f
-                },
-                
-                TargetMatchingParameters =  new TargetMatchingParameters()
-                {
-                    targetJoint = AvatarTarget.Root,
-                    startTime = 0.17f,
-                    endTime = 0.30f,
-                    positionWeight = Vector3.one
-                }
-            };
-            
-        }
+        // Ledge detection settings
+        private Vector3 originOffset => Controller.LedgeDetectionOffset;
+        private int rayAmount => Controller.LedgeDetectionRayAmount;
+        private float rayOffset => Controller.LedgeDetectionRayOffset;
+        private float rayDistance => Controller.LedgeDetectionDistance;
         
         public override bool CanUse()
         {
             RaycastHit ledgeHit;
             
             // Check whether ledge grabbing is enabled
-            if (!playerLedgeController.IsLedgeGrabEnabled) return false;
+            if (!ledgeController.IsLedgeGrabEnabled) return false;
             
-            // Grounded leap
-            if (Controller.IsGrounded && Controller.InputScheme.wantToJump)
+            // Create the ledge settings
+            var ledgeDetectionSettings = new LedgeDetectionSettings()
             {
-                
-                // Check for a ledge
-                if (playerLedgeController.DetectLedge(groundLeap.LedgeDetectionSettings, out ledgeHit))
-                {
-                    
-                    // Set the detected ledge variables
-                    detectedLedge = ledgeHit.transform;
-                    chosenType = groundLeap;
-                    chosenType.TargetMatchingParameters.targetPosition = detectedLedge.position;
-                    return true;
-                }
-            }
+                direction = Vector3.zero,
+                originOffset = originOffset,
+                rayAmount = rayAmount,
+                rayOffset =  rayOffset,
+                detectionDistance = rayDistance
+            };
             
-            // In Air Collision
-            if (!Controller.IsGrounded)
-            {
-                // Check for a ledge
-                if (playerLedgeController.DetectLedge(airCollision.LedgeDetectionSettings, out ledgeHit))
-                {
-                    
-                    // Set the detected ledge variables
-                    detectedLedge = ledgeHit.transform;
-                    chosenType = airCollision;
-                    chosenType.TargetMatchingParameters.targetPosition = detectedLedge.position;
-                    return true;
-                }
-            }
+            // Check for a ledge
+            if (!ledgeController.DetectLedge(ledgeDetectionSettings, out ledgeHit)) return false;
             
-            return false;
+            // Make sure the player is in the air
+            if (Controller.IsGrounded) return false;
+                    
+            // Set the detected ledge variables
+            detectedLedge = ledgeHit.transform;
+            return true;
+
         }
 
         public override void OnStart()
@@ -149,23 +79,23 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.GravityEnabled = false;
             
             // Play the ledge animation
-            animator.applyRootMotion = true;
+            Controller.ApplyRootMotion = true;
             hasMatched = false;
-            Controller.animator.Play(chosenType.AnimationName);
+            Controller.animator.Play("Ledge Start");
         }
 
         public override void Update() 
         {
             
             // Rotate the player towards the ledge
-            var tarRot = Quaternion.LookRotation(-playerLedgeController.DetectedLedge.forward);
+            var tarRot = Quaternion.LookRotation(-ledgeController.DetectedLedge.forward);
             Controller.transform.rotation = Quaternion.RotateTowards(Controller.transform.rotation, tarRot, 100 * Time.deltaTime);
             
             // Apply target matching
-            TargetMatch(chosenType.TargetMatchingParameters);
+            TargetMatch();
 
             // Check if the animation is finished playing
-            CheckFinished();
+            WaitForAnimation("Ledge Start");
         }
 
         public override void OnFinished()
@@ -176,64 +106,40 @@ namespace Soulslike.Player.States.Ledge_Climbing
         }
         
         // Called to target match a specific joint
-        private void TargetMatch(TargetMatchingParameters parameters)
+        private void TargetMatch()
         {
             
             // Get the current animation info
             AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
             // Make sure we can continue
-            if (!stateInfo.IsName(chosenType.AnimationName)) return;
+            if (!stateInfo.IsName("Ledge Start")) return;
             if (animator.IsInTransition(0)) return;
             if (hasMatched) return;
 
             // Get the normalized time and check if enough time has passed
             float t = stateInfo.normalizedTime;
-            if (t < parameters.startTime || t > parameters.endTime)
+            if (t < startTime || t > endTime)
                 return;
 
             // Create the offset
-            Vector3 targetOffset =
-                detectedLedge.right * chosenType.FinalOffset.x +
-                Vector3.down * chosenType.FinalOffset.y +
-                detectedLedge.forward * chosenType.FinalOffset.z;
+            Vector3 targetOffset = 
+                detectedLedge.right * ledgeOffset.x +
+                Vector3.down * ledgeOffset.y +
+                detectedLedge.forward * ledgeOffset.z;
 
             // Match the target to the desired position
             animator.MatchTarget(
-                parameters.targetPosition + targetOffset,
+                detectedLedge.position + targetOffset,
                 Quaternion.LookRotation(-detectedLedge.forward),
-                parameters.targetJoint,
-                new MatchTargetWeightMask(parameters.positionWeight, 1f),
-                parameters.startTime,
-                parameters.endTime,
+                AvatarTarget.Root,
+                new MatchTargetWeightMask(Vector3.one, 1f),
+                startTime,
+                endTime,
                 true
             );
 
             hasMatched = true;
         }
-        
-        // Called every frame to check if the animation is finished playing
-        private void CheckFinished()
-        {
-            
-            // Set variable names for ease of access
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-            // If we're not playing the animation, just return
-            if (!stateInfo.IsName(chosenType.AnimationName)) return;
-
-            // Do not check normalizedTime during a transition
-            if (animator.IsInTransition(0)) return;
-
-            // When animation is done, normalizedTime will be >= 1
-            if (stateInfo.normalizedTime >= 1f)
-            {
-                
-                // Finish the state
-                IsFinished = true;
-            }
-        }
-
-        #endregion
     }
 }

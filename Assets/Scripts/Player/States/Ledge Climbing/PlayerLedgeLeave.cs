@@ -5,20 +5,12 @@ namespace Soulslike.Player.States.Ledge_Climbing
 {
     public class PlayerLedgeLeave: PlayerState
     {
-        // Class construction
-        public PlayerLedgeLeave(PlayerController controller) : base(controller)
-        {
-            StateType = StateTypes.LedgeIdle;
-            Priority = 22;
-        }
         
         // Class construction with priority
-        public PlayerLedgeLeave(PlayerController controller, int priority) : base(controller,  priority)
+        public PlayerLedgeLeave(PlayerController controller, int priority = 22) : base(controller,  priority)
         {
             StateType = StateTypes.LedgeIdle;
         }
-        
-        #region Methods
         
         public override bool CanUse()
         {
@@ -31,7 +23,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Disable any root motion
-            Controller.animator.applyRootMotion = false;
+            Controller.ApplyRootMotion = false;
             
             // Remove self from ledge
             Controller.OnLedge = false;
@@ -40,22 +32,14 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.characterController.enabled = true;
             
             // Disable gravity / velocity
-            Controller.GroundController.GravityEnabled = true;
+            Controller.GravityEnabled = true;
             
             // Do not allow any more ledge grabbing
-            Controller.LedgeController.IsLedgeGrabEnabled = false;
+            Controller.IsLedgeGrabEnabled = false;
         }
 
-        public override void Update()
-        {
- 
-        }
+        public override void Update() { }
 
-        public override void OnFinished()
-        {
-
-        }
-
-        #endregion
+        public override void OnFinished() { }
     }
 }

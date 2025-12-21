@@ -37,7 +37,6 @@ namespace Soulslike.Player.Controller
             
             // Assign the ledge mask
             ledgeMask = controller_.LedgeMask;
-            Debug.Log(ledgeMask.value);
         }
         
         #region Methods
@@ -86,6 +85,7 @@ namespace Soulslike.Player.Controller
                 RaycastHit hit;
                 
                 // Check if the ray hits anything
+                Debug.DrawRay(rayOrigin, dir * detectionSettings.detectionDistance, Color.red);
                 if (Physics.Raycast(rayOrigin, dir, out hit, detectionSettings.detectionDistance, ledgeMask))
                 {
                     // Assign the detected ledge

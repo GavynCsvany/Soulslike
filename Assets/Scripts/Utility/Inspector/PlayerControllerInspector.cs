@@ -12,6 +12,8 @@ namespace Soulslike.Utility.Inspector
     {
         // Only used in the editor, not during run time
         StateTypes currentState = StateTypes.Idle;
+        
+        bool foldLedgeSettings = true;
 
         public override void OnInspectorGUI()
         {
@@ -78,6 +80,7 @@ namespace Soulslike.Utility.Inspector
             // LEDGE DETECTION //
             EditorGUILayout.LabelField("Ledge Detection", EditorStyles.boldLabel);
             var ledgeMask = InternalEditorUtility.LayerMaskToConcatenatedLayersMask(script.LedgeMask);
+            script.LedgeOffset = EditorGUILayout.Vector3Field("Root Offset", script.LedgeOffset);
             LayerMask tempLedgeMask = EditorGUILayout.MaskField("Ledge Mask", ledgeMask, InternalEditorUtility.layers);
             script.LedgeMask = InternalEditorUtility.ConcatenatedLayersMaskToLayerMask(tempLedgeMask);
             if (EditorApplication.isPlaying)
@@ -86,6 +89,15 @@ namespace Soulslike.Utility.Inspector
                 EditorGUILayout.Toggle("On Ledge", script.OnLedge);
                 script.IsLedgeGrabEnabled = EditorGUILayout.Toggle("Ledge Grabbing Enabled", script.IsLedgeGrabEnabled);
             }
+            foldLedgeSettings = EditorGUILayout.BeginFoldoutHeaderGroup(foldLedgeSettings, "Extra Settings", EditorStyles.foldout);
+            if (foldLedgeSettings)
+            {
+                script.LedgeDetectionOffset =  EditorGUILayout.Vector3Field("Detection Offset", script.LedgeDetectionOffset);
+                script.LedgeDetectionRayAmount = EditorGUILayout.IntSlider("Ray Amount", script.LedgeDetectionRayAmount, 0, 30);
+                script.LedgeDetectionRayOffset = EditorGUILayout.FloatField("Ray Offset", script.LedgeDetectionRayOffset);
+                script.LedgeDetectionDistance = EditorGUILayout.FloatField("Detection Distance", script.LedgeDetectionDistance);
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
             EditorGUILayout.Space();
         }
         

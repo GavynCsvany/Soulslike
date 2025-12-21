@@ -78,6 +78,11 @@ namespace Soulslike.Player.Controller
             get => LedgeController.IsLedgeGrabEnabled;
             set => LedgeController.IsLedgeGrabEnabled = value;
         }
+        public Vector3 LedgeDetectionOffset = Vector3.up * 1.5f;
+        public int LedgeDetectionRayAmount = 16;
+        public float LedgeDetectionRayOffset = 0.2f;
+        public float LedgeDetectionDistance = 0.5f;
+        public Vector3 LedgeOffset = new Vector3(0, 1.875f, 0.4f);
 
         #region Unity Callbacks
 
