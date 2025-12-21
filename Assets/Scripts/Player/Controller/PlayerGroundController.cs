@@ -10,7 +10,7 @@ namespace Soulslike.Player.Controller
         private readonly CharacterController characterController;
         
         // Gravity settings
-        public float GravityMultiplier = 2.5f;
+        public float GravityMultiplier = 3f;
         public float Gravity = -9.81f;
         
         // Velocity settings
