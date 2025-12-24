@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Soulslike.Player.Input
 {
@@ -7,20 +8,28 @@ namespace Soulslike.Player.Input
     {
         
         // The desired movement vector
+        private InputAction movementAction;
         public Vector2 desiredMovementVector{ get; private set; } = Vector2.zero;
         
         // Sprint input
+        private InputAction sprintAction;
         public bool wantToSprint{ get; private set; } = false;
         
         // Roll input
+        private InputAction rollAction;
+        private int rollFrame;
         public bool wantToRoll{ get; private set; } =  false;
         private const float rollWindow = 0.2f;
         private float rollInputStartTime = 0f;
         
         // Jump input
+        private InputAction jumpAction;
+        private int jumpFrame;
         public bool wantToJump { get; private set; } = false;
         
         // Ledge input
+        private InputAction leaveLedgeAction;
+        private int leaveLedgeFrame;
         public bool wantToLeaveLedge { get; private set; } = false;
         
         // The input scheme the player is using
@@ -32,6 +41,13 @@ namespace Soulslike.Player.Input
             // Assign the input scheme
             inputScheme = new PlayerActions();
             
+            // Assign the inputs
+            movementAction = inputScheme.BasicLocomotion.Movement;
+            sprintAction = inputScheme.BasicLocomotion.Sprint;
+            rollAction = inputScheme.BasicLocomotion.Roll;
+            jumpAction = inputScheme.BasicLocomotion.Jump;
+            leaveLedgeAction = inputScheme.LedgeLocomotion.LeaveLedge;
+            
             // Bind the input
             BindInput();
         }
@@ -41,13 +57,22 @@ namespace Soulslike.Player.Input
 
         // Disable the input scheme
         public void Disable() => inputScheme.Disable();
+
+        public void Update() { }
         
         // Called after update, reset any lingering input values not used
         public void ResetAfterUpdate()
         {
-            wantToRoll = false;
-            wantToJump = false;
-            wantToLeaveLedge = false;
+            int frame = Time.frameCount;
+
+            if (wantToRoll && rollFrame + 1 == frame)
+                wantToRoll = false;
+
+            if (wantToJump && jumpFrame + 1 == frame)
+                wantToJump = false;
+
+            if (wantToLeaveLedge && leaveLedgeFrame + 1 == frame)
+                wantToLeaveLedge = false;
         }
         
         // Called to set up the input handling
@@ -66,19 +91,19 @@ namespace Soulslike.Player.Input
         private void BindBasicLocomotion()
         {
             // Movement input
-            inputScheme.BasicLocomotion.Movement.performed += context => RequestMovement(context.ReadValue<Vector2>());
-            inputScheme.BasicLocomotion.Movement.canceled += context => RequestMovement(context.ReadValue<Vector2>());
+            movementAction.performed += context => RequestMovement(context.ReadValue<Vector2>());
+            movementAction.canceled += context => RequestMovement(context.ReadValue<Vector2>());
             
             // Sprint input
-            inputScheme.BasicLocomotion.Sprint.performed += _ => RequestSprint(true);
-            inputScheme.BasicLocomotion.Sprint.canceled += _ => RequestSprint(false);
+            sprintAction.performed += _ => RequestSprint(true);
+            sprintAction.canceled += _ => RequestSprint(false);
             
             // Roll input
-            inputScheme.BasicLocomotion.Roll.performed += _ => RequestRoll(true);
-            inputScheme.BasicLocomotion.Roll.canceled += _ => RequestRoll(false);
+            rollAction.performed += _ => RequestRoll(true);
+            rollAction.canceled += _ => RequestRoll(false);
             
             // Jump input
-            inputScheme.BasicLocomotion.Jump.started += _ => RequestJump(true);
+            jumpAction.started += _ => RequestJump(true);
         }
 
         // Called when the player changes their movement input
@@ -88,9 +113,9 @@ namespace Soulslike.Player.Input
         }
         
         // Called when the player changes their sprinting input
-        private void RequestSprint(bool value)
+        private void RequestSprint(bool pressed)
         {
-            wantToSprint = value;
+            wantToSprint = pressed;
         }
         
         // Called when the player changes their sprinting input
@@ -107,14 +132,22 @@ namespace Soulslike.Player.Input
             }
 
             // Check if the player can roll
-            wantToRoll = Time.time - rollInputStartTime <= rollWindow;
+            if (Time.time - rollInputStartTime <= rollWindow)
+            {
+                wantToRoll = true;
+                rollFrame = Time.frameCount;
+            }
         }
         
         // Called when the player changes their jumping input
         private void RequestJump(bool pressed)
         {
+            
+            if (!pressed) return;
+
             // Assign the variable
-            wantToJump = pressed;
+            wantToJump = true;
+            jumpFrame = Time.frameCount;
         }
         
         #endregion
@@ -123,8 +156,16 @@ namespace Soulslike.Player.Input
 
         private void BindLedgeLocomotion()
         {
-            // Leave ledge input
-            inputScheme.LedgeLocomotion.LeaveLedge.started += _ => wantToLeaveLedge = true;
+            
+            // Leave ledge action
+            leaveLedgeAction.performed += _ => RequestLeaveLedge(true);
+        }
+        
+        // Called when the player completes the ledge drop input 
+        private void RequestLeaveLedge(bool pressed)
+        {
+            wantToLeaveLedge = pressed;
+            leaveLedgeFrame = Time.frameCount;
         }
         
         #endregion

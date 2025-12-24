@@ -1,5 +1,6 @@
 ﻿using Soulslike.Core;
 using Soulslike.Player.Controller;
+using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Climbing
 {
@@ -9,14 +10,15 @@ namespace Soulslike.Player.States.Ledge_Climbing
         // Class construction with priority
         public PlayerLedgeLeave(PlayerController controller, int priority = 22) : base(controller,  priority)
         {
-            StateType = StateTypes.LedgeIdle;
+            StateType = StateTypes.LedgeEnd;
         }
         
         public override bool CanUse()
         {
+            
             // Make sure we are on a ledge
             if (!Controller.OnLedge) return false;
-            return Controller.InputScheme.wantToLeaveLedge;
+            return Controller.WantToLeaveLedge;
         }
 
         public override void OnStart()

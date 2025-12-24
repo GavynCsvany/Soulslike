@@ -18,12 +18,13 @@ namespace Soulslike.Player.States
         }
         
         // The jump force
-        public int JumpForce => Controller.JumpPower;
-
+        private int jumpForce => Controller.JumpPower;
+        private bool wantToJump => Controller.WantToJump;
+        
         public override bool CanUse()
         {
             // Check if the player wants to roll
-            if (input.wantToJump)
+            if (wantToJump)
                 return true;
 
             // Return false
@@ -34,10 +35,10 @@ namespace Soulslike.Player.States
         {
             
             // Make the player jump
-            Controller.GroundController.ApplyImpulse(new Vector3(0, JumpForce, 0));
+            Controller.GroundController.ApplyImpulse(new Vector3(0, jumpForce, 0));
             
             // Change the animation
-            Controller.animator.CrossFadeInFixedTime("Jump", 0.1f);
+            Animator.CrossFadeInFixedTime("Jump", 0.1f);
         }
 
         public override void Update()

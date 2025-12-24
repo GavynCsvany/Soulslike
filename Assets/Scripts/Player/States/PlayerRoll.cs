@@ -18,7 +18,6 @@ namespace Soulslike.Player.States
             // Get the player components
             cam = controller.cam.transform;
             transform = controller.transform;
-            input = controller.InputScheme;
             characterController = controller.characterController;
         }
         
@@ -29,7 +28,6 @@ namespace Soulslike.Player.States
         // Controller variables
         private readonly Transform cam;
         private readonly Transform transform;
-        private readonly InputController input;
         private readonly CharacterController characterController;
         
         public override bool CanUse()
@@ -38,7 +36,7 @@ namespace Soulslike.Player.States
             if (!Controller.IsGrounded) return false;
             
             // Check if the player wants to roll
-            if (input.wantToRoll)
+            if (Controller.WantToRoll)
                 return true;
 
             // Return false
@@ -49,7 +47,7 @@ namespace Soulslike.Player.States
         {
             
             // Create a local value for ease of use
-            Vector2 dir = input.desiredMovementVector.normalized;
+            Vector2 dir = Controller.DesiredMovementVector.normalized;
 
             // Apply root motion
             Controller.ApplyRootMotion = true;
@@ -62,13 +60,13 @@ namespace Soulslike.Player.States
                 transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
             
                 // Change the animation
-                Controller.animator.CrossFadeInFixedTime("Roll", 0.1f);
+                Animator.CrossFadeInFixedTime("Roll", 0.1f);
                 backstep = false;
             }
             else
             {
                 // Change the animation
-                Controller.animator.CrossFadeInFixedTime("Backstep", 0.1f);
+                Animator.CrossFadeInFixedTime("Backstep", 0.1f);
                 backstep = true;
             }
         }

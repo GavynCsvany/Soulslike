@@ -31,10 +31,10 @@ namespace Soulslike.Player.States
         {
             
             // Check if the player wants to move
-            if (input.desiredMovementVector.Equals(Vector2.zero)) return false;
+            if (movementVector.Equals(Vector2.zero)) return false;
             
             // Check if the player wants to sprint
-            if (input.wantToSprint) return true;
+            if (Controller.WantToSprint) return true;
 
             // Return false
             return false;
@@ -44,7 +44,7 @@ namespace Soulslike.Player.States
         {
         
             // Change the animation
-            Controller.animator.CrossFadeInFixedTime("Sprint", 0.2f);
+            Animator.CrossFadeInFixedTime("Sprint", 0.2f);
         }
         
     }

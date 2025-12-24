@@ -14,6 +14,13 @@ namespace Soulslike.Utility.Inspector
         StateTypes currentState = StateTypes.Idle;
         
         bool foldLedgeSettings = true;
+        
+        private bool foldInput = true;
+        private Vector2 moveVec = Vector2.zero;
+        private bool sprint = false;
+        private bool roll = false;
+        private bool jump = false;
+        private bool leaveLedge = false;
 
         public override void OnInspectorGUI()
         {
@@ -36,6 +43,30 @@ namespace Soulslike.Utility.Inspector
             script.ApplyRootMotion = EditorGUILayout.Toggle("Apply Root Motion", script.ApplyRootMotion);
             EditorGUILayout.Space();
             
+            
+            // INPUT //
+            foldInput = EditorGUILayout.BeginFoldoutHeaderGroup(foldInput, "Input", EditorStyles.foldoutHeader);
+            if (foldInput)
+            {
+                if (EditorApplication.isPlaying)
+                {
+                    EditorGUILayout.Vector2Field("Movement Vector", script.DesiredMovementVector);
+                    EditorGUILayout.Toggle("Sprint", script.WantToSprint);
+                    EditorGUILayout.Toggle("Roll", script.WantToRoll);
+                    EditorGUILayout.Toggle("Jump", script.WantToJump);
+                    EditorGUILayout.Toggle("Leave Ledge", script.WantToLeaveLedge);
+                }
+                else
+                {
+                    moveVec = EditorGUILayout.Vector2Field("Movement Vector", moveVec);
+                    sprint = EditorGUILayout.Toggle("Sprint", sprint);
+                    roll = EditorGUILayout.Toggle("Roll", roll);
+                    jump = EditorGUILayout.Toggle("Jump", jump);
+                    leaveLedge = EditorGUILayout.Toggle("Leave Ledge", leaveLedge);
+                }
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
+            EditorGUILayout.Space();
             
             // PLAYER STATE //
             EditorGUILayout.LabelField("Player State", EditorStyles.boldLabel);

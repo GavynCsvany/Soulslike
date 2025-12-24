@@ -15,12 +15,10 @@ namespace Soulslike.Player.States.Ledge_Climbing
             StateType = StateTypes.LedgeStart;
             HasExitTime = true;
             
-            animator = Controller.animator;
             ledgeController = Controller.LedgeController;
         }
         
         // Animation settings
-        private Animator animator;
         private bool hasMatched;
         private float startTime = 0.17f;
         private float endTime = 0.30f;
@@ -42,13 +40,19 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             RaycastHit ledgeHit;
             
-            // Check whether ledge grabbing is enabled
+            // Check whether ledge grabbing is enabled and not already grabbed
             if (!ledgeController.IsLedgeGrabEnabled) return false;
+            if (Controller.OnLedge) return false;
+            
+            // Get the player's current movement direction
+            Vector2 dir = Controller.DesiredMovementVector.normalized;
+            float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + Controller.cam.transform.eulerAngles.y;
+            Vector3 checkDir = (dir != Vector2.zero) ? Quaternion.Euler(0, targetAngle, 0) * Vector3.forward : Vector3.zero;
             
             // Create the ledge settings
             var ledgeDetectionSettings = new LedgeDetectionSettings()
             {
-                direction = Vector3.zero,
+                direction = checkDir,
                 originOffset = originOffset,
                 rayAmount = rayAmount,
                 rayOffset =  rayOffset,
@@ -81,7 +85,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             // Play the ledge animation
             Controller.ApplyRootMotion = true;
             hasMatched = false;
-            Controller.animator.Play("Ledge Start");
+            Animator.Play("Ledge Start");
         }
 
         public override void Update() 
@@ -102,7 +106,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Disable root motion
-            animator.applyRootMotion = false;
+            Controller.ApplyRootMotion = false;
         }
         
         // Called to target match a specific joint
@@ -110,11 +114,11 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Get the current animation info
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
 
             // Make sure we can continue
             if (!stateInfo.IsName("Ledge Start")) return;
-            if (animator.IsInTransition(0)) return;
+            if (Animator.IsInTransition(0)) return;
             if (hasMatched) return;
 
             // Get the normalized time and check if enough time has passed
@@ -129,7 +133,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
                 detectedLedge.forward * ledgeOffset.z;
 
             // Match the target to the desired position
-            animator.MatchTarget(
+            Animator.MatchTarget(
                 detectedLedge.position + targetOffset,
                 Quaternion.LookRotation(-detectedLedge.forward),
                 AvatarTarget.Root,

@@ -18,9 +18,11 @@ namespace Soulslike.Player.States
             cam = controller.cam.transform; // Camera
             characterController = controller.characterController; // Character controller
             transform = controller.transform; // Transform
-            input = controller.InputScheme; // Input
         }
 
+        // Movement variables
+        protected Vector2 movementVector => Controller.DesiredMovementVector;
+        
         // Turning variables
         protected virtual float turnTime {
             get => Controller.WalkTurnTime;
@@ -38,13 +40,12 @@ namespace Soulslike.Player.States
         protected readonly Transform cam;
         protected readonly CharacterController characterController;
         protected readonly Transform transform;
-        protected readonly InputController input;
 
         public override bool CanUse()
         {
  
             // Check if the player wants to move
-            if (!input.desiredMovementVector.Equals(Vector2.zero))
+            if (!movementVector.Equals(Vector2.zero))
                 return true;
 
             // Return false
@@ -55,14 +56,14 @@ namespace Soulslike.Player.States
         {
         
             // Change the animation
-            Controller.animator.CrossFadeInFixedTime("Walk", 0.1f);
+            Animator.CrossFadeInFixedTime("Walk", 0.1f);
         }
 
         public override void Update()
         {
             
             // Create a local value for ease of use
-            Vector2 dir = input.desiredMovementVector.normalized;
+            Vector2 dir = movementVector.normalized;
 
             // Find the target angle and apply it to our rotation
             float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -72,8 +73,14 @@ namespace Soulslike.Player.States
             // Check if the player wants to move
             if (dir.magnitude <= 0.1f) return;
             
-            // Move the player
+            // Assign the movement vector
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            
+            // Draw debug ray
+            Debug.DrawRay(transform.position, transform.forward, Color.white);
+            Debug.DrawRay(transform.position, moveDir.normalized, Color.blue);
+            
+            // Move the player
             characterController.Move(moveDir.normalized * (speed * Time.deltaTime));
         }
 

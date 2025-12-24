@@ -30,10 +30,10 @@ namespace Soulslike.Player.States
         {
 
             // Check if we are currently falling
-            if (Controller.StateController.CurrentState == this)
+            if (Controller.CurrentState == this)
             {
                 // Use the character controller variable for a more precise measurement
-                return !characterController.isGrounded;
+                return !Controller.IsGrounded;
             }
 
             // Check if grounded
@@ -46,7 +46,7 @@ namespace Soulslike.Player.States
             fallTime = 0f; 
             
             // Play the falling animation
-            Controller.animator.CrossFadeInFixedTime("Fall", 0.2f);
+            Animator.CrossFadeInFixedTime("Fall", 0.2f);
         }
 
         public override void Update()
@@ -58,7 +58,7 @@ namespace Soulslike.Player.States
             fallTime += Time.deltaTime;
             
             // Update the fall time variable in the animator
-            Controller.animator.SetFloat(FallTimeParam, fallTime);
+            Animator.SetFloat(FallTimeParam, fallTime);
         }
 
     }

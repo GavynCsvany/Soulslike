@@ -20,7 +20,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public override void OnStart()
         {
             // Change the animation
-            Controller.animator.CrossFadeInFixedTime("Ledge Idle", 0.1f);
+            Animator.CrossFadeInFixedTime("Ledge Idle", 0.1f);
         }
 
         public override void Update() { }

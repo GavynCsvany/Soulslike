@@ -10,6 +10,9 @@ namespace Soulslike.Player.States
         // The player controller
         protected PlayerController Controller { get; }
         
+        // The player animator
+        protected Animator Animator => Controller.animator;
+        
         // Class construction
         protected PlayerState(PlayerController controller)
         {
@@ -31,14 +34,13 @@ namespace Soulslike.Player.States
         {
             
             // Set variable names for ease of access
-            Animator anim = Controller.animator;
-            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
 
             // If we're not playing the Jump animation, just return
             if (!stateInfo.IsName(animationName)) return;
 
             // Do not check normalizedTime during a transition
-            if (anim.IsInTransition(0)) return;
+            if (Animator.IsInTransition(0)) return;
 
             // When Jump is done, normalizedTime will be >= 1
             if (stateInfo.normalizedTime >= time)

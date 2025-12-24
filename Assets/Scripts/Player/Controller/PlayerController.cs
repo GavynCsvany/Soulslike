@@ -10,9 +10,6 @@ namespace Soulslike.Player.Controller
 {
     public class PlayerController : MonoBehaviour
     {
-                
-        // Input
-        public InputController InputScheme;
 
         // PLAYER COMPONENTS //
         public CharacterController characterController; // The character controller
@@ -25,6 +22,14 @@ namespace Soulslike.Player.Controller
             get => animator.applyRootMotion;
             set => animator.applyRootMotion = value;
         }
+        
+        // INPUT //
+        public InputController InputScheme;
+        public Vector2 DesiredMovementVector => InputScheme.desiredMovementVector;
+        public bool WantToSprint => InputScheme.wantToSprint;
+        public bool WantToRoll => InputScheme.wantToRoll;
+        public bool WantToJump => InputScheme.wantToJump;
+        public bool WantToLeaveLedge => InputScheme.wantToLeaveLedge;
 
         // PLAYER STATE //
         public PlayerStateController StateController { get; private set; } // The state handler 
@@ -63,7 +68,6 @@ namespace Soulslike.Player.Controller
             get => GroundController.GravityEnabled;
             set => GroundController.GravityEnabled = value;
         }
-
         public bool JustGrounded => GroundController.JustGrounded;
 
         // LEDGE DETECTION //
@@ -133,17 +137,22 @@ namespace Soulslike.Player.Controller
         
         private void Update()
         {
+            // Update the input
+            InputScheme.Update();
             
             // Update the current state
             StateController.Update();
             
             // Update the gravity and velocity
             GroundController.Update();
-            
+        }
+
+        private void LateUpdate()
+        {
             // Reset any variables as needed
             InputScheme.ResetAfterUpdate();
         }
-        
+
         private void OnDisable()
         {
             // Stop the input from firing
