@@ -73,6 +73,7 @@ namespace Soulslike.Utility.Inspector
             if (EditorApplication.isPlaying && script.StateController != null)
             {
                 EditorGUILayout.EnumPopup("Current State", script.CurrentState.StateType);
+                EditorGUILayout.EnumPopup("Previous State", script.PreviousState.StateType);
                 //DisplayStateSettings(script.CurrentState.StateType);
             }
             else

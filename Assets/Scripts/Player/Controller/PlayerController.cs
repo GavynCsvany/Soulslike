@@ -34,6 +34,7 @@ namespace Soulslike.Player.Controller
         // PLAYER STATE //
         public PlayerStateController StateController { get; private set; } // The state handler 
         public EntityState CurrentState => StateController.CurrentState;
+        public EntityState PreviousState => StateController.PreviousState;
         
         // WALKING STATE //
         public float WalkSpeed = 6;
