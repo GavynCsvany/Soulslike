@@ -22,6 +22,7 @@ namespace Soulslike.Player.Controller
         private bool wasGrounded;
         public bool JustGrounded { get; private set; }
         public bool IsGrounded { get; private set; }
+        public Vector3 LastGroundedPosition = Vector3.zero;
 
         // Ground detection
         private readonly Transform groundCheck;
@@ -48,6 +49,9 @@ namespace Soulslike.Player.Controller
             IsGrounded = GroundCheck();
             JustGrounded = !wasGrounded && IsGrounded;
             
+            // Get the last position the player was grounded
+            if(IsGrounded) LastGroundedPosition = Controller.transform.position;
+            
             // Apply gravity
             ApplyGravity();
         }
@@ -67,6 +71,10 @@ namespace Soulslike.Player.Controller
             // Raycast downward
             Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance, Color.green);
             weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
+            
+            // Longer raycast downward
+            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance * 2, Color.purple);
+            weight -= (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 0 : 2;
             
             // Check if there is enough weight
             bool grounded = weight >= 2;

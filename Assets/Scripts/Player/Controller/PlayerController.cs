@@ -61,6 +61,7 @@ namespace Soulslike.Player.Controller
         public float GroundSphereRadius = 0.4f;
         public PlayerGroundController GroundController;
         public bool IsGrounded => GroundController.IsGrounded;
+        public Vector3 LastGroundedPosition => GroundController.LastGroundedPosition;
         
         // GRAVITY //
         public float GravityMultiplier
