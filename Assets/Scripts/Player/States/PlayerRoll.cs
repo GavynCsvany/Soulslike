@@ -46,11 +46,11 @@ namespace Soulslike.Player.States
         public override void OnStart()
         {
             
-            // Create a local value for ease of use
-            Vector2 dir = Controller.DesiredMovementVector.normalized;
-
             // Apply root motion
             Controller.ApplyRootMotion = true;
+            
+            // Create a local value for ease of use
+            Vector2 dir = Controller.DesiredMovementVector.normalized;
             
             // Check if the player is moving
             if (dir.magnitude > 0.1f)
@@ -84,7 +84,6 @@ namespace Soulslike.Player.States
 
         public override void OnFinished()
         {
-            
             // Disable root motion
             Controller.ApplyRootMotion = false;
         }

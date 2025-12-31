@@ -23,6 +23,10 @@ namespace Soulslike.Player.Controller
             set => animator.applyRootMotion = value;
         }
         
+        // JOINTS //
+        public Transform RightFoot;
+        public Transform LeftFoot;
+        
         // INPUT //
         public InputController InputScheme;
         public Vector2 DesiredMovementVector => InputScheme.desiredMovementVector;

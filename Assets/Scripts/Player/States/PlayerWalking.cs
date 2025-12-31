@@ -1,6 +1,6 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
-using Soulslike.Player.Input;
 using UnityEngine;
 
 namespace Soulslike.Player.States
@@ -21,6 +21,7 @@ namespace Soulslike.Player.States
         }
 
         // Movement variables
+        protected bool UseRootMotion = true;
         protected Vector2 movementVector => Controller.DesiredMovementVector;
         
         // Turning variables
@@ -54,11 +55,52 @@ namespace Soulslike.Player.States
 
         public override void OnStart()
         {
+            
+            // Enable root motion
+            if(UseRootMotion) Controller.ApplyRootMotion = true;
         
             // Change the animation
-            Animator.CrossFadeInFixedTime("Walk", 0.1f);
+            PlayDefaultAnimation();
+            try
+            {
+                TransitionAnimation();
+            }finally{}
+        }
+        
+        protected virtual void TransitionAnimation()
+        {
+            string animName;
+            float animTime = 0.1f;
+            
+            // Find and play the transition animation based on previous state
+            switch (Controller.PreviousState.StateType)
+            {
+                
+                // IDLE
+                case StateTypes.Idle :
+                    animName = "Walk_FromIdle";
+                    break;
+                
+                // Sprinting
+                case StateTypes.Sprinting :
+                    animName = "Walk";
+                    animTime = 0.5f;
+                    break;
+                
+                // ANYTHING ELSE
+                default:
+                    animName = "Walk";
+                    break;
+            }
+            
+            Animator.CrossFadeInFixedTime(animName, animTime);
         }
 
+        protected virtual void PlayDefaultAnimation()
+        {
+            Animator.CrossFadeInFixedTime("Walk", 0.1f);
+        }
+        
         public override void Update()
         {
             
@@ -81,10 +123,15 @@ namespace Soulslike.Player.States
             Debug.DrawRay(transform.position, moveDir.normalized, Color.blue);
             
             // Move the player
+            if (UseRootMotion) return;
             characterController.Move(moveDir.normalized * (speed * Time.deltaTime));
         }
 
-        public override void OnFinished() { }
-
+        public override void OnFinished()
+        {
+            
+            // Disable root motion
+            Controller.ApplyRootMotion = false;
+        }
     }
 }

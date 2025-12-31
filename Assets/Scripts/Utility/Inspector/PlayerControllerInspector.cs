@@ -44,6 +44,13 @@ namespace Soulslike.Utility.Inspector
             EditorGUILayout.Space();
             
             
+            // JOINTS //
+            EditorGUILayout.LabelField("Joints", EditorStyles.boldLabel);
+            script.RightFoot = (Transform)EditorGUILayout.ObjectField("Right Foot", script.RightFoot, typeof(Transform), true);
+            script.LeftFoot = (Transform)EditorGUILayout.ObjectField("Left Foot", script.LeftFoot, typeof(Transform), true);
+            EditorGUILayout.Space();
+
+            
             // INPUT //
             foldInput = EditorGUILayout.BeginFoldoutHeaderGroup(foldInput, "Input", EditorStyles.foldoutHeader);
             if (foldInput)

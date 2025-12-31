@@ -73,6 +73,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         public override void OnStart()
         {
+            
             // Disable the character controller
             Controller.characterController.enabled = false;
 
@@ -105,10 +106,9 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public override void OnFinished()
         {
             
-            // Disable root motion
             Controller.ApplyRootMotion = false;
         }
-        
+
         // Called to target match a specific joint
         private void TargetMatch()
         {

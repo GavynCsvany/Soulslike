@@ -14,6 +14,8 @@ namespace Soulslike.Player.States
             // Assign the state variables
             StateType =  StateTypes.Falling;
             
+            UseRootMotion = false;
+            
             // Set the state to be incompatible with the jumping state
             IncompatibleStates = new List<StateTypes>()
             {

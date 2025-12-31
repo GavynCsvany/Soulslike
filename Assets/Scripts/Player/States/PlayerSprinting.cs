@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
@@ -40,12 +41,38 @@ namespace Soulslike.Player.States
             return false;
         }
         
-        public override void OnStart()
+        protected override void TransitionAnimation()
         {
-        
-            // Change the animation
+            string animName;
+            float animTime = 0.2f;
+            
+            // Find and play the transition animation based on previous state
+            switch (Controller.PreviousState.StateType)
+            {
+                
+                // IDLE
+                case StateTypes.Idle:
+                    animName = "Sprint_FromIdle";
+                    break;
+                
+                // WALKING
+                case StateTypes.Walking :
+                    animName = "Sprint";
+                    animTime = 0.7f;
+                    break;
+                
+                // ANYTHING ELSE
+                default:
+                    animName = "Sprint";
+                    break;
+            }
+            
+            Animator.CrossFadeInFixedTime(animName, animTime);
+        }
+
+        protected override void PlayDefaultAnimation()
+        {
             Animator.CrossFadeInFixedTime("Sprint", 0.2f);
         }
-        
     }
 }

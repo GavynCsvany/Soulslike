@@ -14,6 +14,8 @@ namespace Soulslike.Player.States
         {
             StateType = StateTypes.Jumping;
             
+            UseRootMotion = false;
+            
             HasExitTime = true;
         }
         
