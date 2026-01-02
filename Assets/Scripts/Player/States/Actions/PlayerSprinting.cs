@@ -38,7 +38,7 @@ namespace Soulslike.Player.States.Actions
             if (!Controller.WantToSprint) return false;
             
             // Make sure the player has enough velocity
-            if(Controller.ForwardVelocity < 3f) return false;
+            if(Controller.ForwardVelocity < 3f && !Controller.WantToCrouch) return false;
             
             // Do the basic walk check
             return base.CanUse();

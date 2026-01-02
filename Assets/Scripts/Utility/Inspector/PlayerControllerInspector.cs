@@ -18,6 +18,7 @@ namespace Soulslike.Utility.Inspector
         private bool foldInput = true;
         private Vector2 moveVec = Vector2.zero;
         private bool sprint = false;
+        private bool crouch  = false;
         private bool roll = false;
         private bool jump = false;
         private bool leaveLedge = false;
@@ -59,6 +60,7 @@ namespace Soulslike.Utility.Inspector
                 {
                     EditorGUILayout.Vector2Field("Movement Vector", script.DesiredMovementVector);
                     EditorGUILayout.Toggle("Sprint", script.WantToSprint);
+                    EditorGUILayout.Toggle("Crouch", script.WantToCrouch);
                     EditorGUILayout.Toggle("Roll", script.WantToRoll);
                     EditorGUILayout.Toggle("Jump", script.WantToJump);
                     EditorGUILayout.Toggle("Leave Ledge", script.WantToLeaveLedge);
@@ -67,6 +69,7 @@ namespace Soulslike.Utility.Inspector
                 {
                     moveVec = EditorGUILayout.Vector2Field("Movement Vector", moveVec);
                     sprint = EditorGUILayout.Toggle("Sprint", sprint);
+                    crouch = EditorGUILayout.Toggle("Crouch", crouch);
                     roll = EditorGUILayout.Toggle("Roll", roll);
                     jump = EditorGUILayout.Toggle("Jump", jump);
                     leaveLedge = EditorGUILayout.Toggle("Leave Ledge", leaveLedge);
@@ -164,6 +167,12 @@ namespace Soulslike.Utility.Inspector
                 case StateTypes.Walking:
                     script.WalkSpeed = EditorGUILayout.Slider("Walk Speed",  script.WalkSpeed, 0, 20);
                     script.WalkTurnTime = EditorGUILayout.FloatField("Walk Turn Time",  script.WalkTurnTime);
+                    break;
+                
+                // CROUCHING STATE
+                case StateTypes.CrouchWalking:
+                    script.WalkSpeed = EditorGUILayout.Slider("Crouch Speed",  script.CrouchWalkSpeed, 0, 20);
+                    script.WalkTurnTime = EditorGUILayout.FloatField("Crouch Turn Time",  script.CrouchWalkTurnTime);
                     break;
                 
                 // SPRINTING STATE

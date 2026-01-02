@@ -2,16 +2,16 @@
 using Soulslike.Player.Controller;
 using UnityEngine;
 
-namespace Soulslike.Player.States.Basic_Locomotion
+namespace Soulslike.Player.States.Crouch_Locomotion
 {
-    public class PlayerWalking : PlayerState
+    public class PlayerCrouchWalking : PlayerState
     {
-
+        
         // Class construction with priority
-        public PlayerWalking(PlayerController controller, int priority = 1) : base(controller, priority)
+        public PlayerCrouchWalking(PlayerController controller, int priority = 1) : base(controller, priority)
         {
             // Change the state type
-            StateType = StateTypes.Walking;
+            StateType = StateTypes.CrouchWalking;
             
             // Assign the player components
             cam = controller.cam.transform; // Camera
@@ -25,23 +25,17 @@ namespace Soulslike.Player.States.Basic_Locomotion
         private float targetAngle = 0f;
         private Vector3 moveDir = Vector3.zero;
         
-        // Animation variables
-        protected string idleTransitionName = "Walk_FromIdle";
-        private readonly int SprintBlend = Animator.StringToHash("SprintBlend");
-        protected float desiredSprintAnimationBlend = 0f;
-        protected float sprintBlendSpeed = 1.2f;
-        
         // Turning variables
         protected virtual float turnTime {
-            get => Controller.WalkTurnTime;
-            set => Controller.WalkTurnTime = value;
+            get => Controller.CrouchWalkTurnTime;
+            set => Controller.CrouchWalkTurnTime = value;
         }
         private float turnVelocity;
 
         // Speed variables
         protected virtual float speed {
-            get => Controller.WalkSpeed;
-            set => Controller.WalkSpeed = value;
+            get => Controller.CrouchWalkSpeed;
+            set => Controller.CrouchWalkSpeed = value;
         }
         
         // Controller variables
@@ -52,7 +46,8 @@ namespace Soulslike.Player.States.Basic_Locomotion
         public override bool CanUse()
         {
  
-            // Check if the player wants to move
+            // Check if the player wants to move and is crouching
+            if (!Controller.WantToCrouch) return false;
             if (movementVector.Equals(Vector2.zero)) return false;
             
             // Get the target movement direction
@@ -86,28 +81,30 @@ namespace Soulslike.Player.States.Basic_Locomotion
 
             var previousState = Controller.PreviousState.StateType;
             
-            // Reset the blend variable
-            if(previousState != StateTypes.Sprinting && previousState != StateTypes.Walking)
-                Animator.SetFloat(SprintBlend, Mathf.Max(0, Controller.ForwardVelocity - 4)/3);
-            
             // Find and play the transition animation based on previous state
             switch (previousState)
             {
                 
                 // IDLE
-                case StateTypes.Idle :
-                    animName = idleTransitionName;
+                case StateTypes.CrouchIdle :
+                    animName = "Crouch Walk_FromCrouchIdle";
                     break;
                 
-                // CROUCH WALING
-                case StateTypes.CrouchWalking:
-                    animName = "Walk/Sprint";
+                // WALK
+                case StateTypes.Walking :
+                    animName = "Crouch Walk";
                     animTime = 0.4f;
+                    break;
+                
+                // WALK
+                case StateTypes.Sprinting :
+                    animName = "Crouch Walk";
+                    animTime = 0.6f;
                     break;
                 
                 // ANYTHING ELSE
                 default:
-                    animName = "Walk/Sprint";
+                    animName = "Crouch Walk";
                     break;
             }
             
@@ -127,23 +124,8 @@ namespace Soulslike.Player.States.Basic_Locomotion
             
             // Move the player
             Move();
-            
-            // Blend the sprint speed
-            LerpSprintAnimation();
         }
-
-        private void LerpSprintAnimation()
-        {
-            
-            // Get the current & new blend
-            float currentBlend = Animator.GetFloat(SprintBlend);
-            if (Mathf.Approximately(desiredSprintAnimationBlend, currentBlend)) return;
-            float newBlend = Mathf.Lerp(currentBlend, desiredSprintAnimationBlend, Time.deltaTime * sprintBlendSpeed);
-            
-            // Apply the new blend
-            Animator.SetFloat(SprintBlend, newBlend);
-        }
-
+        
         private void Move()
         {
             

@@ -31,6 +31,7 @@ namespace Soulslike.Player.Controller
         public InputController InputScheme;
         public Vector2 DesiredMovementVector => InputScheme.desiredMovementVector;
         public bool WantToSprint => InputScheme.wantToSprint;
+        public bool WantToCrouch => InputScheme.wantToCrouch;
         public bool WantToRoll => InputScheme.wantToRoll;
         public bool WantToJump => InputScheme.wantToJump;
         public bool WantToLeaveLedge => InputScheme.wantToLeaveLedge;
@@ -47,6 +48,10 @@ namespace Soulslike.Player.Controller
         // SPRINTING STATE //
         public float SprintSpeed = 8;
         public float SprintTurnTime = 0.06f;
+        
+        // CROUCHING STATE
+        public float CrouchWalkSpeed = 3;
+        public float CrouchWalkTurnTime = 0.1f;
         
         // ROLLING STATE //
         public float AdditiveRollSpeed = 5f;

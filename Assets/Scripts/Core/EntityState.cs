@@ -16,6 +16,10 @@ namespace Soulslike.Core
         Rolling,
         Jumping,
         
+        // Crouch states
+        CrouchIdle,
+        CrouchWalking,
+        
         // Ledge Climbing
         LedgeStart,
         LedgeIdle,

@@ -15,6 +15,10 @@ namespace Soulslike.Player.Input
         private InputAction sprintAction;
         public bool wantToSprint{ get; private set; } = false;
         
+        // Crouch input
+        private InputAction crouchAction;
+        public bool wantToCrouch{ get; private set; } = false;
+        
         // Roll input
         private InputAction rollAction;
         private int rollFrame;
@@ -47,6 +51,7 @@ namespace Soulslike.Player.Input
             rollAction = inputScheme.BasicLocomotion.Roll;
             jumpAction = inputScheme.BasicLocomotion.Jump;
             leaveLedgeAction = inputScheme.LedgeLocomotion.LeaveLedge;
+            crouchAction = inputScheme.BasicLocomotion.Crouch;
             
             // Bind the input
             BindInput();
@@ -98,6 +103,9 @@ namespace Soulslike.Player.Input
             sprintAction.performed += _ => RequestSprint(true);
             sprintAction.canceled += _ => RequestSprint(false);
             
+            // Crouch input
+            crouchAction.performed += _ => RequestCrouch();
+            
             // Roll input
             rollAction.performed += _ => RequestRoll(true);
             rollAction.canceled += _ => RequestRoll(false);
@@ -148,6 +156,12 @@ namespace Soulslike.Player.Input
             // Assign the variable
             wantToJump = true;
             jumpFrame = Time.frameCount;
+        }
+        
+        // Called when the player changes their crouching movement
+        private void RequestCrouch()
+        {
+            wantToCrouch = !wantToCrouch;
         }
         
         #endregion

@@ -1,22 +1,23 @@
 ﻿using System;
 using Soulslike.Core;
 using Soulslike.Player.Controller;
+using UnityEngine;
 
-namespace Soulslike.Player.States.Basic_Locomotion
+namespace Soulslike.Player.States.Crouch_Locomotion
 {
-    public class PlayerIdle : PlayerState
+    public class PlayerCrouchIdle : PlayerState
     {
         
         // Class construction
-        public PlayerIdle(PlayerController controller, int priority = 0) : base(controller,  priority)
+        public PlayerCrouchIdle(PlayerController controller, int priority = 1) : base(controller,  priority)
         {
-            StateType = StateTypes.Idle;
+            StateType = StateTypes.CrouchIdle;
         }
         
         #region Methods
 
         // Since this is the default state and only called as least resort, always default to true
-        public override bool CanUse() => true;
+        public override bool CanUse() => Controller.WantToCrouch;
 
         public override void OnStart()
         {
@@ -30,7 +31,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 TransitionAnimation();
             }
             catch (NullReferenceException e) {
-                Animator.CrossFadeInFixedTime("Idle", 0.2f);
+                Animator.CrossFadeInFixedTime("Crouch Idle", 0.2f);
             }
         }
 
@@ -43,35 +44,35 @@ namespace Soulslike.Player.States.Basic_Locomotion
             switch (Controller.PreviousState.StateType)
             {
                 
-                // WALKING
-                case StateTypes.Walking :
-                    animName = TransitionFromWalkOrSprint();
+                // CROUCH WALK
+                case StateTypes.CrouchWalking:
+                    animName = TransitionFromWalk();
                     break;
                 
-                // SPRINTING
-                case StateTypes.Sprinting :
-                    animName = TransitionFromWalkOrSprint();
+                // SPRINT
+                case StateTypes.Sprinting:
+                    animName = TransitionFromWalk();
                     break;
-                
-                // CROUCH IDLE
-                case StateTypes.CrouchIdle:
-                    animName = "Idle_FromCrouchIdle";
+                    
+                // IDLE
+                case StateTypes.Idle:
+                    animName = "Crouch Idle_FromIdle";
                     break;
                 
                 // ANYTHING ELSE
                 default:
-                    animName = "Idle";
+                    animName = "Crouch Idle";
                     break;
             }
             
             Animator.CrossFadeInFixedTime(animName, animTime);
         }
-
-        private string TransitionFromWalkOrSprint()
+        
+        private string TransitionFromWalk()
         {
             
             // Check how fast the player is going
-            var animName = Controller.ForwardVelocity < 4f ? "Idle_FromWalk" : "Idle_FromSprint";
+            var animName = "Crouch Idle_FromCrouchWalk";
 
             // Check which foot is in the air
             animName += Controller.RightFoot.position.y > Controller.LeftFoot.position.y ? "_RU" : "_LU";
@@ -86,7 +87,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             // Stop root motion
             Controller.ApplyRootMotion = false;
         }
-
+        
         #endregion
     }
 }

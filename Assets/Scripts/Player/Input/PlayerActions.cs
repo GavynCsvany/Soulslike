@@ -127,6 +127,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""f28978a4-3a7e-4304-a29b-8b41a8305db4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -261,6 +270,39 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aa329091-ebce-4012-8d4f-93d217ffd51f"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b564597f-8c27-4c4c-a3dd-299bdde4fae3"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ba2f7368-1049-462c-9dda-c38d17866621"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -351,6 +393,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_BasicLocomotion_Sprint = m_BasicLocomotion.FindAction("Sprint", throwIfNotFound: true);
         m_BasicLocomotion_Roll = m_BasicLocomotion.FindAction("Roll", throwIfNotFound: true);
         m_BasicLocomotion_Jump = m_BasicLocomotion.FindAction("Jump", throwIfNotFound: true);
+        m_BasicLocomotion_Crouch = m_BasicLocomotion.FindAction("Crouch", throwIfNotFound: true);
         // Ledge Locomotion
         m_LedgeLocomotion = asset.FindActionMap("Ledge Locomotion", throwIfNotFound: true);
         m_LedgeLocomotion_LeaveLedge = m_LedgeLocomotion.FindAction("Leave Ledge", throwIfNotFound: true);
@@ -443,6 +486,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_BasicLocomotion_Sprint;
     private readonly InputAction m_BasicLocomotion_Roll;
     private readonly InputAction m_BasicLocomotion_Jump;
+    private readonly InputAction m_BasicLocomotion_Crouch;
     /// <summary>
     /// Provides access to input actions defined in input action map "Basic Locomotion".
     /// </summary>
@@ -470,6 +514,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "BasicLocomotion/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_BasicLocomotion_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "BasicLocomotion/Crouch".
+        /// </summary>
+        public InputAction @Crouch => m_Wrapper.m_BasicLocomotion_Crouch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -508,6 +556,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Crouch.started += instance.OnCrouch;
+            @Crouch.performed += instance.OnCrouch;
+            @Crouch.canceled += instance.OnCrouch;
         }
 
         /// <summary>
@@ -531,6 +582,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Crouch.started -= instance.OnCrouch;
+            @Crouch.performed -= instance.OnCrouch;
+            @Crouch.canceled -= instance.OnCrouch;
         }
 
         /// <summary>
@@ -791,6 +845,13 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Crouch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCrouch(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ledge Locomotion" which allows adding and removing callbacks.

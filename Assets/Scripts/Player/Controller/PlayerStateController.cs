@@ -4,6 +4,7 @@ using Soulslike.Core;
 using Soulslike.Player.States;
 using Soulslike.Player.States.Actions;
 using Soulslike.Player.States.Basic_Locomotion;
+using Soulslike.Player.States.Crouch_Locomotion;
 using Soulslike.Player.States.Ledge_Climbing;
 
 namespace Soulslike.Player.Controller
@@ -23,18 +24,20 @@ namespace Soulslike.Player.Controller
             {
                 
                 // BASE STATES //
-                { StateTypes.Idle, new PlayerIdle(controller,  0) }, // Idle state
-                { StateTypes.Walking, new PlayerWalking(controller, 1) }, // Walking State
-                { StateTypes.Sprinting, new PlayerSprinting(controller, 2) }, // Sprinting State
-                { StateTypes.Falling , new PlayerFalling(controller, 3) }, // Falling state
-                { StateTypes.Landed,  new PlayerLanded(controller, 4) }, // Landed state
-                //{ StateTypes.Jumping , new PlayerJump(controller, 5)}, // Jumping state
-                { StateTypes.Rolling, new PlayerRoll(controller, 6)}, // Rolling state
-                
-                // LEDGE CLIMBING STATES //
-                { StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) }, // Ledge climb starts
-                { StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },
-                { StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) }, // Ledge climb idle
+                { StateTypes.Idle, new PlayerIdle(controller,  0) },                    // Idle state
+                {StateTypes.CrouchIdle, new PlayerCrouchIdle(controller,  1) },         // Crouch idle state
+                { StateTypes.Walking, new PlayerWalking(controller, 2) },               // Walking State
+                { StateTypes.CrouchWalking, new PlayerCrouchWalking(controller, 3)},    // Crouch walking state
+                { StateTypes.Sprinting, new PlayerSprinting(controller, 4) },           // Sprinting State
+                { StateTypes.Falling , new PlayerFalling(controller, 5) },              // Falling state
+                { StateTypes.Landed,  new PlayerLanded(controller, 6) },                // Landed state
+                //{ StateTypes.Jumping , new PlayerJump(controller, 7)},                       // Jumping state
+                { StateTypes.Rolling, new PlayerRoll(controller, 8)},                   // Rolling state
+                    
+                // LEDGE CLIMBING STATES // 
+                { StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts
+                { StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },          // Ledge climb ends
+                { StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) },          // Ledge climb idle
             };
             sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();
             
