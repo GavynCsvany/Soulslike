@@ -53,9 +53,8 @@ namespace Soulslike.Player.States.Actions
             // Check if the player is moving
             if (dir.magnitude > 0.1f)
             {
-                // Find the target angle and apply it to our rotation
-                float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
-                transform.rotation = Quaternion.Euler(0f, targetAngle, 0f);
+                // Set the rotation to the target angle
+                transform.rotation = Quaternion.Euler(0f, Controller.TargetMovementAngle, 0f);
             
                 // Change the animation
                 Animator.CrossFadeInFixedTime("Roll", 0.1f);

@@ -41,6 +41,11 @@ namespace Soulslike.Player.Controller
         public EntityState CurrentState => StateController.CurrentState;
         public EntityState PreviousState => StateController.PreviousState;
         
+        // MOVEMENT //
+        public PlayerLocomotionController LocomotionController;
+        public Vector3 MovementDirection => LocomotionController.MovementDirection;
+        public float TargetMovementAngle => LocomotionController.TargetAngle;
+        
         // WALKING STATE //
         public float WalkSpeed = 6;
         public float WalkTurnTime = 0.1f;
@@ -119,6 +124,7 @@ namespace Soulslike.Player.Controller
             
             // Set up the input
             InputScheme =  new InputController();
+            LocomotionController = new PlayerLocomotionController(this);
             
             // Set up the velocity controller
             VelocityController = new PlayerVelocityController(this);
@@ -158,6 +164,7 @@ namespace Soulslike.Player.Controller
         {
             // Update the input
             InputScheme.Update();
+            LocomotionController.Update();
             
             // Update the current state
             StateController.Update();

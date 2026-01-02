@@ -13,9 +13,9 @@ namespace Soulslike.Utility.Inspector
         // Only used in the editor, not during run time
         StateTypes currentState = StateTypes.Idle;
         
-        bool foldLedgeSettings = true;
+        bool foldLedgeSettings = false;
         
-        private bool foldInput = true;
+        private bool foldInput = false;
         private Vector2 moveVec = Vector2.zero;
         private bool sprint = false;
         private bool crouch  = false;
@@ -25,6 +25,9 @@ namespace Soulslike.Utility.Inspector
 
         public override void OnInspectorGUI()
         {
+            
+            if (EditorApplication.isPlaying)
+                Repaint();
             
             // Get the player controller
             var script = target as PlayerController;
@@ -77,6 +80,22 @@ namespace Soulslike.Utility.Inspector
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
             EditorGUILayout.Space();
+            
+            
+            // MOVEMENT
+            EditorGUILayout.LabelField("Player Locomotion", EditorStyles.boldLabel);
+            if (EditorApplication.isPlaying)
+            {
+                EditorGUILayout.Vector3Field("Movement Direction", script.MovementDirection);
+                EditorGUILayout.FloatField("Movement Angle", script.TargetMovementAngle);
+            }
+            else
+            {
+                EditorGUILayout.Vector3Field("Movement Direction", Vector3.zero);
+                EditorGUILayout.FloatField("Movement Angle", 0);
+            }
+            EditorGUILayout.Space();
+            
             
             // PLAYER STATE //
             EditorGUILayout.LabelField("Player State", EditorStyles.boldLabel);

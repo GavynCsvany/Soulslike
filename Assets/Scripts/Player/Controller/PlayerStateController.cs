@@ -31,7 +31,7 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Sprinting, new PlayerSprinting(controller, 4) },           // Sprinting State
                 { StateTypes.Falling , new PlayerFalling(controller, 5) },              // Falling state
                 { StateTypes.Landed,  new PlayerLanded(controller, 6) },                // Landed state
-                //{ StateTypes.Jumping , new PlayerJump(controller, 7)},                       // Jumping state
+                { StateTypes.Jumping , new PlayerJump(controller, 7)},                  // Jumping state
                 { StateTypes.Rolling, new PlayerRoll(controller, 8)},                   // Rolling state
                     
                 // LEDGE CLIMBING STATES // 

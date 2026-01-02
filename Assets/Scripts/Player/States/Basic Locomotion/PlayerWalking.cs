@@ -21,9 +21,8 @@ namespace Soulslike.Player.States.Basic_Locomotion
 
         // Movement variables
         protected bool UseRootMotion = true;
-        protected Vector2 movementVector => Controller.DesiredMovementVector;
-        private float targetAngle = 0f;
-        private Vector3 moveDir = Vector3.zero;
+        protected Vector3 movementDirection => Controller.MovementDirection;
+        private float targetAngle => Controller.TargetMovementAngle;
         
         // Animation variables
         protected string idleTransitionName = "Walk_FromIdle";
@@ -53,17 +52,13 @@ namespace Soulslike.Player.States.Basic_Locomotion
         {
  
             // Check if the player wants to move
-            if (movementVector.Equals(Vector2.zero)) return false;
-            
-            // Get the target movement direction
-            targetAngle = GetTargetAngle(movementVector.normalized);
-            moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            if (movementDirection.Equals(Vector3.zero)) return false;
             
             // Check if there is anything blocking the player
             float detDist = Mathf.Max((Controller.ForwardVelocity / 10) * 2, 0.6f);
             Vector3 startPos = transform.position + new Vector3(0, 0.2f, 0);
-            Debug.DrawRay(startPos, moveDir * detDist, Color.green);
-            if (Physics.Raycast(startPos, moveDir, detDist, Controller.GroundMask)) return false;
+            Debug.DrawRay(startPos, movementDirection * detDist, Color.green);
+            if (Physics.Raycast(startPos, movementDirection, detDist, Controller.GroundMask)) return false;
 
             // Return false
             return true;
@@ -113,14 +108,6 @@ namespace Soulslike.Player.States.Basic_Locomotion
             
             Animator.CrossFadeInFixedTime(animName, animTime);
         }
-
-        private float GetTargetAngle(Vector2 dir)
-        {
-
-            // Find the target angle and apply it to our rotation
-            float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            return targetAngle;
-        }
         
         public override void Update()
         {
@@ -146,23 +133,18 @@ namespace Soulslike.Player.States.Basic_Locomotion
 
         private void Move()
         {
-            
-            // Create a local value for ease of use
-            Vector2 dir = movementVector.normalized;
+            bool moving = movementDirection.magnitude >= 0.1f;
             
             // Rotate the player
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, turnTime);
-            transform.rotation = (dir.magnitude >= 0.1f) ? Quaternion.Euler(0f, angle, 0f) : transform.rotation;
+            transform.rotation = (moving) ? Quaternion.Euler(0f, angle, 0f) : transform.rotation;
 
             // Check if the player wants to move
-            if (dir.magnitude <= 0.1f) return;
-            
-            // Draw debug ray
-            Debug.DrawRay(transform.position, transform.forward, Color.white);
+            if (!moving) return;
             
             // Move the player
             if (UseRootMotion) return;
-            characterController.Move(moveDir.normalized * (speed * Time.deltaTime));
+            characterController.Move(movementDirection * (speed * Time.deltaTime));
         }
 
         public override void OnFinished()
