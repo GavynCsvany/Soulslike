@@ -63,6 +63,11 @@ namespace Soulslike.Player.Controller
         public bool IsGrounded => GroundController.IsGrounded;
         public Vector3 LastGroundedPosition => GroundController.LastGroundedPosition;
         
+        // VELOCITY //
+        public PlayerVelocityController VelocityController;
+        public Vector3 Velocity => VelocityController.Velocity;
+        public float ForwardVelocity => VelocityController.ForwardVelocity;
+        
         // GRAVITY //
         public float GravityMultiplier
         {
@@ -109,6 +114,9 @@ namespace Soulslike.Player.Controller
             
             // Set up the input
             InputScheme =  new InputController();
+            
+            // Set up the velocity controller
+            VelocityController = new PlayerVelocityController(this);
             
             // Disable root motion
             animator.applyRootMotion = false;
@@ -157,8 +165,11 @@ namespace Soulslike.Player.Controller
         {
             // Reset any variables as needed
             InputScheme.ResetAfterUpdate();
+            
+            // Get the velocity
+            VelocityController.GetVelocity();
         }
-
+        
         private void OnDisable()
         {
             // Stop the input from firing

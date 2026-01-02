@@ -106,6 +106,16 @@ namespace Soulslike.Utility.Inspector
             EditorGUILayout.Space();
             
             
+            // VELOCITY //
+            if (EditorApplication.isPlaying)
+            {
+                EditorGUILayout.LabelField("Velocity", EditorStyles.boldLabel);
+                EditorGUILayout.Vector3Field("Current Velocity", script.Velocity);
+                EditorGUILayout.FloatField("Forward Velocity", script.ForwardVelocity);
+                EditorGUILayout.Space();
+            }
+            
+            
             // GRAVITY //
             if (EditorApplication.isPlaying)
             {

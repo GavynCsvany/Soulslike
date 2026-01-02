@@ -4217,6 +4217,8 @@ MonoBehaviour:
   characterController: {fileID: 9156275857939649018}
   cam: {fileID: 330585545}
   animator: {fileID: 3022351538196024194}
+  RightFoot: {fileID: 4561344944418329681}
+  LeftFoot: {fileID: 5055214098270071671}
   WalkSpeed: 3
   WalkTurnTime: 0.1
   SprintSpeed: 5
@@ -4258,10 +4260,10 @@ CharacterController:
   m_Height: 2
   m_Radius: 0.3
   m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_StepOffset: 0.15
+  m_SkinWidth: 0.04
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 1.08, z: 0}
+  m_Center: {x: 0, y: 1.04, z: 0}
 --- !u!137 &9156275857939649019
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 0

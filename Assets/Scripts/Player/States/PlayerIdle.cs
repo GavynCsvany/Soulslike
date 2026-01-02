@@ -47,16 +47,12 @@ namespace Soulslike.Player.States
                 
                 // WALKING
                 case StateTypes.Walking :
-                    animName = Controller.RightFoot.position.y > Controller.LeftFoot.position.y
-                        ? "Idle_FromWalk_RU"
-                        : "Idle_FromWalk_LU";
+                    animName = TransitionFromWalkOrSprint();
                     break;
                 
                 // SPRINTING
                 case StateTypes.Sprinting :
-                    animName = Controller.RightFoot.position.y > Controller.LeftFoot.position.y
-                        ? "Idle_FromSprint_RU"
-                        : "Idle_FromSprint_LU";
+                    animName = TransitionFromWalkOrSprint();
                     break;
                 
                 // ANYTHING ELSE
@@ -66,6 +62,18 @@ namespace Soulslike.Player.States
             }
             
             Animator.CrossFadeInFixedTime(animName, animTime);
+        }
+
+        private string TransitionFromWalkOrSprint()
+        {
+            
+            // Check how fast the player is going
+            var animName = Controller.ForwardVelocity < 4f ? "Idle_FromWalk" : "Idle_FromSprint";
+
+            // Check which foot is in the air
+            animName += Controller.RightFoot.position.y > Controller.LeftFoot.position.y ? "_RU" : "_LU";
+            
+            return animName;
         }
 
         public override void Update() { }
