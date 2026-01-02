@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Soulslike.Core;
 using Soulslike.Player.Controller;
-using UnityEngine;
 
-namespace Soulslike.Player.States
+namespace Soulslike.Player.States.Basic_Locomotion
 {
     public class PlayerIdle : PlayerState
     {

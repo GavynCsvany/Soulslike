@@ -2,7 +2,7 @@
 using Soulslike.Player.Controller;
 using UnityEngine;
 
-namespace Soulslike.Player.States
+namespace Soulslike.Player.States.Basic_Locomotion
 {
     public class PlayerLanded :  PlayerState
     {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Soulslike.Core;
+﻿using Soulslike.Core;
 using Soulslike.Player.Controller;
-using UnityEngine;
+using Soulslike.Player.States.Basic_Locomotion;
 
-namespace Soulslike.Player.States
+namespace Soulslike.Player.States.Actions
 {
     public class PlayerSprinting : PlayerWalking
     {

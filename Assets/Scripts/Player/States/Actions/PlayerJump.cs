@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using Soulslike.Core;
+﻿using Soulslike.Core;
 using Soulslike.Player.Controller;
-using Soulslike.Player.Input;
+using Soulslike.Player.States.Basic_Locomotion;
 using UnityEngine;
 
-namespace Soulslike.Player.States
+namespace Soulslike.Player.States.Actions
 {
     public class PlayerJump : PlayerWalking
     {

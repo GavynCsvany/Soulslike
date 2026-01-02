@@ -2,6 +2,8 @@
 using System.Linq;
 using Soulslike.Core;
 using Soulslike.Player.States;
+using Soulslike.Player.States.Actions;
+using Soulslike.Player.States.Basic_Locomotion;
 using Soulslike.Player.States.Ledge_Climbing;
 
 namespace Soulslike.Player.Controller
