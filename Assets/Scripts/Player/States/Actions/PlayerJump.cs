@@ -12,9 +12,7 @@ namespace Soulslike.Player.States.Actions
         public PlayerJump(PlayerController controller, int priority = 11) : base(controller, priority)
         {
             StateType = StateTypes.Jumping;
-            
             UseRootMotion = false;
-            
             HasExitTime = true;
         }
         
@@ -38,20 +36,19 @@ namespace Soulslike.Player.States.Actions
             // Make the player jump
             Controller.GroundController.ApplyImpulse(new Vector3(0, jumpForce, 0));
             
-            // Change the animation
+            // Play the animation
             Animator.CrossFadeInFixedTime("Jump", 0.1f);
         }
-
+        
         public override void Update()
         {
+            
             // Move if desired
             base.Update();
             
             // Check if the jumping animation has finished playing
             CheckFinished();
         }
-
-        public override void OnFinished() { }
 
         // Called every frame to check if the jump animation is finished playing
         private void CheckFinished()

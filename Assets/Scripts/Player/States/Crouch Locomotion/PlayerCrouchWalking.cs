@@ -50,10 +50,7 @@ namespace Soulslike.Player.States.Crouch_Locomotion
             if (movementDirection.Equals(Vector3.zero)) return false;
             
             // Check if there is anything blocking the player
-            float detDist = Mathf.Max((Controller.ForwardVelocity / 10) * 2, 0.6f);
-            Vector3 startPos = transform.position + new Vector3(0, 0.2f, 0);
-            Debug.DrawRay(startPos, movementDirection * detDist, Color.green);
-            if (Physics.Raycast(startPos, movementDirection, detDist, Controller.GroundMask)) return false;
+            if(Controller.WallDetected) return false;
 
             // Return false
             return true;

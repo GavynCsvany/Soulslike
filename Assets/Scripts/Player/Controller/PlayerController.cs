@@ -3,6 +3,7 @@ using Soulslike.Core;
 using Soulslike.Player.Input;
 using Soulslike.Player.States;
 using Soulslike.Player.Stats;
+using Soulslike.Player.Traversal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -64,6 +65,12 @@ namespace Soulslike.Player.Controller
         // JUMPING STATE
         public int JumpPower = 12;
         
+        // FALLING STATE //
+        public Vector3 EdgeRayOffset = new Vector3(0f, -0.05f, 0f);
+        public int EdgeRayCount = 8;
+        public float EdgeCheckDistance = 0.6f;
+        public float EdgePushStrength = 1.5f;
+        
         // GROUND DETECTION //
         public Transform GroundCheck;
         public LayerMask GroundMask;
@@ -91,6 +98,10 @@ namespace Soulslike.Player.Controller
         }
         public bool JustGrounded => GroundController.JustGrounded;
 
+        // ENVIRONMENT DETECTION //
+        private EnvironmentScanner EnvironmentScanner;
+        public bool WallDetected => EnvironmentScanner.WallDetected;
+        
         // LEDGE DETECTION //
         public LayerMask LedgeMask;
         public PlayerLedgeController LedgeController;
@@ -132,6 +143,9 @@ namespace Soulslike.Player.Controller
             // Disable root motion
             animator.applyRootMotion = false;
             
+            // Initialize the environment scanner
+            EnvironmentScanner = new EnvironmentScanner(this);
+            
             // Set up the ledge detection
             LedgeController = new PlayerLedgeController(this);
         }
@@ -165,6 +179,9 @@ namespace Soulslike.Player.Controller
             // Update the input
             InputScheme.Update();
             LocomotionController.Update();
+            
+            // Scan the environment
+            EnvironmentScanner.Update();
             
             // Update the current state
             StateController.Update();

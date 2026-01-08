@@ -4223,8 +4223,14 @@ MonoBehaviour:
   WalkTurnTime: 0.1
   SprintSpeed: 5
   SprintTurnTime: 0.06
+  CrouchWalkSpeed: 3
+  CrouchWalkTurnTime: 0.1
   AdditiveRollSpeed: 5
   JumpPower: 12
+  EdgeRayOffset: {x: 0, y: -0.05, z: 0}
+  EdgeRayCount: 8
+  EdgeCheckDistance: 0.6
+  EdgePushStrength: 1.5
   GroundCheck: {fileID: 947591845}
   GroundMask:
     serializedVersion: 2

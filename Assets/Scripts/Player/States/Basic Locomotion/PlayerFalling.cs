@@ -26,6 +26,12 @@ namespace Soulslike.Player.States.Basic_Locomotion
         // Animation variables
         private static readonly int FallTimeParam = Animator.StringToHash("FallTime");
         private float fallTime;
+        
+        // Edge detection variables
+        private Vector3 ledgeRayOffset => Controller.EdgeRayOffset;
+        private int ledgeRayCount => Controller.EdgeRayCount;
+        private float ledgeCheckDistance => Controller.EdgeCheckDistance;
+        private float ledgePushStrength => Controller.EdgePushStrength;
 
         // Whether the state can be used
         public override bool CanUse()
@@ -55,6 +61,9 @@ namespace Soulslike.Player.States.Basic_Locomotion
         {
             // Apply movement
             base.Update();
+
+            // Move the player away from any edges they might get caught on
+            ApplyLedgeRepulsion();
             
             // Update the fall time
             fallTime += Time.deltaTime;
@@ -62,6 +71,36 @@ namespace Soulslike.Player.States.Basic_Locomotion
             // Update the fall time variable in the animator
             Animator.SetFloat(FallTimeParam, fallTime);
         }
+        
+        private void ApplyLedgeRepulsion()
+        {
 
+            Vector3 origin = transform.position + ledgeRayOffset;
+            Vector3 push = Vector3.zero;
+
+            for (int i = 0; i < ledgeRayCount; i++)
+            {
+                
+                // Get the angle and direction of the raycast
+                float angle = (360f / ledgeRayCount) * i;
+                Vector3 dir = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
+
+                // Horizontal check
+                if (Physics.Raycast(origin, dir, out RaycastHit hit, ledgeCheckDistance, Controller.GroundMask))
+                {
+                    push -= dir;
+                }
+
+                // Draw the ray
+                Debug.DrawRay(origin, dir * ledgeCheckDistance, Color.yellow);
+            }
+
+            // Check if there is anything to push away from
+            if (push.sqrMagnitude > 0.001f)
+            {
+                push.Normalize();
+                characterController.Move(push * ledgePushStrength * Time.deltaTime);
+            }
+        }
     }
 }
