@@ -7,7 +7,7 @@ namespace Soulslike.Player.Controller
     {
         
         // Player components
-        private PlayerController Controller;
+        private PlayerController controller;
         private readonly CharacterController characterController;
         
         // Gravity settings
@@ -17,6 +17,13 @@ namespace Soulslike.Player.Controller
         // Velocity settings
         public bool GravityEnabled = true;
         public Vector3 GravityVelocity;
+        
+        // Drag settings
+        private float groundDrag = 20f;
+        private float airDrag = 2f;
+        
+        // The time the player has been in the air
+        public float AirTime = 0f;
 
         // Whether the player is grounded
         private bool wasGrounded;
@@ -26,19 +33,19 @@ namespace Soulslike.Player.Controller
 
         // Ground detection
         private readonly Transform groundCheck;
-        private float groundSphereRadius => Controller.GroundSphereRadius;
-        private float groundRaycastDistance => Controller.GroundRaycastDistance;
+        private float GroundSphereRadius => controller.GroundSphereRadius;
+        private float GroundRaycastDistance => controller.GroundRaycastDistance;
         private readonly LayerMask groundMask;
         
         public PlayerGroundController(PlayerController controller)
         {
             
             // Assign variables
-            Controller = controller;
-            characterController = Controller.characterController;
+            this.controller = controller;
+            characterController = this.controller.characterController;
             
-            groundCheck = Controller.GroundCheck;
-            groundMask = Controller.GroundMask;
+            groundCheck = this.controller.GroundCheck;
+            groundMask = this.controller.GroundMask;
         }
         
         // Called every frame
@@ -50,7 +57,14 @@ namespace Soulslike.Player.Controller
             JustGrounded = !wasGrounded && IsGrounded;
             
             // Get the last position the player was grounded
-            if(IsGrounded) LastGroundedPosition = Controller.transform.position;
+            if (IsGrounded)
+            {
+                LastGroundedPosition = controller.transform.position;
+            }
+            else AirTime += Time.deltaTime;
+            
+            // Reset the air time
+            if(wasGrounded && !IsGrounded) AirTime = 0f;
             
             // Apply gravity
             ApplyGravity();
@@ -62,19 +76,19 @@ namespace Soulslike.Player.Controller
             int weight = 0;
             
             // Create a sphere cast looking for the ground
-            DebugHelper.DrawSphere(groundCheck.position, new Quaternion(0, 0, 0, 0), groundSphereRadius, Color.green, 6);
-            weight += (Physics.CheckSphere(groundCheck.position, groundSphereRadius, groundMask)) ? 1 : 0;
+            DebugHelper.DrawSphere(groundCheck.position, new Quaternion(0, 0, 0, 0), GroundSphereRadius, Color.green, 6);
+            weight += (Physics.CheckSphere(groundCheck.position, GroundSphereRadius, groundMask)) ? 1 : 0;
             
             // Check the character controller
             weight += (characterController.isGrounded) ? 1 : 0;
             
             // Raycast downward
-            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance, Color.green);
-            weight += (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 1 : 0;
+            Debug.DrawRay(groundCheck.position, Vector3.down * GroundRaycastDistance, Color.green);
+            weight += (Physics.Raycast(groundCheck.position, Vector3.down, GroundRaycastDistance, groundMask)) ? 1 : 0;
             
             // Longer raycast downward
-            Debug.DrawRay(groundCheck.position, Vector3.down * groundRaycastDistance * 2, Color.purple);
-            weight -= (Physics.Raycast(groundCheck.position, Vector3.down, groundRaycastDistance, groundMask)) ? 0 : 2;
+            Debug.DrawRay(groundCheck.position, Vector3.down * GroundRaycastDistance * 2, Color.purple);
+            weight -= (Physics.Raycast(groundCheck.position, Vector3.down, GroundRaycastDistance, groundMask)) ? 0 : 2;
             
             // Check if there is enough weight
             bool grounded = weight >= 2;
@@ -87,27 +101,36 @@ namespace Soulslike.Player.Controller
         // Apply gravity to the player
         private void ApplyGravity()
         {
-            
-            // Check if gravity can be applied
             if (!GravityEnabled)
             {
                 GravityVelocity.y = 0;
                 return;
             }
-            
-            // Check if grounded
-            if (IsGrounded && GravityVelocity.y < 0)
+
+            // Split velocity
+            Vector3 horizontalVelocity = new Vector3(GravityVelocity.x, 0f, GravityVelocity.z);
+            float verticalVelocity = GravityVelocity.y;
+
+            // Apply drag
+            float drag = IsGrounded ? groundDrag : airDrag;
+            horizontalVelocity = Vector3.MoveTowards(
+                horizontalVelocity,
+                Vector3.zero,
+                drag * Time.deltaTime
+            );
+
+            // Apply gravity
+            if (IsGrounded && verticalVelocity < 0)
             {
-                // Set the velocity to -1
-                GravityVelocity.y = -1;
+                verticalVelocity = -1f;
             }
             else
             {
-                // Set the y velocity to the gravity
-                GravityVelocity.y += Gravity * GravityMultiplier *  Time.deltaTime;
+                verticalVelocity += Gravity * GravityMultiplier * Time.deltaTime;
             }
-            
-            // Move the player
+
+            // Recombine velocity & move the player
+            GravityVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
             characterController.Move(GravityVelocity * Time.deltaTime);
         }
     }

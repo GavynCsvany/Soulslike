@@ -33,8 +33,19 @@ namespace Soulslike.Player.States.Actions
         public override void OnStart()
         {
             
-            // Make the player jump
-            Controller.GroundController.ApplyImpulse(new Vector3(0, jumpForce, 0));
+            // Vertical jump impulse
+            Vector3 jumpImpulse = Vector3.up * jumpForce;
+
+            // Forward jump impulse based on current forward velocity
+            Vector3 forwardDir = Controller.transform.forward;
+            float forwardSpeed = Mathf.Max(0f, Controller.ForwardVelocity);
+
+            // Tune this multiplier to control jump distance
+            float forwardJumpMultiplier = 0.6f;
+            Vector3 forwardImpulse = forwardDir * forwardSpeed * forwardJumpMultiplier;
+
+            // Apply combined impulse
+            Controller.GroundController.ApplyImpulse(jumpImpulse + forwardImpulse);
             
             // Play the animation
             Animator.CrossFadeInFixedTime("Jump", 0.1f);

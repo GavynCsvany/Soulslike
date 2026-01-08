@@ -97,6 +97,7 @@ namespace Soulslike.Player.Controller
             set => GroundController.GravityEnabled = value;
         }
         public bool JustGrounded => GroundController.JustGrounded;
+        public float AirTime => GroundController.AirTime;
 
         // ENVIRONMENT DETECTION //
         private EnvironmentScanner EnvironmentScanner;

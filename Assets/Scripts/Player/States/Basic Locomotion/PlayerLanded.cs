@@ -23,13 +23,14 @@ namespace Soulslike.Player.States.Basic_Locomotion
         {
             
             // Check if enough time has passed to play the animation
-            if (Animator.GetFloat(FallTimeParam) <= 0.5f)
+            if (Controller.AirTime <= 1f)
             {
                 IsFinished = true;
                 return;
             }
             
             // Change the animation
+            Animator.SetFloat(FallTimeParam, Controller.AirTime);
             Animator.CrossFadeInFixedTime("Land", 0.1f);
         }
 
@@ -39,11 +40,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             WaitForAnimation("Land", 1);
         }
 
-        public override void OnFinished()
-        {
-            // Reset the fall time
-            Animator.SetFloat(FallTimeParam, 0);
-        }
+        public override void OnFinished() {}
         
     }
 }

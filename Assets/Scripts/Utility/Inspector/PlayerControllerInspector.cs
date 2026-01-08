@@ -175,6 +175,7 @@ namespace Soulslike.Utility.Inspector
 
                 EditorGUI.BeginDisabledGroup(true);
                 EditorGUILayout.Toggle("Gravity Enabled", script.GravityEnabled);
+                EditorGUILayout.FloatField("Air Time", script.AirTime);
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.Space();
             }
