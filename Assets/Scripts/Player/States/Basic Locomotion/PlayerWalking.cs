@@ -55,7 +55,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             if (movementDirection.Equals(Vector3.zero)) return false;
             
             // Check if there is anything blocking the player
-            if(Controller.WallDetected) return false;
+            if(Controller.ObstacleInWayOfMovement) return false;
 
             // Return false
             return true;

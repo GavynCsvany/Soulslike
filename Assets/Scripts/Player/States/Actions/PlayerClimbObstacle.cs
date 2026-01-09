@@ -10,6 +10,8 @@ namespace Soulslike.Player.States.Actions
     {
         public string AnimationName;
         public string FinalTag;
+
+        public float TransitionTime;
         
         public float StartTime;
         public float EndTime;
@@ -34,6 +36,7 @@ namespace Soulslike.Player.States.Actions
             {
                 OneMeter,
                 TwoMeter,
+                ThreeMeter,
             };
             
             // States incompatible with this one
@@ -56,8 +59,9 @@ namespace Soulslike.Player.States.Actions
         {
             AnimationName = "Climb_1M",
             FinalTag = "Last",
+            TransitionTime = 0.1f,
             StartTime = 0.15f,
-            EndTime = 0.35f,
+            EndTime = 0.25f,
             Offset = new Vector3(0.2f, 0, -0.25f),
             MinHeight = 0.6f,
             MaxHeight = 1.5f,
@@ -68,11 +72,25 @@ namespace Soulslike.Player.States.Actions
         {
             AnimationName = "Climb_2M",
             FinalTag = "Last",
+            TransitionTime = 0.1f,
             StartTime = 0.02f,
-            EndTime = 0.2f,
-            Offset = new Vector3(0.2f, -0.03f, 0f),
-            MinHeight = 1.5f,
-            MaxHeight = 2.5f,
+            EndTime = 0.15f,
+            Offset = new Vector3(0.2f, -0.05f, 0f),
+            MinHeight = 1.7f,
+            MaxHeight = 2.7f,
+        };
+        
+        // 3 Meter Climb
+        private ClimbType ThreeMeter = new ClimbType()
+        {
+            AnimationName = "Climb_3M",
+            FinalTag = "Last",
+            TransitionTime = 0.3f,
+            StartTime = 0.05f,
+            EndTime = 0.18f,
+            Offset = new Vector3(0.2f, -0.05f, 0f),
+            MinHeight = 2.7f,
+            MaxHeight = 3.4f,
         };
         
         // Current animation
@@ -89,9 +107,9 @@ namespace Soulslike.Player.States.Actions
             if (!Controller.WantToJump) return false;
             
             // Check if there is a climbable obstacle
-            if (!Controller.ClimbableWallDetected) return false;
-            obstacleInfo = Controller.ClimbableWallInfo;
-            wallInfo = Controller.WallInfo;
+            if (!Controller.ClimbableObstacleDetected) return false;
+            obstacleInfo = Controller.ClimbableObstacleInfo;
+            wallInfo = Controller.ObstacleInWayOfMovementInfo;
             
             // Find the current climb type
             bool found = false;
@@ -126,14 +144,15 @@ namespace Soulslike.Player.States.Actions
             if (Controller.WantToCrouch) currentType.AnimationName += "_Crouch";
             
             // Play the animation
-            Animator.CrossFade(currentType.AnimationName, 0.1f);
+            Animator.CrossFade(currentType.AnimationName, currentType.TransitionTime);
         }
 
         public override void Update()
         {
 
             // Enable gravity if not target matching
-            Controller.GravityEnabled = !Animator.GetCurrentAnimatorStateInfo(0).IsTag("Target Match");
+            AnimatorStateInfo state = Animator.GetCurrentAnimatorStateInfo(0);
+            Controller.GravityEnabled = !state.IsTag("Target Match") || Animator.IsInTransition(0);
             
             // Apply target matching
             TargetMatch();
