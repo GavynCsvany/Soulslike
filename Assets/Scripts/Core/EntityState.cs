@@ -15,6 +15,7 @@ namespace Soulslike.Core
         Sprinting,
         Rolling,
         Jumping,
+        Climbing,
         
         // Crouch states
         CrouchIdle,

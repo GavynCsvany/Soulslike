@@ -25,7 +25,7 @@ namespace Soulslike.Player.Controller
                 
                 // BASE STATES //
                 { StateTypes.Idle, new PlayerIdle(controller,  0) },                    // Idle state
-                {StateTypes.CrouchIdle, new PlayerCrouchIdle(controller,  1) },         // Crouch idle state
+                { StateTypes.CrouchIdle, new PlayerCrouchIdle(controller,  1) },         // Crouch idle state
                 { StateTypes.Walking, new PlayerWalking(controller, 2) },               // Walking State
                 { StateTypes.CrouchWalking, new PlayerCrouchWalking(controller, 3)},    // Crouch walking state
                 { StateTypes.Sprinting, new PlayerSprinting(controller, 4) },           // Sprinting State
@@ -33,7 +33,8 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Landed,  new PlayerLanded(controller, 6) },                // Landed state
                 { StateTypes.Jumping , new PlayerJump(controller, 7)},                  // Jumping state
                 { StateTypes.Rolling, new PlayerRoll(controller, 8)},                   // Rolling state
-                    
+                { StateTypes.Climbing, new PlayerClimbObstacle(controller, 9)},         // Climb state
+                
                 // LEDGE CLIMBING STATES // 
                 { StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts
                 { StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },          // Ledge climb ends
@@ -67,6 +68,10 @@ namespace Soulslike.Player.Controller
             // Loop through each state
             foreach (var state in sortedStates.Where(state => state.CanUse()).TakeWhile(state => state != CurrentState))
             {
+                
+                // Checks if the new state is compatible
+                if (CurrentState.CheckIncompatibility(state.StateType)) continue;
+                
                 // Check if the new state has a higher priority than the current one
                 if (state.Priority > CurrentState.Priority)
                 {

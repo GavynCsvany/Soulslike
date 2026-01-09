@@ -102,6 +102,9 @@ namespace Soulslike.Player.Controller
         // ENVIRONMENT DETECTION //
         private EnvironmentScanner EnvironmentScanner;
         public bool WallDetected => EnvironmentScanner.WallDetected;
+        public RaycastHit WallInfo => EnvironmentScanner.WallDetectionHit;
+        public bool ClimbableWallDetected => EnvironmentScanner.ClimbableWallDetected;
+        public RaycastHit ClimbableWallInfo => EnvironmentScanner.ClimbDetectionHit;
         
         // LEDGE DETECTION //
         public LayerMask LedgeMask;

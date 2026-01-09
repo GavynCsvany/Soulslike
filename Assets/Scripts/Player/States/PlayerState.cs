@@ -11,6 +11,7 @@ namespace Soulslike.Player.States
         protected PlayerController Controller { get; }
         
         // The player animator
+        private bool reachedFinalAnimation = false;
         protected Animator Animator => Controller.animator;
         
         // Class construction
@@ -47,6 +48,32 @@ namespace Soulslike.Player.States
             {
                 // Finish the state
                 IsFinished = true;
+            }
+        }
+        
+        // Wait for a given animation to finish (wait for tag)
+        protected void WaitForAnimation(string animationName, string animationTag, float time = 1f)
+        {
+            AnimatorStateInfo stateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+
+            // Detect entry into the final animation
+            if (!reachedFinalAnimation && stateInfo.IsTag(animationTag))
+            {
+                reachedFinalAnimation = true;
+            }
+
+            // If we haven't reached the final animation yet, do nothing
+            if (!reachedFinalAnimation)
+                return;
+
+            // Ignore checks during transitions
+            if (Animator.IsInTransition(0)) return;
+
+            // Final animation finished
+            if (stateInfo.normalizedTime >= time)
+            {
+                IsFinished = true;
+                reachedFinalAnimation = false;
             }
         }
     }

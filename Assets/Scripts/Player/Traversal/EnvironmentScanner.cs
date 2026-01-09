@@ -11,10 +11,16 @@ namespace Soulslike.Player.Traversal
         private Transform Transform => Controller.transform;
         
         // Wall detection variables
+        public RaycastHit WallDetectionHit;
         public bool WallDetected = false;
         private float wallDetectionLengthMultiplier = 2f;
         private float minimumWallDetectionDistance = 0.6f;
         private Vector3 wallDetectionOffset = new Vector3(0, 0.2f, 0);
+        
+        // Climb detection variables
+        public RaycastHit ClimbDetectionHit;
+        public bool ClimbableWallDetected = false;
+        private float climbRayLength = 5f;
         
         // Class construction
         public EnvironmentScanner(PlayerController controller)
@@ -28,6 +34,28 @@ namespace Soulslike.Player.Traversal
 
             // Check for walls
             WallDetected = DetectWalls();
+
+            // Find any climbable walls
+            ClimbableWallDetected = WallDetected && DetectClimbableWalls();
+        }
+        
+        // Wall climb detection
+        private bool DetectClimbableWalls()
+        {
+            
+            bool hit = false;
+            
+            // Get the origin of the raycast
+            Vector3 rayOrigin = WallDetectionHit.point + (Vector3.up * climbRayLength);
+            
+            // Fire the raycast
+            if(Physics.Raycast(rayOrigin, Vector3.down, out ClimbDetectionHit, climbRayLength, Controller.GroundMask)) hit = true;
+            
+            // Create a debug ray
+            Color color = (!hit) ? Color.green : Color.red;
+            Debug.DrawRay(rayOrigin, Vector3.down * climbRayLength, color);
+            
+            return hit;
         }
         
         // Wall detection
@@ -43,8 +71,10 @@ namespace Soulslike.Player.Traversal
             // Get the starting point & direction of the ray
             Vector3 startPos = Transform.position + wallDetectionOffset;
             Vector3 direction = Controller.MovementDirection;
+            
+            // Fire the raycast
             if(direction.Equals(Vector3.zero)) direction = Transform.forward;
-            if (Physics.Raycast(startPos, direction, detDist, Controller.GroundMask)) hit = true;
+            if (Physics.Raycast(startPos, direction, out WallDetectionHit, detDist, Controller.GroundMask)) hit = true;
             
             // Create a debug ray
             Color color = (!hit) ? Color.green : Color.red;

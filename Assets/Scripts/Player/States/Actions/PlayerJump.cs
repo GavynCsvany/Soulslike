@@ -41,7 +41,7 @@ namespace Soulslike.Player.States.Actions
             float forwardSpeed = Mathf.Max(0f, Controller.ForwardVelocity);
 
             // Tune this multiplier to control jump distance
-            float forwardJumpMultiplier = 0.6f;
+            float forwardJumpMultiplier = 0.8f;
             Vector3 forwardImpulse = forwardDir * forwardSpeed * forwardJumpMultiplier;
 
             // Apply combined impulse
