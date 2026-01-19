@@ -24,12 +24,6 @@ namespace Soulslike.Player.States.Basic_Locomotion
         protected Vector3 movementDirection => Controller.MovementDirection;
         private float targetAngle => Controller.TargetMovementAngle;
         
-        // Animation variables
-        protected string idleTransitionName = "Walk_FromIdle";
-        private readonly int SprintBlend = Animator.StringToHash("SprintBlend");
-        protected float desiredSprintAnimationBlend = 0f;
-        protected float sprintBlendSpeed = 1.2f;
-        
         // Turning variables
         protected virtual float turnTime {
             get => Controller.WalkTurnTime;
@@ -78,28 +72,40 @@ namespace Soulslike.Player.States.Basic_Locomotion
 
             var previousState = Controller.PreviousState.StateType;
             
-            // Reset the blend variable
-            if(previousState != StateTypes.Sprinting && previousState != StateTypes.Walking)
-                Animator.SetFloat(SprintBlend, Mathf.Max(0, Controller.ForwardVelocity - 4)/3);
-            
             // Find and play the transition animation based on previous state
             switch (previousState)
             {
                 
                 // IDLE
                 case StateTypes.Idle :
-                    animName = idleTransitionName;
+                    animName = "Idle_Walk";
+                    break;
+                
+                // SPRINT
+                case StateTypes.Sprinting :
+                    animName = "Walk";
+                    animTime = 0.4f;
                     break;
                 
                 // CROUCH WALKING
                 case StateTypes.CrouchWalking:
-                    animName = "Walk/Sprint";
+                    animName = "Walk";
                     animTime = 0.4f;
+                    break;
+                
+                // FALLING
+                case StateTypes.Falling :
+                    animName = "Fall_Walk";
+                    break;
+                
+                // JUMPING
+                case StateTypes.Jumping :
+                    animName = "Jump_Walk";
                     break;
                 
                 // ANYTHING ELSE
                 default:
-                    animName = "Walk/Sprint";
+                    animName = "Walk";
                     break;
             }
             
@@ -111,23 +117,8 @@ namespace Soulslike.Player.States.Basic_Locomotion
             
             // Move the player
             Move();
-            
-            // Blend the sprint speed
-            LerpSprintAnimation();
         }
-
-        private void LerpSprintAnimation()
-        {
-            
-            // Get the current & new blend
-            float currentBlend = Animator.GetFloat(SprintBlend);
-            if (Mathf.Approximately(desiredSprintAnimationBlend, currentBlend)) return;
-            float newBlend = Mathf.Lerp(currentBlend, desiredSprintAnimationBlend, Time.deltaTime * sprintBlendSpeed);
-            
-            // Apply the new blend
-            Animator.SetFloat(SprintBlend, newBlend);
-        }
-
+        
         private void Move()
         {
             bool moving = movementDirection.magnitude >= 0.1f;

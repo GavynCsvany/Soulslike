@@ -22,6 +22,10 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 StateTypes.Jumping
             };
         }
+        
+        // Animation variables
+        private float fallTime = 0f;
+        private int animationFallTime = Animator.StringToHash("Fall_Time");
 
         // Edge detection variables
         private Vector3 ledgeRayOffset => Controller.EdgeRayOffset;
@@ -47,12 +51,19 @@ namespace Soulslike.Player.States.Basic_Locomotion
         public override void OnStart()
         {
             
+            // Reset the fall time
+            fallTime = 0f;
+            
             // Play the falling animation
             Animator.CrossFadeInFixedTime("Fall", 0.2f);
         }
 
         public override void Update()
         {
+            
+            // Increment the fall time
+            fallTime += Time.deltaTime;
+            Animator.SetFloat(animationFallTime, fallTime);
 
             // Move the player away from any edges they might get caught on
             if (!ApplyLedgeRepulsion())

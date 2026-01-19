@@ -63,7 +63,7 @@ namespace Soulslike.Player.Controller
         public float AdditiveRollSpeed = 5f;
         
         // JUMPING STATE
-        public int JumpPower = 12;
+        public float JumpPower = 12;
         
         // FALLING STATE //
         public Vector3 EdgeRayOffset = new Vector3(0f, -0.05f, 0f);

@@ -12,11 +12,6 @@ namespace Soulslike.Player.States.Actions
         {
             // Change the state type
             StateType = StateTypes.Sprinting;
-            
-            // Animation variables
-            idleTransitionName = "Sprint_FromIdle";
-            desiredSprintAnimationBlend = 1f;
-            sprintBlendSpeed = 1.5f;
         }
         
         // Sprint speed
@@ -37,11 +32,56 @@ namespace Soulslike.Player.States.Actions
             // Check if the player wants to sprint
             if (!Controller.WantToSprint) return false;
             
+            // Check if we are falling
+            if(Controller.PreviousState.StateType == StateTypes.Falling) return true;
+            
             // Make sure the player has enough velocity
-            if(Controller.ForwardVelocity < 3f && !Controller.WantToCrouch) return false;
+            if(Controller.ForwardVelocity < 1f && !Controller.WantToCrouch) return false;
             
             // Do the basic walk check
             return base.CanUse();
+        }
+        
+        protected override void TransitionAnimation()
+        {
+            string animName;
+            float animTime = 0.1f;
+
+            var previousState = Controller.PreviousState.StateType;
+            
+            // Find and play the transition animation based on previous state
+            switch (previousState)
+            {
+                
+                // WALKING
+                case StateTypes.Walking :
+                    animTime = 0.4f;
+                    animName = "Sprint";
+                    break;
+                
+                // FALLING
+                case StateTypes.Falling :
+                    animName = "Fall_Sprint";
+                    break;
+                
+                // JUMPING
+                case StateTypes.Jumping :
+                    animName = "Jump_Sprint";
+                    break;
+                
+                // CROUCH WALKING
+                case StateTypes.CrouchWalking:
+                    animName = "Sprint";
+                    animTime = 0.4f;
+                    break;
+                
+                // ANYTHING ELSE
+                default:
+                    animName = "Sprint";
+                    break;
+            }
+            
+            Animator.CrossFadeInFixedTime(animName, animTime);
         }
         
     }

@@ -21,7 +21,6 @@ namespace Soulslike.Player.States.Actions
         
         // Roll variables
         private float additiveRollSpeed => Controller.AdditiveRollSpeed;
-        private bool backstep;
         
         // Controller variables
         private readonly Transform cam;
@@ -55,28 +54,21 @@ namespace Soulslike.Player.States.Actions
             {
                 // Set the rotation to the target angle
                 transform.rotation = Quaternion.Euler(0f, Controller.TargetMovementAngle, 0f);
+            }
             
-                // Change the animation
-                Animator.CrossFadeInFixedTime("Roll", 0.1f);
-                backstep = false;
-            }
-            else
-            {
-                // Change the animation
-                Animator.CrossFadeInFixedTime("Backstep", 0.1f);
-                backstep = true;
-            }
+            // Change the animation
+            Animator.CrossFadeInFixedTime("Roll", 0.1f);
         }
 
         public override void Update()
         {
             
             // Move the player forward
-            Vector3 rollDir = (backstep) ? -transform.forward : transform.forward;
+            Vector3 rollDir = transform.forward;
             characterController.Move( rollDir * additiveRollSpeed * Time.deltaTime);
             
             // Check if the animation is finished
-            WaitForAnimation(backstep ? "Backstep" : "Roll", 1);
+            WaitForAnimation("Roll", 1);
         }
 
         public override void OnFinished()

@@ -29,7 +29,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             {
                 TransitionAnimation();
             }
-            catch (NullReferenceException e) {
+            catch (NullReferenceException) {
                 Animator.CrossFadeInFixedTime("Idle", 0.2f);
             }
         }
@@ -71,10 +71,10 @@ namespace Soulslike.Player.States.Basic_Locomotion
         {
             
             // Check how fast the player is going
-            var animName = Controller.ForwardVelocity < 4f ? "Idle_FromWalk" : "Idle_FromSprint";
+            var animName = (Controller.ForwardVelocity >= 5) ? "Sprint_Idle" : "Walk_Idle";
 
             // Check which foot is in the air
-            animName += Controller.RightFoot.position.y > Controller.LeftFoot.position.y ? "_RU" : "_LU";
+            animName += Animator.pivotWeight > 0 ? "_RF" : "_LF";
             
             return animName;
         }

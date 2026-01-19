@@ -16,8 +16,11 @@ namespace Soulslike.Player.States.Actions
             HasExitTime = true;
         }
         
+        // Animation variables
+        private string jumpAnim;
+        
         // The jump force
-        private int jumpForce => Controller.JumpPower;
+        private float jumpForce => Controller.JumpPower;
         private bool wantToJump => Controller.WantToJump;
         
         public override bool CanUse()
@@ -36,19 +39,49 @@ namespace Soulslike.Player.States.Actions
             // Vertical jump impulse
             Vector3 jumpImpulse = Vector3.up * jumpForce;
 
-            // Forward jump impulse based on current forward velocity
+            // Get forward direction and velocity
             Vector3 forwardDir = Controller.transform.forward;
             float forwardSpeed = Mathf.Max(0f, Controller.ForwardVelocity);
 
-            // Tune this multiplier to control jump distance
-            float forwardJumpMultiplier = 0.8f;
-            Vector3 forwardImpulse = forwardDir * forwardSpeed * forwardJumpMultiplier;
+            // Get the final forward impulse
+            float forwardJumpMultiplier = 0f;
+            Vector3 forwardImpulse = forwardDir * (forwardSpeed * forwardJumpMultiplier);
 
             // Apply combined impulse
             Controller.GroundController.ApplyImpulse(jumpImpulse + forwardImpulse);
             
-            // Play the animation
-            Animator.CrossFadeInFixedTime("Jump", 0.1f);
+            base.OnStart();
+        }
+        
+        protected override void TransitionAnimation()
+        {
+            string animName;
+            float animTime = 0.1f;
+
+            var previousState = Controller.PreviousState.StateType;
+            
+            // Find and play the transition animation based on previous state
+            switch (previousState)
+            {
+                
+                // SPRINT
+                case StateTypes.Sprinting :
+                    animName = "Sprint_Jump";
+                    break;
+                
+                // CROUCH WALKING
+                case StateTypes.Walking:
+                    animName = "Walk_Jump";
+                    break;
+                
+                // ANYTHING ELSE
+                default:
+                    animName = "Jump";
+                    break;
+            }
+
+            jumpAnim = animName;
+            Animator.CrossFadeInFixedTime(animName, animTime);
         }
         
         public override void Update()
@@ -73,7 +106,7 @@ namespace Soulslike.Player.States.Actions
             }
 
             // Wait for the animation to finish
-            WaitForAnimation("Jump");
+            WaitForAnimation(jumpAnim);
         }
         
     }

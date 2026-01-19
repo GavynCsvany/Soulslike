@@ -15,7 +15,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
         }
         
         // Animation variables
-        private static readonly int FallTimeParam = Animator.StringToHash("FallTime");
+        private static readonly int FallTimeParam = Animator.StringToHash("Fall_Time");
 
         public override bool CanUse() => Controller.JustGrounded;
 
@@ -23,14 +23,13 @@ namespace Soulslike.Player.States.Basic_Locomotion
         {
             
             // Check if enough time has passed to play the animation
-            if (Controller.AirTime <= 1f)
+            if (Animator.GetFloat(FallTimeParam) <= 0.25f)
             {
                 IsFinished = true;
                 return;
             }
             
             // Change the animation
-            Animator.SetFloat(FallTimeParam, Controller.AirTime);
             Animator.CrossFadeInFixedTime("Land", 0.1f);
         }
 

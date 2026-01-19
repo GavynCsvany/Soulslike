@@ -259,7 +259,7 @@ namespace Soulslike.Utility.Inspector
                 // JUMPING STATE
                 case StateTypes.Jumping:
                     script.JumpPower =
-                        EditorGUILayout.IntSlider("Jump power", script.JumpPower, 0, 50);
+                        EditorGUILayout.Slider("Jump power", script.JumpPower, 0, 20);
                     break;
 
                 // FALLING STATE
