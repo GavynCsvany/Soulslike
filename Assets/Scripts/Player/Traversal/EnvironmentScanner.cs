@@ -22,7 +22,7 @@ namespace Soulslike.Player.Traversal
         // Obstacle detection
         public RaycastHit ObstacleDetectedInfo;
         public bool ObstacleDetected;
-        private float obstacleDetectionDistance = 1.5f;
+        private float obstacleDetectionDistance = 0.9f;
         
         // Climb detection variables
         public RaycastHit ClimbableObstacleInfo;

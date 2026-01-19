@@ -36,7 +36,7 @@ namespace Soulslike.Player.States.Actions
             {
                 OneMeter,
                 TwoMeter,
-                ThreeMeter,
+                //ThreeMeter,
             };
             
             // States incompatible with this one
@@ -62,7 +62,7 @@ namespace Soulslike.Player.States.Actions
             TransitionTime = 0.1f,
             StartTime = 0.15f,
             EndTime = 0.25f,
-            Offset = new Vector3(0.2f, 0, -0.25f),
+            Offset = new Vector3(0.2f, 0, 0),
             MinHeight = 0.6f,
             MaxHeight = 1.5f,
         };
@@ -80,12 +80,12 @@ namespace Soulslike.Player.States.Actions
             MaxHeight = 2.7f,
         };
         
-        // 3 Meter Climb
+        // 3 Meter Climb || NOT IN USE ||
         private ClimbType ThreeMeter = new ClimbType()
         {
             AnimationName = "Climb_3M",
             FinalTag = "Last",
-            TransitionTime = 0.3f,
+            TransitionTime = 0.1f,
             StartTime = 0.05f,
             EndTime = 0.18f,
             Offset = new Vector3(0.2f, -0.05f, 0f),
@@ -144,7 +144,7 @@ namespace Soulslike.Player.States.Actions
             if (Controller.WantToCrouch) currentType.AnimationName += "_Crouch";
             
             // Play the animation
-            Animator.CrossFade(currentType.AnimationName, currentType.TransitionTime);
+            Animator.CrossFadeInFixedTime(currentType.AnimationName, currentType.TransitionTime);
         }
 
         public override void Update()
@@ -152,7 +152,8 @@ namespace Soulslike.Player.States.Actions
 
             // Enable gravity if not target matching
             AnimatorStateInfo state = Animator.GetCurrentAnimatorStateInfo(0);
-            Controller.GravityEnabled = !state.IsTag("Target Match") || Animator.IsInTransition(0);
+            bool targetMatching = state.IsTag("Target Match") || Animator.IsInTransition(0);
+            Controller.GravityEnabled = !targetMatching;
             
             // Apply target matching
             TargetMatch();
