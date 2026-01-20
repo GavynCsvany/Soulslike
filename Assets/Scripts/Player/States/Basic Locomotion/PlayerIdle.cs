@@ -45,12 +45,12 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 
                 // WALKING
                 case StateTypes.Walking :
-                    animName = TransitionFromWalkOrSprint();
+                    animName = TransitionFromWalkOrSprint("Walk_Idle");
                     break;
                 
                 // SPRINTING
                 case StateTypes.Sprinting :
-                    animName = TransitionFromWalkOrSprint();
+                    animName = TransitionFromWalkOrSprint("Sprint_Idle");
                     break;
                 
                 // CROUCH IDLE
@@ -67,16 +67,16 @@ namespace Soulslike.Player.States.Basic_Locomotion
             Animator.CrossFadeInFixedTime(animName, animTime);
         }
 
-        private string TransitionFromWalkOrSprint()
+        private string TransitionFromWalkOrSprint(string name)
         {
             
             // Check how fast the player is going
             var animName = (Controller.ForwardVelocity >= 5) ? "Sprint_Idle" : "Walk_Idle";
 
             // Check which foot is in the air
-            animName += Animator.pivotWeight > 0 ? "_RF" : "_LF";
+            name += Animator.pivotWeight > 0 ? "_RF" : "_LF";
             
-            return animName;
+            return name;
         }
 
         public override void Update() { }

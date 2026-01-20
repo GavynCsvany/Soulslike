@@ -71,6 +71,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             float animTime = 0.1f;
 
             var previousState = Controller.PreviousState.StateType;
+            float fallTime = Controller.AirTime;
             
             // Find and play the transition animation based on previous state
             switch (previousState)
@@ -96,11 +97,13 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 // FALLING
                 case StateTypes.Falling :
                     animName = "Fall_Walk";
+                    animName += (fallTime >= 0.4) ? "_Heavy" : "_Light";
                     break;
                 
                 // JUMPING
                 case StateTypes.Jumping :
-                    animName = "Jump_Walk";
+                    animName = "Fall_Walk";
+                    animName += (fallTime >= 0.4) ? "_Heavy" : "_Light";
                     break;
                 
                 // ANYTHING ELSE
