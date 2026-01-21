@@ -33,7 +33,7 @@ namespace Soulslike.Player.Controller
                 { StateTypes.Falling , new PlayerFalling(controller, 5) },              // Falling state
                 { StateTypes.Jumping , new PlayerJump(controller, 7)},                  // Jumping state
                 { StateTypes.Rolling, new PlayerRoll(controller, 8)},                   // Rolling state
-                //{ StateTypes.Climbing, new PlayerClimbObstacle(controller, 9)},         // Climb state
+                { StateTypes.Climbing, new PlayerClimbObstacle(controller, 9)},         // Climb state
                 
                 // LEDGE CLIMBING STATES // 
                 //{ StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts
