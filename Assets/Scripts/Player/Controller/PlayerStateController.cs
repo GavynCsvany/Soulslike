@@ -18,35 +18,35 @@ namespace Soulslike.Player.Controller
         // Class constructor
         public PlayerStateController(PlayerController controller)
         {
-                       
+            
             // Construct the states
-            Dictionary<StateTypes, PlayerState> states = new Dictionary<StateTypes, PlayerState>()
+            List<PlayerState> states = new List<PlayerState>()
             {
                 
                 // BASE STATES //
-                { StateTypes.Idle, new PlayerIdle(controller,  0) },                    // Idle state
-                { StateTypes.Landed,  new PlayerLanded(controller, 1) },                // Landed state
+                { new PlayerIdle(controller,  0) },                 // Idle state
+                { new PlayerLanded(controller, 1) },                // Landed state
                 //{ StateTypes.CrouchIdle, new PlayerCrouchIdle(controller,  1) },         // Crouch idle state
-                { StateTypes.Walking, new PlayerWalking(controller, 3) },               // Walking State
+                { new PlayerWalking(controller, 3) },               // Walking State
                 //{ StateTypes.CrouchWalking, new PlayerCrouchWalking(controller, 3)},    // Crouch walking state
-                { StateTypes.Sprinting, new PlayerSprinting(controller, 4) },           // Sprinting State
-                { StateTypes.Falling , new PlayerFalling(controller, 5) },              // Falling state
-                { StateTypes.Jumping , new PlayerJump(controller, 7)},                  // Jumping state
-                { StateTypes.Rolling, new PlayerRoll(controller, 8)},                   // Rolling state
-                { StateTypes.Climbing, new PlayerClimbObstacle(controller, 9)},         // Climb state
+                { new PlayerSprinting(controller, 4) },             // Sprinting State
+                { new PlayerFalling(controller, 5) },               // Falling state
+                { new PlayerJump(controller, 7)},                   // Jumping state
+                { new PlayerRoll(controller, 8)},                   // Rolling state
+                { new PlayerClimbObstacle(controller, 9)},          // Climb state
                 
                 // LEDGE CLIMBING STATES // 
                 //{ StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts
                 //{ StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },          // Ledge climb ends
                 //{ StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) },          // Ledge climb idle
             };
-            sortedStates = states.Values.OrderByDescending(state => state.Priority).ToList();
+            sortedStates = states.OrderByDescending(state => state.Priority).ToList();
             
             // Subscribe to the event
             StateChanged += (_, newState) => OnStateChanged(newState);
             
             // Assign the starting state
-            CurrentState = states[StateTypes.Idle];
+            CurrentState = states[0];
         }
 
         // Called every frame
