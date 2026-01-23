@@ -24,10 +24,11 @@ namespace Soulslike.Player.Traversal
         public bool ObstacleDetected;
         private float obstacleDetectionDistance = 0.9f;
         
-        // Climb detection variables
-        public RaycastHit ClimbableObstacleInfo;
-        public bool ClimbableObstacleDetected = false;
-        private float climbRayLength = 5f;
+        // Mantle detection variables
+        public RaycastHit MantleableObstacleInfo;
+        public bool MantleableObstacleDetected = false;
+        public float MantleableObstacleHeightDifference = 0f;
+        private float mantleRayLength = 5f;
         
         // Class construction
         public EnvironmentScanner(PlayerController controller)
@@ -45,25 +46,28 @@ namespace Soulslike.Player.Traversal
             // Check for any obstacles
             ObstacleDetected = FireWallRay(obstacleDetectionDistance, Color.green);
             
-            // Find any climbable walls
-            ClimbableObstacleDetected = ObstacleDetected && DetectClimbableObstacles();
+            // Find any mantleable walls
+            MantleableObstacleDetected = ObstacleDetected && DetectMantleableObstacles();
         }
         
         // Wall climb detection
-        private bool DetectClimbableObstacles()
+        private bool DetectMantleableObstacles()
         {
             
             bool hit = false;
             
             // Get the origin of the raycast
-            Vector3 rayOrigin = ObstacleInWayOfMovementInfo.point + (Vector3.up * climbRayLength);
+            Vector3 rayOrigin = ObstacleInWayOfMovementInfo.point + (Vector3.up * mantleRayLength);
             
             // Fire the raycast
-            if(Physics.Raycast(rayOrigin, Vector3.down, out ClimbableObstacleInfo, climbRayLength, Controller.GroundMask)) hit = true;
+            if(Physics.Raycast(rayOrigin, Vector3.down, out MantleableObstacleInfo, mantleRayLength, Controller.GroundMask)) hit = true;
+            
+            // Get the difference in height
+            if(hit) MantleableObstacleHeightDifference = MantleableObstacleInfo.point.y - Controller.transform.position.y;
             
             // Create a debug ray
             Color color = (!hit) ? Color.green : Color.red;
-            Debug.DrawRay(rayOrigin, Vector3.down * climbRayLength, color);
+            Debug.DrawRay(rayOrigin, Vector3.down * mantleRayLength, color);
             
             return hit;
         }

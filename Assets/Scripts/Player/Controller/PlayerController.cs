@@ -98,6 +98,7 @@ namespace Soulslike.Player.Controller
         }
         public bool JustGrounded => GroundController.JustGrounded;
         public float AirTime => GroundController.AirTime;
+        public void ResetAirTime() => GroundController.ResetAirTime();
 
         // ENVIRONMENT DETECTION //
         private EnvironmentScanner EnvironmentScanner;
@@ -105,8 +106,9 @@ namespace Soulslike.Player.Controller
         public RaycastHit ObstacleInWayOfMovementInfo => EnvironmentScanner.ObstacleInWayOfMovementInfo;
         public bool ObstacleDetected => EnvironmentScanner.ObstacleDetected;
         public RaycastHit ObstacleDetectedInfo => EnvironmentScanner.ObstacleDetectedInfo;
-        public bool ClimbableObstacleDetected => EnvironmentScanner.ClimbableObstacleDetected;
-        public RaycastHit ClimbableObstacleInfo => EnvironmentScanner.ClimbableObstacleInfo;
+        public bool MantleableObstacleDetected => EnvironmentScanner.MantleableObstacleDetected;
+        public RaycastHit MantleableObstacleInfo => EnvironmentScanner.MantleableObstacleInfo;
+        public float MantleableObstacleHeightDifference => EnvironmentScanner.MantleableObstacleHeightDifference;
         
         // LEDGE DETECTION //
         public LayerMask LedgeMask;

@@ -6,6 +6,7 @@ using Soulslike.Player.States.Actions;
 using Soulslike.Player.States.Basic_Locomotion;
 using Soulslike.Player.States.Crouch_Locomotion;
 using Soulslike.Player.States.Ledge_Climbing;
+using Soulslike.Player.States.Ledge_Mantling;
 
 namespace Soulslike.Player.Controller
 {
@@ -33,7 +34,11 @@ namespace Soulslike.Player.Controller
                 { new PlayerFalling(controller, 5) },               // Falling state
                 { new PlayerJump(controller, 7)},                   // Jumping state
                 { new PlayerRoll(controller, 8)},                   // Rolling state
-                { new PlayerClimbObstacle(controller, 9)},          // Climb state
+                
+                // LEDGE MANTLING STATES //
+                { new PlayerMantleOneMeter(controller, 9)},         // Mantle state (1 meter)
+                { new PlayerMantleTwoMeter(controller, 10)},        // Mantle state (2 meter)
+                { new PlayerMantleTwoMeterAir(controller, 11)},     // Mantle state (2 meter air)
                 
                 // LEDGE CLIMBING STATES // 
                 //{ StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts

@@ -98,6 +98,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 case StateTypes.Falling :
                     animName = "Fall_Walk";
                     animName += (fallTime >= 0.4) ? "_Heavy" : "_Light";
+                    if (fallTime <= 0.15) animName = "Walk";
                     break;
                 
                 // JUMPING

@@ -133,5 +133,11 @@ namespace Soulslike.Player.Controller
             GravityVelocity = horizontalVelocity + Vector3.up * verticalVelocity;
             characterController.Move(GravityVelocity * Time.deltaTime);
         }
+        
+        // Method to reset the air time manually
+        public void ResetAirTime()
+        {
+            AirTime = 0f;
+        }
     }
 }
