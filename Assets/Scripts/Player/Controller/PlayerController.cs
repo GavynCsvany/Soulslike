@@ -102,8 +102,6 @@ namespace Soulslike.Player.Controller
 
         // ENVIRONMENT DETECTION //
         private EnvironmentScanner EnvironmentScanner;
-        public bool ObstacleInWayOfMovement => EnvironmentScanner.ObstacleInWayOfMovement;
-        public RaycastHit ObstacleInWayOfMovementInfo => EnvironmentScanner.ObstacleInWayOfMovementInfo;
         public bool ObstacleDetected => EnvironmentScanner.ObstacleDetected;
         public RaycastHit ObstacleDetectedInfo => EnvironmentScanner.ObstacleDetectedInfo;
         public bool MantleableObstacleDetected => EnvironmentScanner.MantleableObstacleDetected;

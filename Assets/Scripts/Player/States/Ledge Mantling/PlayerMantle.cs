@@ -68,7 +68,7 @@ namespace Soulslike.Player.States.Ledge_Mantling
             
             // Assign the obstacle info
             ObstacleInfo = Controller.MantleableObstacleInfo;
-            WallInfo = Controller.ObstacleInWayOfMovementInfo;
+            WallInfo = Controller.ObstacleDetectedInfo;
 
             return true;
         }

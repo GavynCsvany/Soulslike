@@ -1,4 +1,5 @@
 ﻿using Soulslike.Player.Controller;
+using Soulslike.Utility;
 using UnityEngine;
 
 namespace Soulslike.Player.Traversal
@@ -13,16 +14,11 @@ namespace Soulslike.Player.Traversal
         // Ray offset
         private Vector3 detectionOffset = new Vector3(0, 0.2f, 0);
         
-        // Wall detection (movement) variables
-        public RaycastHit ObstacleInWayOfMovementInfo;
-        public bool ObstacleInWayOfMovement = false;
-        private float forwardVelocityLengthMultiplier = 2f;
-        private float minimumObstacleDetectionDistance = 0.6f;
-        
         // Obstacle detection
         public RaycastHit ObstacleDetectedInfo;
         public bool ObstacleDetected;
         private float obstacleDetectionDistance = 0.9f;
+        private int rayAmount = 10;
         
         // Mantle detection variables
         public RaycastHit MantleableObstacleInfo;
@@ -40,11 +36,8 @@ namespace Soulslike.Player.Traversal
         public void Update()
         {
 
-            // Check for walls in the path of movement
-            ObstacleInWayOfMovement = DetectMovementWall();
-
             // Check for any obstacles
-            ObstacleDetected = FireWallRay(obstacleDetectionDistance, Color.green);
+            ObstacleDetected = FireWallRay(obstacleDetectionDistance, out ObstacleDetectedInfo, Color.green);
             
             // Find any mantleable walls
             MantleableObstacleDetected = ObstacleDetected && DetectMantleableObstacles();
@@ -57,49 +50,52 @@ namespace Soulslike.Player.Traversal
             bool hit = false;
             
             // Get the origin of the raycast
-            Vector3 rayOrigin = ObstacleInWayOfMovementInfo.point + (Vector3.up * mantleRayLength);
+            Vector3 rayOrigin = ObstacleDetectedInfo.point + (Vector3.up * mantleRayLength);
             
             // Fire the raycast
-            if(Physics.Raycast(rayOrigin, Vector3.down, out MantleableObstacleInfo, mantleRayLength, Controller.GroundMask)) hit = true;
-            
-            // Get the difference in height
-            if(hit) MantleableObstacleHeightDifference = MantleableObstacleInfo.point.y - Controller.transform.position.y;
-            
-            // Create a debug ray
-            Color color = (!hit) ? Color.green : Color.red;
-            Debug.DrawRay(rayOrigin, Vector3.down * mantleRayLength, color);
+            if(Physics.Raycast(rayOrigin, Vector3.down, out MantleableObstacleInfo, mantleRayLength, Controller.GroundMask))
+            {
+                hit = true;
+                
+                // Get the difference in height
+                MantleableObstacleHeightDifference = MantleableObstacleInfo.point.y - Controller.transform.position.y;
+                
+                // Create a debug ray
+                var rot = new Quaternion(0, 0, 0, 0);
+                DebugHelper.DrawSphere(MantleableObstacleInfo.point, rot, 0.1f, Color.red, 6);
+            }
             
             return hit;
         }
-        
-        // Movement wall detection (velocity based)
-        private bool DetectMovementWall()
-        {
-
-            // Get the detection distance
-            float trueDetDist = (Controller.ForwardVelocity / 10) * forwardVelocityLengthMultiplier;
-            float detDist = Mathf.Max(trueDetDist, minimumObstacleDetectionDistance);
-            
-            return FireWallRay(detDist, Color.purple, 0.1f);
-        }
 
         // Shared wall detection logic
-        private bool FireWallRay(float distance, Color baseColor, float debugOffset = 0)
+        private bool FireWallRay(float distance, out RaycastHit hitInfo, Color baseColor, float debugOffset = 0)
         {
-
+            hitInfo = default(RaycastHit);
             bool hit = false;
+
+            // Create a certain amount of rays
+            float distBetweenRays = Controller.characterController.height / rayAmount;
+            for (int i = 0; i < rayAmount; i++)
+            {
+                
+                // Get the starting point & direction of the ray
+                Vector3 startPos = Transform.position + detectionOffset + new Vector3(0, distBetweenRays * i, 0);
+                Vector3 direction = Controller.MovementDirection;
             
-            // Get the starting point & direction of the ray
-            Vector3 startPos = Transform.position + detectionOffset;
-            Vector3 direction = Controller.MovementDirection;
-            
-            // Fire the raycast
-            if(direction.Equals(Vector3.zero)) direction = Transform.forward;
-            if (Physics.Raycast(startPos, direction, out ObstacleInWayOfMovementInfo, distance, Controller.GroundMask)) hit = true;
-            
-            // Create a debug ray
-            Color color = (!hit) ? baseColor : Color.red;
-            Debug.DrawRay(startPos + new Vector3(0, debugOffset, 0), direction * distance, color);
+                // Fire the raycast
+                if(direction.Equals(Vector3.zero)) direction = Transform.forward;
+                if (Physics.Raycast(startPos, direction, out hitInfo, distance, Controller.GroundMask))
+                {
+                    hit = true;
+                    
+                    // Draw a debug ray
+                    var rot = Quaternion.identity;
+                    DebugHelper.DrawSphere(hitInfo.point, rot, 0.1f, Color.red, 6);
+                    
+                    break;
+                }
+            }
 
             // Return whether we hit something
             return hit;
