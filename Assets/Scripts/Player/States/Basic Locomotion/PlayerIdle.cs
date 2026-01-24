@@ -61,6 +61,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
                 // ANYTHING ELSE
                 default:
                     animName = "Idle";
+                    Controller.ApplyRootMotion = false;
                     break;
             }
             
