@@ -41,9 +41,9 @@ namespace Soulslike.Player.Controller
                 { new PlayerMantleTwoMeterAir(controller, 11)},     // Mantle state (2 meter air)
                 
                 // LEDGE CLIMBING STATES // 
-                //{ StateTypes.LedgeStart, new PlayerLedgeStart(controller, 30) },        // Ledge climb starts
-                //{ StateTypes.LedgeEnd, new PlayerLedgeLeave(controller, 31) },          // Ledge climb ends
-                //{ StateTypes.LedgeIdle, new PlayerLedgeIdle(controller, 20) },          // Ledge climb idle
+                { new PlayerLedgeStart(controller, 30) },           // Ledge climb starts
+                { new PlayerLedgeLeave(controller, 31) },           // Ledge climb ends
+                { new PlayerLedgeIdle(controller, 20) },            // Ledge climb idle
             };
             sortedStates = states.OrderByDescending(state => state.Priority).ToList();
             

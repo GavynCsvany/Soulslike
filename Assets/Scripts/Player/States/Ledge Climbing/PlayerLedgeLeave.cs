@@ -35,6 +35,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             
             // Disable gravity / velocity
             Controller.GravityEnabled = true;
+            Controller.ResetAirTime();
             
             // Do not allow any more ledge grabbing
             Controller.IsLedgeGrabEnabled = false;
