@@ -22,7 +22,7 @@ namespace Soulslike.Player.States.Ledge_Mantling
             // Target matching settings
             TargetMatchStartTime = 0.02f;
             TargetMatchEndTime = 0.15f;
-            TargetMatchOffset = new Vector3(0.2f, 0f, 0f);
+            TargetMatchOffset = new Vector3(0.2f, -0.075f, 0f);
             
             // Height difference
             MinHeight = 1.5f;
