@@ -313,7 +313,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             ledgeRight = Vector3.Cross(Vector3.up, ledgeNormal).normalized;
             ledgeUp = Vector3.Cross(ledgeNormal, ledgeRight).normalized;
             
-             MoveHands();
+            MoveHands();
         }
     }
 }
