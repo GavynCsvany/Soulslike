@@ -1,11 +1,9 @@
 ﻿using System;
+using RootMotion.FinalIK;
 using Soulslike.Core;
 using Soulslike.Player.Input;
-using Soulslike.Player.States;
-using Soulslike.Player.Stats;
 using Soulslike.Player.Traversal;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Soulslike.Player.Controller
 {
@@ -23,6 +21,11 @@ namespace Soulslike.Player.Controller
             get => animator.applyRootMotion;
             set => animator.applyRootMotion = value;
         }
+        
+        // INVERSE KINEMATICS //
+        public Transform LeftHandIK;
+        public Transform RightHandIK;
+        public FullBodyBipedIK FullBodyBipedIK;
         
         // JOINTS //
         public Transform RightFoot;
@@ -134,6 +137,8 @@ namespace Soulslike.Player.Controller
             // Set default values for objects if not already initialized
             if (!characterController && !TryGetComponent(out characterController))
                 characterController = GetComponentInParent<CharacterController>();
+            if (!FullBodyBipedIK && !TryGetComponent(out FullBodyBipedIK))
+                FullBodyBipedIK = GetComponentInParent<FullBodyBipedIK>();
             if (!cam) cam = Camera.main;
             
             // Create the ground controller

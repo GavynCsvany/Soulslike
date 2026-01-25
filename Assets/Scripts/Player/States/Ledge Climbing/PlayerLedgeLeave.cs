@@ -1,5 +1,6 @@
 ﻿using Soulslike.Core;
 using Soulslike.Player.Controller;
+using Soulslike.Utility;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Climbing
@@ -23,6 +24,9 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         public override void OnStart()
         {
+            
+            // End the IK
+            Controller.FullBodyBipedIK.solver.SetIKPositionWeight(0);
             
             // Disable any root motion
             Controller.ApplyRootMotion = false;

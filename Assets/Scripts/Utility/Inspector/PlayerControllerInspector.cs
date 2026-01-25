@@ -63,6 +63,12 @@ namespace Soulslike.Utility.Inspector
             script.ApplyRootMotion =
                 EditorGUILayout.Toggle("Apply Root Motion", script.ApplyRootMotion);
             EditorGUILayout.Space();
+            
+            // INVERSE KINEMATICS //
+            EditorGUILayout.LabelField("IK", EditorStyles.boldLabel);
+            script.LeftHandIK = (Transform)EditorGUILayout.ObjectField("Left Hand", script.LeftHandIK, typeof(Transform), true);
+            script.RightHandIK = (Transform)EditorGUILayout.ObjectField("Right Hand", script.RightHandIK, typeof(Transform), true);
+            EditorGUILayout.Space();
 
             // JOINTS //
             EditorGUILayout.LabelField("Joints", EditorStyles.boldLabel);

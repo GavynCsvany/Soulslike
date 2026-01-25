@@ -23,7 +23,7 @@ namespace Soulslike.Core
         
         // Ledge Climbing
         LedgeStart,
-        LedgeIdle,
+        LedgeClimb,
         LedgeEnd,
     }
     

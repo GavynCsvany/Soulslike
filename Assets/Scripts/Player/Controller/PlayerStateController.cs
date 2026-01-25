@@ -43,7 +43,7 @@ namespace Soulslike.Player.Controller
                 // LEDGE CLIMBING STATES // 
                 { new PlayerLedgeStart(controller, 30) },           // Ledge climb starts
                 { new PlayerLedgeLeave(controller, 31) },           // Ledge climb ends
-                { new PlayerLedgeIdle(controller, 20) },            // Ledge climb idle
+                { new PlayerLedgeClimb(controller, 20) },            // Ledge climb idle
             };
             sortedStates = states.OrderByDescending(state => state.Priority).ToList();
             
