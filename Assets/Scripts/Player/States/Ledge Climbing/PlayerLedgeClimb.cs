@@ -52,38 +52,52 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         // Ledge variables
         private Transform _currentLedge;
-        private Transform currentLedge
+        private Transform CurrentLedge
         {
             get => _currentLedge;
             set
             {
                 if (_currentLedge != value)
                 {
+                    previousLedge = (_currentLedge != null) ? _currentLedge : previousLedge;
                     _currentLedge = value;
                     OnLedgeChange(_currentLedge);
                 }
             }
         }
+        private Transform previousLedge;
+        
+        // Relative up, down, left and right
+        private Vector3 smoothedForward; 
         private Vector3 ledgeRight;
         private Vector3 ledgeUp;
         private Vector3 ledgeNormal;
-
+        
+        // The angle of the ledge
+        private float smoothedLedgeAngle;
+        private float ledgeAngle = 0f;
+        public int MaxAngle = 95;
+        public float EdgeZOffset = 0.3f;
+        
         // The IK components
         private Hand_IK leftHand;
         private Hand_IK rightHand;
         private Vector3 ikMidpoint;
+        private Vector3 previousIkMidpoint;
         
         // Detection settings
-        private float detectionRadius = 1.5f;
+        private float cooldownStartTime = 0f;
+        public float Cooldown = 0.2f;
+        public float DetectionRadius = 1.2f;
         
         // Root settings
-        private float rootPosLerpSpeed = 8f;
-        private float rootRotLerpSpeed = 10f;
+        public float RootPosLerpSpeed = 8f;
+        public float RootRotLerpSpeed = 10f;
 
         // Ledge settings
-        private float minAlignment = 0.3f;
-        private float handSpeed = 3f;
-        private float minDistCovered = 0.7f;
+        public float MinAlignment = 0.4f;
+        public float HandSpeed = 3f;
+        public float MinDistCovered = 0.6f;
         
         public override bool CanUse() => Controller.OnLedge;
 
@@ -99,7 +113,10 @@ namespace Soulslike.Player.States.Ledge_Climbing
             leftHand.hand.position = Controller.DetectedLedge.position;
             
             // Set the current ledge
-            currentLedge = Controller.DetectedLedge;
+            previousLedge = Controller.DetectedLedge;
+            CurrentLedge = Controller.DetectedLedge;
+
+            previousIkMidpoint = (leftHand.hand.position + rightHand.hand.position) / 2f;
             
             // Enable the IK constraint
             Controller.FullBodyBipedIK.solver.SetIKPositionWeight(1);
@@ -119,8 +136,8 @@ namespace Soulslike.Player.States.Ledge_Climbing
             UpdateHands();
             
             // Draw a debug at the current ledge
-            DebugHelper.DrawSphere(currentLedge.transform.position, Quaternion.identity, 0.1f, Color.blue);
-            DebugHelper.DrawSphere(ikMidpoint, Quaternion.identity, detectionRadius, Color.blue);
+            DebugHelper.DrawSphere(CurrentLedge.transform.position, Quaternion.identity, 0.1f, Color.blue);
+            DebugHelper.DrawSphere(ikMidpoint, Quaternion.identity, DetectionRadius, Color.blue);
         }
 
         private void UpdateHands()
@@ -139,15 +156,16 @@ namespace Soulslike.Player.States.Ledge_Climbing
             
             // Get the current distance covered
             float distCovered = (Time.time - desiredHand.moveStartTime) / 1;
-            distCovered *= handSpeed;
+            distCovered *= HandSpeed;
             desiredHand.movementElapsed = distCovered;
             
             // Start moving the other arm
-            if(distCovered >= minDistCovered)
+            if(distCovered >= MinDistCovered)
             {
                 
                 // Check if the other hand is already at the ledge and move it if not
-                if (otherHand.target != currentLedge) SetNewHold(otherHand);
+                if (otherHand.target != CurrentLedge) SetNewHold(otherHand);
+                else OnFinishClimb();
             }
                 
             // Check if we have reached the destination
@@ -166,12 +184,19 @@ namespace Soulslike.Player.States.Ledge_Climbing
             }
         }
 
+        private void OnFinishClimb()
+        {
+            
+            // Start the cooldown
+            cooldownStartTime = Time.time;
+        }
+
         private void MoveHands()
         {
             
             // Get each hand's distance from the new ledge
-            float leftDist = (leftHand.hand.position - currentLedge.position).magnitude;
-            float rightDist = (rightHand.hand.position - currentLedge.position).magnitude;
+            float leftDist = (leftHand.hand.position - CurrentLedge.position).magnitude;
+            float rightDist = (rightHand.hand.position - CurrentLedge.position).magnitude;
             
             // Assign the closer hand to the hold
             SetNewHold((leftDist <= rightDist) ? leftHand : rightHand);
@@ -181,7 +206,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Change the current target
-            hand.target = currentLedge;
+            hand.target = CurrentLedge;
             
             // Get the hand offset
             Vector3 offset =
@@ -191,11 +216,11 @@ namespace Soulslike.Player.States.Ledge_Climbing
             
             // Change the position
             hand.previousPosition = hand.hand.position;
-            hand.nextPositon = currentLedge.position + offset;
+            hand.nextPositon = CurrentLedge.position + offset;
             
             // Change the rotation
             hand.previousRotation = hand.hand.rotation;
-            hand.nextRotation = Quaternion.LookRotation(-currentLedge.forward, currentLedge.up);
+            hand.nextRotation = Quaternion.LookRotation(-CurrentLedge.forward, CurrentLedge.up);
  
             // Update the movement variables
             hand.moving = true;
@@ -205,22 +230,30 @@ namespace Soulslike.Player.States.Ledge_Climbing
         private void FindNewHold(Vector2 normalizedDir)
         {
             
+            // Check for the cooldown
+            if(Time.time - cooldownStartTime < Cooldown) return;
+            
             // Origin point
             Vector3 origin = ikMidpoint;
 
             // List of found ledges
-            Collider[] hits = Physics.OverlapSphere(origin, detectionRadius, Controller.LedgeMask);
+            Collider[] hits = Physics.OverlapSphere(origin, DetectionRadius, Controller.LedgeMask);
 
             // The best ledge found
             float bestScore = float.NegativeInfinity;
             Transform bestLedge = null;
+            float bestAngle = 0f;
 
             // Loop through all ledges we've found
             foreach (Collider hit in hits)
             {
                 
                 // Make sure the ledge isn't the one we're on
-                if (hit.transform == currentLedge) continue;
+                if (hit.transform == CurrentLedge) continue;
+                
+                // Make sure the ledge isn't at too much of an angle
+                float cornerAngle = Vector3.Angle(CurrentLedge.forward, hit.transform.forward);
+                if (Mathf.Abs(cornerAngle) > MaxAngle) continue;
 
                 // Direction and distance from origin to the ledge (world space)
                 Vector3 toLedge = hit.transform.position - origin;
@@ -239,7 +272,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
                 float alignment = Vector3.Dot(moveOnLedge, toLedgeOnPlane);
 
                 // Ignore ledges outside of input range
-                if (alignment < minAlignment) continue;
+                if (alignment < MinAlignment) continue;
                 
                 // Calculate the weight of the ledge
                 float score = alignment * 1.0f - dist * 0.15f;
@@ -249,52 +282,65 @@ namespace Soulslike.Player.States.Ledge_Climbing
                 {
                     bestScore = score;
                     bestLedge = hit.transform;
+                    bestAngle = cornerAngle;
                 }
             }
 
-            if (bestLedge != null) currentLedge = bestLedge;
+            if (bestLedge != null)
+            {
+                CurrentLedge = bestLedge;
+                ledgeAngle = bestAngle;
+            }
         }
 
         private void AdjustRoot()
         {
-            
-            // Get the midpoint between the hands
-            Vector3 A = leftHand.hand.position;
-            Vector3 B = rightHand.hand.position;
-            ikMidpoint = (A + B) / 2f;
+            // Calculate the midpoint
+            Vector3 rawMidpoint = (leftHand.hand.position + rightHand.hand.position) / 2f;
 
-            // Get the rotation towards the midpoint
-            Vector3 toMidpoint = ikMidpoint - Controller.transform.position;
-            Vector3 flatForward = Vector3.ProjectOnPlane(toMidpoint, Vector3.up);
+            // Smooth the midpoint over time
+            previousIkMidpoint = Vector3.Lerp(previousIkMidpoint, rawMidpoint, Time.deltaTime * 10f);
+            ikMidpoint = previousIkMidpoint;
 
-            // Create the offset in wall-local space
-            Vector3 offset = new Vector3(0, -1.3f, 0.3f);
+            // Lerp between the two ledge normals
+            smoothedForward = Vector3.Slerp(smoothedForward, ledgeNormal, Time.deltaTime * 8f);
+            smoothedLedgeAngle = Mathf.Lerp(smoothedLedgeAngle, ledgeAngle, Time.deltaTime * 5f);
+
+            // Get the z-axis curve
+            float avgTimePassed = (leftHand.movementElapsed + rightHand.movementElapsed) / 2f;
+            float t = Mathf.SmoothStep(0f, 1f, avgTimePassed);
+            float offsetMult = Mathf.Sin(t * Mathf.PI);
+            float zOffset = EdgeZOffset * offsetMult * Mathf.Max(0, ledgeAngle / MaxAngle);
+
+            // Create the world offset
+            Vector3 offset = new Vector3(0, -1.3f, 0.3f + zOffset);
             Vector3 worldOffset =
                 ledgeRight * offset.x +
                 ledgeUp * offset.y +
-                ledgeNormal * offset.z;
+                smoothedForward * offset.z;
 
-            // Draw the debug
+            // Draw the debug sphere
             DebugHelper.DrawSphere(ikMidpoint, Quaternion.identity, 0.2f, Color.red);
 
-            // Target position & rotation
+            // Get the target position and rotation
             Vector3 targetPos = ikMidpoint + worldOffset;
+            Vector3 flatForward = Vector3.ProjectOnPlane(ikMidpoint - Controller.transform.position, Vector3.up);
             Quaternion targetRot = Quaternion.LookRotation(flatForward.normalized, ledgeUp);
 
-            // Lerp toward them
+            // Lerp towards the target
             Controller.transform.position = Vector3.Lerp(
                 Controller.transform.position,
                 targetPos,
-                Time.deltaTime * rootPosLerpSpeed
+                Time.deltaTime * RootPosLerpSpeed
             );
 
             Controller.transform.rotation = Quaternion.Slerp(
                 Controller.transform.rotation,
                 targetRot,
-                Time.deltaTime * rootRotLerpSpeed
+                Time.deltaTime * RootRotLerpSpeed
             );
         }
-
+        
         public override void OnFinished()
         {
             
@@ -307,7 +353,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         {
             
             // Get the wall normal
-            ledgeNormal = currentLedge.forward;
+            ledgeNormal = CurrentLedge.forward;
 
             // Construct local wall space
             ledgeRight = Vector3.Cross(Vector3.up, ledgeNormal).normalized;
