@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -27,9 +26,7 @@ namespace Soulslike.Core
         CrouchWalking,
         
         // Ledge Climbing
-        LedgeStart,
         LedgeClimb,
-        LedgeEnd,
     }
     
     [Serializable]

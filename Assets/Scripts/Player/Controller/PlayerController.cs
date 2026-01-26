@@ -187,19 +187,18 @@ namespace Soulslike.Player.Controller
         public float MantleableObstacleHeightDifference => EnvironmentScanner.MantleableObstacleHeightDifference;
         
         // LEDGE DETECTION //
+        
+        // The ledge detection handler
         [FoldoutGroup("Environment Detection")]
-        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] [OdinSerialize] 
-        public PlayerLedgeController LedgeController;
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
+        [OdinSerialize] public PlayerLedgeController LedgeController;
+        
+        // The ledge layermask
         public LayerMask LedgeMask => LedgeController.LedgeMask;
+        
+        // The current detected ledge
         public Transform DetectedLedge => LedgeController.DetectedLedge;
-        public bool OnLedge {
-            get => LedgeController.OnLedge;
-            set => LedgeController.OnLedge = value;
-        }
-        public bool IsLedgeGrabEnabled {
-            get => LedgeController.IsLedgeGrabEnabled;
-            set => LedgeController.IsLedgeGrabEnabled = value;
-        }
+        
         
         #region Unity Callbacks
 
@@ -238,9 +237,6 @@ namespace Soulslike.Player.Controller
             
             // Set up the state controller
             stateController.Initialize(this);
-
-            // Subscribe to state changes
-            LedgeController.SubscribeToStateChangedEvent();
         }
         
         private void OnEnable()

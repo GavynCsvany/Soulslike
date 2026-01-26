@@ -21723,7 +21723,7 @@ MonoBehaviour:
       Data: 8
     - Name: RootRotLerpSpeed
       Entry: 4
-      Data: 10
+      Data: 20
     - Name: MinAlignment
       Entry: 4
       Data: 0.4
@@ -21732,7 +21732,7 @@ MonoBehaviour:
       Data: 3
     - Name: MinDistCovered
       Entry: 4
-      Data: 0.6
+      Data: 0.8
     - Name: OriginOffset
       Entry: 7
       Data: UnityEngine.Vector3, UnityEngine.CoreModule

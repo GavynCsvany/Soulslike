@@ -24,45 +24,17 @@ namespace Soulslike.Player.Controller
         // The player controller
         PlayerController Controller;
         
-        // If ledge grabbing is enabled
-        [BoxGroup("Ledge Detection"), LabelWidth(140)]  
-        public bool IsLedgeGrabEnabled = true;
-        
         // Ledge layer mask
         [BoxGroup("Ledge Detection"), LabelWidth(140)]  
         public LayerMask LedgeMask;
         
-        // If on a ledge
-        [BoxGroup("Ledge Detection"), LabelWidth(140), ReadOnly] 
-        public bool OnLedge = false;
-        
         // The detected ledge
         [BoxGroup("Ledge Detection"), LabelWidth(140),ReadOnly] 
         public Transform DetectedLedge;
-
         
         public void Initialize(PlayerController controller)
         {
             Controller = controller;
-        }
- 
-        // Subscribe to state events
-        public void SubscribeToStateChangedEvent()
-        {
-            
-            // Add binding to state changed event
-            Controller.StateChanged += EnableLedgeGrabbingOnLand;
-        }
-        
-        // Enable the CanGrabLedge bool
-        private void EnableLedgeGrabbingOnLand(object sender, EntityState state)
-        {
-
-            // Check if the player has landed
-            if (state.StateType == StateTypes.Landed)
-            {
-                IsLedgeGrabEnabled = true;
-            }
         }
         
         // Ledge detection

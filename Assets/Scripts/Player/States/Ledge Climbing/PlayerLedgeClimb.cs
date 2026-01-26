@@ -44,6 +44,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
         }
 
         public bool IsLedgeGrabEnabled = true;
+        public bool OnLedge = false;
         public float ledgeLeaveCooldown = 3;
         private bool isCooldownRunning;
 
@@ -127,7 +128,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             if (!IsLedgeGrabEnabled) return false;
             
             // Check if we are already on a ledge
-            if (Controller.OnLedge) return true;
+            if (OnLedge) return true;
             
             RaycastHit ledgeHit;
             
@@ -165,7 +166,7 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.characterController.enabled = false;
 
             // Let the controller know we are on a ledge
-            Controller.OnLedge = true;
+            OnLedge = true;
             
             // Disable gravity / velocity
             Controller.GravityEnabled = false;
@@ -423,10 +424,16 @@ namespace Soulslike.Player.States.Ledge_Climbing
             Controller.characterController.enabled = true;
 
             // Let the controller know we are on a ledge
-            Controller.OnLedge = false;
+            OnLedge = false;
             
             // Disable gravity / velocity
             Controller.GravityEnabled = true;
+            
+            // Start a cooldown if not already doing so
+            if (!isCooldownRunning)
+            {
+                Controller.StartCoroutine(LedgeClimbEnabledCooldown());
+            }
         }
 
         private void OnLedgeChange(Transform value)
