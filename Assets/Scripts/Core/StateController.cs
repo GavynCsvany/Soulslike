@@ -1,5 +1,6 @@
 using System;
 using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using UnityEngine;
 
 namespace Soulslike.Core
@@ -12,7 +13,7 @@ namespace Soulslike.Core
         [ShowInInspector, InlineProperty] public bool CanChangeState = true;
 
         // The current state
-        [ShowInInspector, ReadOnly] private EntityState currentState;
+        [OdinSerialize, ReadOnly] private EntityState currentState;
         public EntityState CurrentState
         {
             get =>  currentState; // Return the current state variable

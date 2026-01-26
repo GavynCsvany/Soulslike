@@ -88,6 +88,9 @@ namespace Soulslike.Player.Controller
         public Vector3 MovementDirection => LocomotionController.MovementDirection;
         public float TargetMovementAngle => LocomotionController.TargetAngle;
         
+        // Whether an object is in front of the final movement vector
+        public bool ObjectInWayOfMovement => LocomotionController.ObjectInWayOfMovement;
+        
         
         // PLAYER STATE //
         
@@ -167,6 +170,10 @@ namespace Soulslike.Player.Controller
         [FoldoutGroup("Environment Detection")]
         [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
         [OdinSerialize] private EnvironmentScanner EnvironmentScanner;
+        
+        // Function to fire raycast checking for walls
+        public bool CheckForObstacle( Vector3 position, Vector3 direction, float distance, out RaycastHit hitInfo) =>
+            EnvironmentScanner.FireWallRay( position, direction, distance, out hitInfo);
         
         // The obstacle detected in the way of the player's desired movement direction
         public bool ObstacleDetected => EnvironmentScanner.ObstacleDetected;
@@ -250,6 +257,9 @@ namespace Soulslike.Player.Controller
             
             // Scan the environment
             EnvironmentScanner.Update();
+            
+            // Adjust the movement vector
+            LocomotionController.AccountForCollisions();
             
             // Update the current state
             stateController.Update();

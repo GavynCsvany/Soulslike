@@ -21648,6 +21648,18 @@ MonoBehaviour:
     - Name: TargetAngle
       Entry: 4
       Data: 0
+    - Name: ObstacleSkinWidth
+      Entry: 4
+      Data: 0.5
+    - Name: ObstacleAlignmentAngleThreshold
+      Entry: 3
+      Data: 10
+    - Name: MaxSlideIterations
+      Entry: 3
+      Data: 3
+    - Name: ObjectInWayOfMovement
+      Entry: 5
+      Data: false
     - Name: 
       Entry: 8
       Data: 
@@ -21657,6 +21669,9 @@ MonoBehaviour:
     - Name: CanChangeState
       Entry: 5
       Data: true
+    - Name: currentState
+      Entry: 6
+      Data: 
     - Name: StateChanged
       Entry: 6
       Data: 

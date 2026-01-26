@@ -46,7 +46,11 @@ namespace Soulslike.Player.Traversal
         {
 
             // Check for any obstacles
-            ObstacleDetected = FireWallRay(obstacleDetectionDistance, out ObstacleDetectedInfo, Color.green);
+            ObstacleDetected = FireWallRay(
+                Controller.transform.position,
+                Controller.MovementDirection,
+                obstacleDetectionDistance, 
+                out ObstacleDetectedInfo);
             
             // Find any mantleable walls
             MantleableObstacleDetected = ObstacleDetected && DetectMantleableObstacles();
@@ -76,9 +80,9 @@ namespace Soulslike.Player.Traversal
             
             return hit;
         }
-
+        
         // Shared wall detection logic
-        private bool FireWallRay(float distance, out RaycastHit hitInfo, Color baseColor, float debugOffset = 0)
+        public bool FireWallRay(Vector3 position, Vector3 direction, float distance, out RaycastHit hitInfo)
         {
             hitInfo = default(RaycastHit);
             bool hit = false;
@@ -89,8 +93,7 @@ namespace Soulslike.Player.Traversal
             {
                 
                 // Get the starting point & direction of the ray
-                Vector3 startPos = Transform.position + detectionOffset + new Vector3(0, distBetweenRays * i, 0);
-                Vector3 direction = Controller.MovementDirection;
+                Vector3 startPos = position + detectionOffset + new Vector3(0, distBetweenRays * i, 0);
             
                 // Fire the raycast
                 if(direction.Equals(Vector3.zero)) direction = Transform.forward;
