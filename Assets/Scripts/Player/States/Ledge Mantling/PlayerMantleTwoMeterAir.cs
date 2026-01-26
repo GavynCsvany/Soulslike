@@ -1,22 +1,25 @@
-﻿using Soulslike.Player.Controller;
+﻿using System;
+using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Mantling
 {
+    [Serializable]
     public sealed class PlayerMantleTwoMeterAir : PlayerMantle
     {
         
         // Class construction
-        public PlayerMantleTwoMeterAir(PlayerController controller, int priority = 12) : base(controller, priority)
+        public PlayerMantleTwoMeterAir()
         {
-
+            Priority = 11;
+            
             // Animation settings
             AnimationName = "Mantle_2M_Air";
             TransitionTime = 0.1f;
             MultipleAnimations = false;
             
             // Input settings
-            MustPressJumpButton = false;
+            MustPressJump = false;
             MustBeGrounded = false;
             
             // Target matching settings

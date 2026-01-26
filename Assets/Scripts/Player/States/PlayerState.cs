@@ -1,33 +1,33 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
+using Sirenix.Serialization;
 
 namespace Soulslike.Player.States
 {
+    [Serializable]
     public abstract class PlayerState : EntityState
     {
         
         // The player controller
-        protected PlayerController Controller { get; }
+        protected PlayerController Controller { get; private set; }
         
         // The player animator
         private bool reachedFinalAnimation = false;
-        protected Animator Animator => Controller.animator;
+        protected Animator Animator;
         
         // Class construction
-        protected PlayerState(PlayerController controller)
-        {
-            
-            // Assign the controller variable
-            this.Controller = controller;
-        }
+        protected PlayerState() { }
         
         // Class construction with priority
-        protected PlayerState(PlayerController controller, int priority) : base(priority)
+        protected PlayerState(int priority) : base(priority) { }
+
+        public virtual void InitializeController(PlayerController controller)
         {
-            
             // Assign the controller variable
             this.Controller = controller;
+            Animator = Controller.animator;
         }
 
         // Wait for a given animation to finish (or get to a certain point)

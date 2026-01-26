@@ -1,15 +1,18 @@
 using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Soulslike.Core
 {
+    [Serializable]
     public class StateController
     {
         
         // Whether the current state can be changed
-        public bool CanChangeState = true;
+        [ShowInInspector, InlineProperty] public bool CanChangeState = true;
 
         // The current state
-        private EntityState currentState;
+        [ShowInInspector, ReadOnly] private EntityState currentState;
         public EntityState CurrentState
         {
             get =>  currentState; // Return the current state variable
@@ -20,7 +23,7 @@ namespace Soulslike.Core
         public EntityState PreviousState { get; private set; }
         
         // Called when the current state has been changed
-        public EventHandler<EntityState> StateChanged;
+        [HideInInspector] public EventHandler<EntityState> StateChanged;
         
         // Class constructor
         public StateController(EntityState startingState)

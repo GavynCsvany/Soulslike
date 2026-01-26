@@ -1,4 +1,6 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Sirenix.OdinInspector;
+using Soulslike.Core;
 using UnityEngine;
 
 namespace Soulslike.Player.Controller
@@ -15,38 +17,41 @@ namespace Soulslike.Player.Controller
         public float detectionDistance;
     }
     
+    [Serializable]
     public class PlayerLedgeController
     {
 
         // The player controller
         PlayerController Controller;
         
-        // Basic ledge settings
+        // If ledge grabbing is enabled
+        [BoxGroup("Ledge Detection"), LabelWidth(140)]  
         public bool IsLedgeGrabEnabled = true;
-        private readonly LayerMask ledgeMask;
+        
+        // Ledge layer mask
+        [BoxGroup("Ledge Detection"), LabelWidth(140)]  
+        public LayerMask LedgeMask;
+        
+        // If on a ledge
+        [BoxGroup("Ledge Detection"), LabelWidth(140), ReadOnly] 
+        public bool OnLedge = false;
         
         // The detected ledge
-        public bool OnLedge = false;
+        [BoxGroup("Ledge Detection"), LabelWidth(140),ReadOnly] 
         public Transform DetectedLedge;
- 
-        // Class creation
-        public PlayerLedgeController(PlayerController controller_)
-        {
-            // Assign the controller
-            Controller = controller_;
-            
-            // Assign the ledge mask
-            ledgeMask = controller_.LedgeMask;
-        }
-        
-        #region Methods
 
+        
+        public void Initialize(PlayerController controller)
+        {
+            Controller = controller;
+        }
+ 
         // Subscribe to state events
         public void SubscribeToStateChangedEvent()
         {
             
             // Add binding to state changed event
-            Controller.StateController.StateChanged += EnableLedgeGrabbingOnLand;
+            Controller.StateChanged += EnableLedgeGrabbingOnLand;
         }
         
         // Enable the CanGrabLedge bool
@@ -86,7 +91,7 @@ namespace Soulslike.Player.Controller
                 
                 // Check if the ray hits anything
                 Debug.DrawRay(rayOrigin, dir * detectionSettings.detectionDistance, Color.red);
-                if (Physics.Raycast(rayOrigin, dir, out hit, detectionSettings.detectionDistance, ledgeMask))
+                if (Physics.Raycast(rayOrigin, dir, out hit, detectionSettings.detectionDistance, LedgeMask))
                 {
                     // Assign the detected ledge
                     DetectedLedge = hit.transform;
@@ -99,7 +104,6 @@ namespace Soulslike.Player.Controller
             
             return false;
         }
-        
-        #endregion
+
     }
 }

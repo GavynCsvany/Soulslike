@@ -1,31 +1,43 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Sirenix.OdinInspector;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Actions
 {
+    [Serializable]
     public class PlayerRoll :  PlayerState
     {
         
         // Class construction with priority
-        public PlayerRoll(PlayerController controller, int priority = 4) : base(controller, priority)
+        public PlayerRoll()
         {
             StateType = StateTypes.Rolling;
+            Priority = 8;
             HasExitTime = true;
-
+        }
+        
+        // Animation variables
+        [SerializeField, ShowInInspector, BoxGroup("Roll Settings"), LabelWidth(130)] 
+        private string animationName = "Roll";
+        
+        // Roll variables
+        [SerializeField, ShowInInspector, BoxGroup("Roll Settings"), LabelWidth(130)] 
+        private float additiveRollSpeed = 2f;
+        
+        // Controller variables
+        private Transform transform;
+        private CharacterController characterController;
+        
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
+            
             // Get the player components
-            cam = controller.cam.transform;
             transform = controller.transform;
             characterController = controller.characterController;
         }
-        
-        // Roll variables
-        private float additiveRollSpeed => Controller.AdditiveRollSpeed;
-        
-        // Controller variables
-        private readonly Transform cam;
-        private readonly Transform transform;
-        private readonly CharacterController characterController;
         
         public override bool CanUse()
         {
@@ -57,7 +69,7 @@ namespace Soulslike.Player.States.Actions
             }
             
             // Change the animation
-            Animator.CrossFadeInFixedTime("Roll", 0.1f);
+            Animator.CrossFadeInFixedTime(animationName, 0.1f);
         }
 
         public override void Update()

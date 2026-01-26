@@ -1,17 +1,21 @@
-﻿using Soulslike.Core;
-using Soulslike.Player.Controller;
+﻿using System;
+using Sirenix.OdinInspector;
+using Soulslike.Core;
+using Sirenix.Serialization;
 using Soulslike.Player.States.Basic_Locomotion;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Actions
 {
+    [Serializable]
     public class PlayerJump : PlayerWalking
     {
         
         // Class construction
-        public PlayerJump(PlayerController controller, int priority = 11) : base(controller, priority)
+        public PlayerJump()
         {
             StateType = StateTypes.Jumping;
+            Priority = 7;
             UseRootMotion = false;
             HasExitTime = true;
         }
@@ -20,13 +24,15 @@ namespace Soulslike.Player.States.Actions
         private string jumpAnim;
         
         // The jump force
-        private float jumpForce => Controller.JumpPower;
-        private bool wantToJump => Controller.WantToJump;
+        [ShowInInspector, SerializeField, BoxGroup("Jump Settings"), LabelText("Upward Jump Force"), LabelWidth(160)] 
+        private float jumpForce = 12;
+        [ShowInInspector, SerializeField, BoxGroup("Jump Settings"), LabelText("Forward Velocity Multiplier"), LabelWidth(160)] 
+        private float forwardJumpMultiplier = 0f;
         
         public override bool CanUse()
         {
             // Check if the player wants to roll
-            if (wantToJump)
+            if (Controller.WantToJump)
                 return true;
 
             // Return false
@@ -44,7 +50,6 @@ namespace Soulslike.Player.States.Actions
             float forwardSpeed = Mathf.Max(0f, Controller.ForwardVelocity);
 
             // Get the final forward impulse
-            float forwardJumpMultiplier = 0f;
             Vector3 forwardImpulse = forwardDir * (forwardSpeed * forwardJumpMultiplier);
 
             // Apply combined impulse
@@ -93,8 +98,7 @@ namespace Soulslike.Player.States.Actions
             // Check if the jumping animation has finished playing
             CheckFinished();
         }
-
-        // Called every frame to check if the jump animation is finished playing
+        
         private void CheckFinished()
         {
             // Check if the player is grounded and enough time has passed since first jumping

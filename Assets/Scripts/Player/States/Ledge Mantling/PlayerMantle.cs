@@ -1,15 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Soulslike.Core;
-using Soulslike.Player.Controller;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace Soulslike.Player.States.Ledge_Mantling
 {
-    public class PlayerMantle : PlayerState
+    [Serializable]
+    public abstract class PlayerMantle : PlayerState
     {
         
         // Class construction
-        public PlayerMantle(PlayerController controller, int priority = 12) : base(controller, priority)
+        protected PlayerMantle()
         {
             
             // Set the state type
@@ -22,38 +23,55 @@ namespace Soulslike.Player.States.Ledge_Mantling
         protected RaycastHit ObstacleInfo;
         
         // Rotation settings
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)] 
         protected bool TurnTowardsTarget = true;
         protected Quaternion TargetRotation;
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)] 
         protected int TurnSpeed = 500;
         
         // Optional conditions
-        protected bool MustPressJumpButton = true;
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)] 
+        protected bool MustPressJump = true;
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)] 
         protected bool MustBeGrounded = true;
         
+        // The minimum and max height for the mantle
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)]
+        protected float MinHeight;
+        [SerializeField, ShowInInspector, BoxGroup("Mantle Settings"), LabelWidth(130)]
+        protected float MaxHeight;
+        
         // Animation settings
-        protected virtual string AnimationName { get; set; }
-        protected AvatarTarget MatchTarget = AvatarTarget.LeftHand;
-        protected bool MultipleAnimations = false;
+        [SerializeField, ShowInInspector, BoxGroup("Animation Settings"), LabelWidth(130)]
+        protected string AnimationName;
+        [SerializeField, ShowInInspector, BoxGroup("Animation Settings"), LabelWidth(130)]
+        protected bool MultipleAnimations;
+        [SerializeField, ShowInInspector, BoxGroup("Animation Settings"), LabelWidth(130)]
         protected string FinalTag = "Last";
 
         // How long to transition into the starting animation
-        protected virtual float TransitionTime { get; set; }
+        [SerializeField, ShowInInspector, BoxGroup("Animation Settings"), LabelWidth(130)]
+        protected float TransitionTime;
+        
+        // The joint to target match
+        [SerializeField, ShowInInspector, BoxGroup("Target Match Settings"), LabelWidth(150)]
+        protected AvatarTarget MatchTarget = AvatarTarget.LeftHand;
         
         // When to start and end the target match
-        protected virtual float TargetMatchStartTime { get; set; }
-        protected virtual float TargetMatchEndTime { get; set; }
+        [SerializeField, ShowInInspector, BoxGroup("Target Match Settings"), LabelWidth(150)]
+        protected float TargetMatchStartTime;
+        [SerializeField, ShowInInspector, BoxGroup("Target Match Settings"), LabelWidth(150)]
+        protected float TargetMatchEndTime;
 
         // The final target match offset
+        [SerializeField, ShowInInspector, BoxGroup("Target Match Settings"), LabelWidth(150)]
         protected Vector3 TargetMatchOffset = Vector3.zero;
-
-        // The minimum and max height for the mantle
-        protected virtual float MinHeight { get; set; }
-        protected virtual float MaxHeight { get; set; }
         
         public override bool CanUse()
         {
+            
             // Check if the player is pressing the jump key
-            if (MustPressJumpButton && !Controller.WantToJump) return false;
+            if (MustPressJump && !Controller.WantToJump) return false;
             
             // Check if the player is on the ground
             if(!Controller.IsGrounded && MustBeGrounded) return false;

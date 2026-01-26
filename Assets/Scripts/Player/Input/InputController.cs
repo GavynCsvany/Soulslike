@@ -1,47 +1,53 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Soulslike.Player.Input
 {
+    [Serializable]
     public class InputController
     {
         
         // The desired movement vector
         private InputAction movementAction;
+        [ShowInInspector, LabelText("Movement Vector"), ReadOnly] 
         public Vector2 desiredMovementVector{ get; private set; } = Vector2.zero;
         
         // Sprint input
         private InputAction sprintAction;
-        public bool wantToSprint{ get; private set; } = false;
+        [ShowInInspector, ReadOnly] public bool wantToSprint{ get; private set; }
         
         // Crouch input
         private InputAction crouchAction;
-        public bool wantToCrouch{ get; private set; } = false;
+        [ShowInInspector, ReadOnly] public bool wantToCrouch{ get; private set; }
         
         // Roll input
         private InputAction rollAction;
         private int rollFrame;
-        public bool wantToRoll{ get; private set; } =  false;
-        private const float rollWindow = 0.2f;
+        [ShowInInspector, ReadOnly] public bool wantToRoll{ get; private set; }
+        [SerializeField, ShowInInspector] private float rollWindow = 0.2f;
         private float rollInputStartTime = 0f;
         
         // Jump input
         private InputAction jumpAction;
         private int jumpFrame;
-        public bool wantToJump { get; private set; } = false;
+        [ShowInInspector, ReadOnly] public bool wantToJump { get; private set; }
         
         // Ledge input
         private InputAction leaveLedgeAction;
         private int leaveLedgeFrame;
-        public bool wantToLeaveLedge { get; private set; } = false;
+        [ShowInInspector, ReadOnly] public bool wantToLeaveLedge { get; private set; }
         
         // The input scheme the player is using
-        private readonly PlayerActions inputScheme;
+        private PlayerActions inputScheme;
         
         // Class constructor
-        public InputController()
+        public InputController() { }
+
+        public void Initialize()
         {
+            
             // Assign the input scheme
             inputScheme = new PlayerActions();
             

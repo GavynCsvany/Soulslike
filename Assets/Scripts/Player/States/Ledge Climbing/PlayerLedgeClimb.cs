@@ -1,4 +1,6 @@
-﻿using Soulslike.Core;
+﻿using System;
+using System.Collections;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using Soulslike.Utility;
 using UnityEngine;
@@ -31,24 +33,19 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public float movementElapsed;
     }
     
+    [Serializable]
     public class PlayerLedgeClimb: PlayerState
     {
         // Class construction with priority
-        public PlayerLedgeClimb(PlayerController controller, int priority = 21) : base(controller,  priority)
+        public PlayerLedgeClimb()
         {
             StateType = StateTypes.LedgeClimb;
-            
-            leftHand = new Hand_IK()
-            {
-                hand = Controller.LeftHandIK,
-                finalOffset = new Vector3(0.25f, 0f, 0.05f)
-            };
-            rightHand = new Hand_IK()
-            {
-                hand = Controller.RightHandIK,
-                finalOffset = new Vector3(-0.25f, 0f, 0.05f)
-            };
+            Priority = 20;
         }
+
+        public bool IsLedgeGrabEnabled = true;
+        public float ledgeLeaveCooldown = 3;
+        private bool isCooldownRunning;
 
         // Ledge variables
         private Transform _currentLedge;
@@ -99,10 +96,80 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public float HandSpeed = 3f;
         public float MinDistCovered = 0.6f;
         
-        public override bool CanUse() => Controller.OnLedge;
+        // Ledge detection settings
+        private PlayerLedgeController ledgeController;
+        public Vector3 OriginOffset = Vector3.up * 1.5f;
+        public int RayAmount = 16;
+        public float RayOffset = 0.2f;
+        public float RayDistance = 0.5f;
+        
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
+            ledgeController = Controller.LedgeController;
+            
+            leftHand = new Hand_IK()
+            {
+                hand = Controller.LeftHandIK,
+                finalOffset = new Vector3(0.25f, 0f, 0.05f)
+            };
+            rightHand = new Hand_IK()
+            {
+                hand = Controller.RightHandIK,
+                finalOffset = new Vector3(-0.25f, 0f, 0.05f)
+            };
+        }
+        
+        public override bool CanUse()
+        {
+            
+            // Check whether ledge grabbing is enabled and not already grabbed
+            if (!IsLedgeGrabEnabled) return false;
+            
+            // Check if we are already on a ledge
+            if (Controller.OnLedge) return true;
+            
+            RaycastHit ledgeHit;
+            
+            // Get the player's current movement direction
+            Vector2 dir = Controller.DesiredMovementVector.normalized;
+            float targetAngle = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg + Controller.cam.transform.eulerAngles.y;
+            Vector3 checkDir = (dir != Vector2.zero) ? Quaternion.Euler(0, targetAngle, 0) * Vector3.forward : Vector3.zero;
+            
+            // Create the ledge settings
+            var ledgeDetectionSettings = new LedgeDetectionSettings()
+            {
+                direction = checkDir,
+                originOffset = OriginOffset,
+                rayAmount = RayAmount,
+                rayOffset =  RayOffset,
+                detectionDistance = RayDistance
+            };
+            
+            // Check for a ledge
+            if (!ledgeController.DetectLedge(ledgeDetectionSettings, out ledgeHit)) return false;
+            
+            // Make sure the player is in the air
+            if (Controller.IsGrounded) return false;
+                    
+            // Set the detected ledge variables
+            previousLedge = ledgeHit.transform;
+            CurrentLedge = ledgeHit.transform;
+            return true;
+        } 
 
         public override void OnStart()
         {
+            
+            // Disable the character controller
+            Controller.characterController.enabled = false;
+
+            // Let the controller know we are on a ledge
+            Controller.OnLedge = true;
+            
+            // Disable gravity / velocity
+            Controller.GravityEnabled = false;
+            
             // Change the animation
             Animator.CrossFadeInFixedTime("Ledge Idle", 0.1f);
             
@@ -111,10 +178,6 @@ namespace Soulslike.Player.States.Ledge_Climbing
             rightHand.hand.position = Controller.DetectedLedge.position;
             leftHand.hand.SetParent(null);
             leftHand.hand.position = Controller.DetectedLedge.position;
-            
-            // Set the current ledge
-            previousLedge = Controller.DetectedLedge;
-            CurrentLedge = Controller.DetectedLedge;
 
             previousIkMidpoint = (leftHand.hand.position + rightHand.hand.position) / 2f;
             
@@ -124,6 +187,11 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
         public override void Update()
         {
+            
+            if (Controller.WantToLeaveLedge && !isCooldownRunning)
+            {
+                Controller.StartCoroutine(LedgeClimbEnabledCooldown());
+            }
             
             // Move the root to match the position of the hands
             AdjustRoot();
@@ -344,9 +412,21 @@ namespace Soulslike.Player.States.Ledge_Climbing
         public override void OnFinished()
         {
             
+            // Disable the IK constraint
+            Controller.FullBodyBipedIK.solver.SetIKPositionWeight(0);
+            
             // Reset the IK Parents
             rightHand.hand.SetParent(Controller.transform);
             leftHand.hand.SetParent(Controller.transform);
+            
+            // Disable the character controller
+            Controller.characterController.enabled = true;
+
+            // Let the controller know we are on a ledge
+            Controller.OnLedge = false;
+            
+            // Disable gravity / velocity
+            Controller.GravityEnabled = true;
         }
 
         private void OnLedgeChange(Transform value)
@@ -360,6 +440,15 @@ namespace Soulslike.Player.States.Ledge_Climbing
             ledgeUp = Vector3.Cross(ledgeNormal, ledgeRight).normalized;
             
             MoveHands();
+        }
+
+        private IEnumerator  LedgeClimbEnabledCooldown()
+        {
+            isCooldownRunning = true;
+            IsLedgeGrabEnabled = false;
+            yield return new WaitForSeconds(ledgeLeaveCooldown);
+            IsLedgeGrabEnabled =  true;
+            isCooldownRunning = false;
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using RootMotion.FinalIK;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using Soulslike.Core;
 using Soulslike.Player.Input;
 using Soulslike.Player.Traversal;
@@ -7,32 +9,66 @@ using UnityEngine;
 
 namespace Soulslike.Player.Controller
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : SerializedMonoBehaviour
     {
 
         // PLAYER COMPONENTS //
-        public CharacterController characterController; // The character controller
-        public Camera cam; // The camera
+        
+        // The character controller
+        [FoldoutGroup("Player Components")] 
+        public CharacterController characterController;
+        
+        // The camera in use by the player
+        [FoldoutGroup("Player Components"), LabelText("Camera")] 
+        public Camera cam;
+        
         
         // ANIMATION //
-        public Animator animator; // The animator
+        
+        // The animator
+        [FoldoutGroup("Animation Properties")] 
+        public Animator animator;
+        
+        // The right foot transform
+        [FoldoutGroup("Animation Properties")] 
+        public Transform RightFoot;
+        
+        // The left foot transform
+        [FoldoutGroup("Animation Properties")] 
+        public Transform LeftFoot;
+        
+        // If root motion should be applied to the player
+        [FoldoutGroup("Animation Properties")] 
         public bool ApplyRootMotion
         {
             get => animator.applyRootMotion;
             set => animator.applyRootMotion = value;
         }
         
+        
         // INVERSE KINEMATICS //
+        
+        // Left hand IK transform
+        [FoldoutGroup("Inverse Kinematics")] 
         public Transform LeftHandIK;
+        
+        // Right hand IK transform
+        [FoldoutGroup("Inverse Kinematics")] 
         public Transform RightHandIK;
+        
+        // The IK Solution being used (final ik)
+        [HideInInspector] 
         public FullBodyBipedIK FullBodyBipedIK;
         
-        // JOINTS //
-        public Transform RightFoot;
-        public Transform LeftFoot;
         
         // INPUT //
-        public InputController InputScheme;
+        
+        // The input controller
+        [FoldoutGroup("Input"), BoxGroup("Input/Raw Input")]
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
+        [OdinSerialize] private InputController InputScheme;
+        
+        // Input variables
         public Vector2 DesiredMovementVector => InputScheme.desiredMovementVector;
         public bool WantToSprint => InputScheme.wantToSprint;
         public bool WantToCrouch => InputScheme.wantToCrouch;
@@ -40,80 +76,114 @@ namespace Soulslike.Player.Controller
         public bool WantToJump => InputScheme.wantToJump;
         public bool WantToLeaveLedge => InputScheme.wantToLeaveLedge;
 
-        // PLAYER STATE //
-        public PlayerStateController StateController { get; private set; } // The state handler 
-        public EntityState CurrentState => StateController.CurrentState;
-        public EntityState PreviousState => StateController.PreviousState;
         
         // MOVEMENT //
-        public PlayerLocomotionController LocomotionController;
+        
+        // The locomotion controller
+        [FoldoutGroup("Input"), BoxGroup("Input/World Space Input")]
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
+        [OdinSerialize] private PlayerLocomotionController LocomotionController;
+        
+        // The target movement and rotation direction in world space
         public Vector3 MovementDirection => LocomotionController.MovementDirection;
         public float TargetMovementAngle => LocomotionController.TargetAngle;
         
-        // WALKING STATE //
-        public float WalkSpeed = 6;
-        public float WalkTurnTime = 0.1f;
         
-        // SPRINTING STATE //
-        public float SprintSpeed = 8;
-        public float SprintTurnTime = 0.06f;
+        // PLAYER STATE //
         
-        // CROUCHING STATE
-        public float CrouchWalkSpeed = 3;
-        public float CrouchWalkTurnTime = 0.1f;
+        // The player's state controller
+        [FoldoutGroup("Player State")]
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
+        [OdinSerialize] private PlayerStateController stateController;
         
-        // ROLLING STATE //
-        public float AdditiveRollSpeed = 5f;
+        // The current and previous state
+        public EntityState CurrentState => stateController.CurrentState;
+        public EntityState PreviousState => stateController.PreviousState;
         
-        // JUMPING STATE
-        public float JumpPower = 12;
+        // The event called when the player changes states
+        public event EventHandler<EntityState> StateChanged
+        {
+            add    => stateController.StateChanged += value;
+            remove => stateController.StateChanged -= value;
+        }
         
-        // FALLING STATE //
-        public Vector3 EdgeRayOffset = new Vector3(0f, -0.05f, 0f);
-        public int EdgeRayCount = 8;
-        public float EdgeCheckDistance = 0.6f;
-        public float EdgePushStrength = 1.5f;
         
         // GROUND DETECTION //
-        public Transform GroundCheck;
-        public LayerMask GroundMask;
-        public float GroundRaycastDistance = 0.5f;
-        public float GroundSphereRadius = 0.4f;
-        public PlayerGroundController GroundController;
+        
+        // The ground and gravity controller
+        [FoldoutGroup("Ground & Gravity")] 
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker]
+        [OdinSerialize] public PlayerGroundController GroundController;
+        
+        // Ground detection variables
+        public Transform GroundCheck => GroundController.GroundCheck;
+        public LayerMask GroundMask => GroundController.GroundMask;
+        
+        // If the player is grounded and the last grounded position
         public bool IsGrounded => GroundController.IsGrounded;
         public Vector3 LastGroundedPosition => GroundController.LastGroundedPosition;
         
+        
         // VELOCITY //
-        public PlayerVelocityController VelocityController;
+        
+        // The velocity handler
+        [FoldoutGroup("Velocity")] 
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker]
+        [OdinSerialize] public PlayerVelocityController VelocityController;
+        
+        // The current velocity
         public Vector3 Velocity => VelocityController.Velocity;
         public float ForwardVelocity => VelocityController.ForwardVelocity;
+        public Vector3 HorizontalVelocity => VelocityController.HorizontalVelocity;
+        
         
         // GRAVITY //
+        
+        // Multiplies the current gravity
         public float GravityMultiplier
         {
             get => GroundController.GravityMultiplier;
             set => GroundController.GravityMultiplier = value;
         }
+        
+        // Whether gravity is enabled
         public bool GravityEnabled
         {
             get => GroundController.GravityEnabled;
             set => GroundController.GravityEnabled = value;
         }
+        
+        // If the player just touched the ground
         public bool JustGrounded => GroundController.JustGrounded;
+        
+        // How long the player has been in the air
         public float AirTime => GroundController.AirTime;
         public void ResetAirTime() => GroundController.ResetAirTime();
 
+        
         // ENVIRONMENT DETECTION //
-        private EnvironmentScanner EnvironmentScanner;
+        
+        // The environment scanner
+        [FoldoutGroup("Environment Detection")]
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] 
+        [OdinSerialize] private EnvironmentScanner EnvironmentScanner;
+        
+        // The obstacle detected in the way of the player's desired movement direction
         public bool ObstacleDetected => EnvironmentScanner.ObstacleDetected;
         public RaycastHit ObstacleDetectedInfo => EnvironmentScanner.ObstacleDetectedInfo;
+        
+        // The mantle point (if the above obstacle can be mantled)
         public bool MantleableObstacleDetected => EnvironmentScanner.MantleableObstacleDetected;
         public RaycastHit MantleableObstacleInfo => EnvironmentScanner.MantleableObstacleInfo;
+        
+        // The difference in height between the player and the mantle point
         public float MantleableObstacleHeightDifference => EnvironmentScanner.MantleableObstacleHeightDifference;
         
         // LEDGE DETECTION //
-        public LayerMask LedgeMask;
+        [FoldoutGroup("Environment Detection")]
+        [ShowInInspector, InlineProperty, HideLabel, HideReferenceObjectPicker] [OdinSerialize] 
         public PlayerLedgeController LedgeController;
+        public LayerMask LedgeMask => LedgeController.LedgeMask;
         public Transform DetectedLedge => LedgeController.DetectedLedge;
         public bool OnLedge {
             get => LedgeController.OnLedge;
@@ -123,12 +193,7 @@ namespace Soulslike.Player.Controller
             get => LedgeController.IsLedgeGrabEnabled;
             set => LedgeController.IsLedgeGrabEnabled = value;
         }
-        public Vector3 LedgeDetectionOffset = Vector3.up * 1.5f;
-        public int LedgeDetectionRayAmount = 16;
-        public float LedgeDetectionRayOffset = 0.2f;
-        public float LedgeDetectionDistance = 0.5f;
-        public Vector3 LedgeOffset = new Vector3(0, 1.875f, 0.4f);
-
+        
         #region Unity Callbacks
 
         private void Awake()
@@ -142,41 +207,33 @@ namespace Soulslike.Player.Controller
             if (!cam) cam = Camera.main;
             
             // Create the ground controller
-            GroundController = new PlayerGroundController(this);
+            GroundController.Initialize(this);
             
             // Set up the input
-            InputScheme =  new InputController();
-            LocomotionController = new PlayerLocomotionController(this);
+            InputScheme.Initialize();
+            LocomotionController.Initialize(this);
             
             // Set up the velocity controller
-            VelocityController = new PlayerVelocityController(this);
+            VelocityController.Initialize(this);
             
             // Disable root motion
             animator.applyRootMotion = false;
             
             // Initialize the environment scanner
-            EnvironmentScanner = new EnvironmentScanner(this);
+            EnvironmentScanner.Initialize(this);
             
             // Set up the ledge detection
-            LedgeController = new PlayerLedgeController(this);
+            LedgeController.Initialize(this);
         }
 
         private void Start()
         {
             
             // Set up the state controller
-            InitializeStateController();
+            stateController.Initialize(this);
 
             // Subscribe to state changes
             LedgeController.SubscribeToStateChangedEvent();
-        }
-        
-        private void InitializeStateController()
-        {
-            
-            // Create the state controller
-            StateController = new PlayerStateController(this);
-            
         }
         
         private void OnEnable()
@@ -195,7 +252,7 @@ namespace Soulslike.Player.Controller
             EnvironmentScanner.Update();
             
             // Update the current state
-            StateController.Update();
+            stateController.Update();
             
             // Update the gravity and velocity
             GroundController.Update();

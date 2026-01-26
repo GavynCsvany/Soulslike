@@ -1,40 +1,45 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using Soulslike.Utility;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Climbing
 {
-    
+    [Serializable]
     class PlayerLedgeStart: PlayerState
     {
         
         // Class construction with priority
-        public PlayerLedgeStart(PlayerController controller, int priority = 30) : base(controller,  priority)
+        public PlayerLedgeStart(int priority = 30) : base(priority)
         {
             StateType = StateTypes.LedgeStart;
             HasExitTime = true;
-            
+        }
+
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
             ledgeController = Controller.LedgeController;
         }
-        
+
         // Animation settings
         private bool hasMatched;
         private float startTime = 0.17f;
         private float endTime = 0.30f;
         
         // Ledge settings
-        public Vector3 ledgeOffset => Controller.LedgeOffset; 
+        public Vector3 LedgeOffset = new Vector3(0, 1.875f, 0.4f);
         
         // Ledge detection
         private PlayerLedgeController ledgeController;
         private Transform detectedLedge;
         
         // Ledge detection settings
-        private Vector3 originOffset => Controller.LedgeDetectionOffset;
-        private int rayAmount => Controller.LedgeDetectionRayAmount;
-        private float rayOffset => Controller.LedgeDetectionRayOffset;
-        private float rayDistance => Controller.LedgeDetectionDistance;
+        public Vector3 OriginOffset = Vector3.up * 1.5f;
+        public int RayAmount = 16;
+        public float RayOffset = 0.2f;
+        public float RayDistance = 0.5f;
         
         public override bool CanUse()
         {
@@ -53,10 +58,10 @@ namespace Soulslike.Player.States.Ledge_Climbing
             var ledgeDetectionSettings = new LedgeDetectionSettings()
             {
                 direction = checkDir,
-                originOffset = originOffset,
-                rayAmount = rayAmount,
-                rayOffset =  rayOffset,
-                detectionDistance = rayDistance
+                originOffset = OriginOffset,
+                rayAmount = RayAmount,
+                rayOffset =  RayOffset,
+                detectionDistance = RayDistance
             };
             
             // Check for a ledge
@@ -128,9 +133,9 @@ namespace Soulslike.Player.States.Ledge_Climbing
 
             // Create the offset
             Vector3 targetOffset = 
-                detectedLedge.right * ledgeOffset.x +
-                Vector3.down * ledgeOffset.y +
-                detectedLedge.forward * ledgeOffset.z;
+                detectedLedge.right * LedgeOffset.x +
+                Vector3.down * LedgeOffset.y +
+                detectedLedge.forward * LedgeOffset.z;
 
             // Match the target to the desired position
             Animator.MatchTarget(

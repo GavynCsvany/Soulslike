@@ -1,29 +1,24 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using Soulslike.Player.States.Basic_Locomotion;
 
 namespace Soulslike.Player.States.Actions
 {
+    [Serializable]
     public class PlayerSprinting : PlayerWalking
     {
         
         // Class construction with priority
-        public PlayerSprinting(PlayerController controller, int priority = 2) : base(controller, priority)
+        public PlayerSprinting()
         {
-            // Change the state type
+            
             StateType = StateTypes.Sprinting;
-        }
-        
-        // Sprint speed
-        protected override float speed {
-            get => Controller.SprintSpeed;
-            set => Controller.SprintSpeed = value;
-        }
-        
-        // Turning speed
-        protected override float turnTime {
-            get => Controller.SprintTurnTime;
-            set => Controller.SprintTurnTime = value;
+            Priority = 4;
+            
+            // Set the variables
+            turnTime = 0.06f;
+            speed = 6f;
         }
         
         public override bool CanUse()

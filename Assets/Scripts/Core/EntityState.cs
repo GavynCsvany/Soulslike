@@ -1,9 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Sirenix.Serialization;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Soulslike.Core
 {
     
     // The different types of states
+    [Serializable]
     public enum StateTypes
     {
         
@@ -27,16 +32,20 @@ namespace Soulslike.Core
         LedgeEnd,
     }
     
+    [Serializable]
     public abstract class EntityState
     {
         
         // The state type
+        [SerializeField, ShowInInspector, BoxGroup("Basic State Settings"), LabelWidth(130)]
         public virtual StateTypes StateType { get; protected set; }
         
         // States not compatible with this one
+        [SerializeField, ShowInInspector, BoxGroup("Basic State Settings"), LabelWidth(130)]
         public virtual List<StateTypes> IncompatibleStates { get; protected set; }
 
         // The priority of the state (0 is least prioritized)
+        [SerializeField, ShowInInspector, BoxGroup("Basic State Settings"), LabelWidth(130)]
         public virtual int Priority { get; protected set; }
 
         public abstract void OnStart();  // Fired when the state is first started
@@ -44,9 +53,11 @@ namespace Soulslike.Core
         public abstract void OnFinished(); // Fired when the state is finished
         
         // Whether or not the state is finished
+        [SerializeField, ReadOnly, ShowInInspector, BoxGroup("Basic State Settings"), LabelWidth(130)]
         public bool IsFinished = false;
         
         // Whether or not the state must be finished before it can be changed
+        [SerializeField, ShowInInspector, BoxGroup("Basic State Settings"), LabelWidth(130)]
         public bool HasExitTime = false;
         
         // Class construction

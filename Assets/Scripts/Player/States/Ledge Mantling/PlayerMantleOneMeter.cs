@@ -1,14 +1,17 @@
-﻿using Soulslike.Player.Controller;
+﻿using System;
+using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Mantling
 {
+    [Serializable]
     public sealed class PlayerMantleOneMeter : PlayerMantle
     {
         
         // Class construction
-        public PlayerMantleOneMeter(PlayerController controller, int priority = 12) : base(controller, priority)
+        public PlayerMantleOneMeter()
         {
+            Priority = 9;
 
             // Animation settings
             AnimationName = "Mantle_1M";

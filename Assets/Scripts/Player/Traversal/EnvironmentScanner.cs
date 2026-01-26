@@ -1,38 +1,47 @@
-﻿using Soulslike.Player.Controller;
+﻿using System;
+using Sirenix.OdinInspector;
+using Soulslike.Player.Controller;
 using Soulslike.Utility;
 using UnityEngine;
 
 namespace Soulslike.Player.Traversal
 {
+    [Serializable]
     public class EnvironmentScanner
     {
         
         // Player variables
         private PlayerController Controller;
-        private Transform Transform => Controller.transform;
+        private Transform Transform;
         
         // Ray offset
+        [SerializeField, BoxGroup("Base Detection"), LabelWidth(140)] 
         private Vector3 detectionOffset = new Vector3(0, 0.2f, 0);
         
         // Obstacle detection
-        public RaycastHit ObstacleDetectedInfo;
+        [HideInInspector] public RaycastHit ObstacleDetectedInfo;
+        [BoxGroup("Base Detection"), LabelWidth(140)] 
         public bool ObstacleDetected;
+        [SerializeField, BoxGroup("Base Detection"), LabelWidth(140)]  
         private float obstacleDetectionDistance = 0.9f;
+        [SerializeField, BoxGroup("Base Detection"), LabelWidth(140)]  
         private int rayAmount = 10;
         
         // Mantle detection variables
-        public RaycastHit MantleableObstacleInfo;
+        [HideInInspector] public RaycastHit MantleableObstacleInfo;
+        [BoxGroup("Mantle Detection"), LabelWidth(140)] 
         public bool MantleableObstacleDetected = false;
+        [BoxGroup("Mantle Detection"), ReadOnly, LabelWidth(140)] 
         public float MantleableObstacleHeightDifference = 0f;
+        [SerializeField, BoxGroup("Mantle Detection"), LabelWidth(140)] 
         private float mantleRayLength = 5f;
         
-        // Class construction
-        public EnvironmentScanner(PlayerController controller)
+        public void Initialize(PlayerController controller)
         {
             Controller = controller;
+            Transform = Controller.transform;
         }
 
-        // Called every frame
         public void Update()
         {
 

@@ -1,21 +1,19 @@
 ﻿using System;
 using Soulslike.Core;
-using Soulslike.Player.Controller;
 
 namespace Soulslike.Player.States.Basic_Locomotion
 {
+    [Serializable]
     public class PlayerIdle : PlayerState
     {
         
         // Class construction
-        public PlayerIdle(PlayerController controller, int priority = 0) : base(controller,  priority)
+        public PlayerIdle()
         {
             StateType = StateTypes.Idle;
+            Priority = 0;
         }
-        
-        #region Methods
 
-        // Since this is the default state and only called as least resort, always default to true
         public override bool CanUse() => true;
 
         public override void OnStart()
@@ -88,6 +86,5 @@ namespace Soulslike.Player.States.Basic_Locomotion
             Controller.ApplyRootMotion = false;
         }
 
-        #endregion
     }
 }

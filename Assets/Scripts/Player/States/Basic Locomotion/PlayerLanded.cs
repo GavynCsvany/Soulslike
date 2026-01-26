@@ -1,29 +1,46 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
+using Sirenix.OdinInspector;
 
 namespace Soulslike.Player.States.Basic_Locomotion
 {
+    [Serializable]
     public class PlayerLanded :  PlayerState
     {
 
         // Class construction with priority
-        public PlayerLanded(PlayerController controller, int priority= 9) : base(controller,  priority)
+        public PlayerLanded()
         {
             StateType = StateTypes.Landed;
+            Priority = 1;
             HasExitTime = true;
         }
         
-        // Animation variables
-        private static readonly int FallTimeParam = Animator.StringToHash("Fall_Time");
+        // The fall time parameter
+        [SerializeField, ShowInInspector][BoxGroup("Animation Settings"), LabelText("Animator Parameter")] 
+        private string animatorFallTime = "Fall_Time";
+        private int fallTimeParam;
+        
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
+            
+            // Assign the animation
+            fallTimeParam = Animator.StringToHash(animatorFallTime);
+        }
 
-        public override bool CanUse() => Controller.JustGrounded;
+        public override bool CanUse()
+        {
+            return Controller.JustGrounded;
+        }
 
         public override void OnStart()
         {
             
             // Check if enough time has passed to play the animation
-            if (Animator.GetFloat(FallTimeParam) <= 0.25f)
+            if (Animator.GetFloat(fallTimeParam) <= 0.25f)
             {
                 IsFinished = true;
                 return;

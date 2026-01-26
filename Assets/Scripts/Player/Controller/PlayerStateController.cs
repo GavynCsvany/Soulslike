@@ -1,60 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using Soulslike.Core;
 using Soulslike.Player.States;
-using Soulslike.Player.States.Actions;
-using Soulslike.Player.States.Basic_Locomotion;
-using Soulslike.Player.States.Crouch_Locomotion;
-using Soulslike.Player.States.Ledge_Climbing;
-using Soulslike.Player.States.Ledge_Mantling;
+using UnityEngine;
 
 namespace Soulslike.Player.Controller
 {
+    [Serializable]
     public class PlayerStateController : StateController
     {
         
-        // List of available states, sorted by priority
-        private readonly List<PlayerState> sortedStates;
+        private PlayerController controller;
         
-        // Class constructor
-        public PlayerStateController(PlayerController controller)
+        [OdinSerialize, ShowInInspector, LabelText("Available States")]
+        [OnValueChanged("OrganizeStates", true)]
+        private List<PlayerState> sortedStates = new();
+
+        public void Initialize(PlayerController controller_)
         {
-            
-            // Construct the states
-            List<PlayerState> states = new List<PlayerState>()
+            controller = controller_;
+
+            // Make sure the states exist
+            if (sortedStates == null || sortedStates.Count == 0)
             {
-                
-                // BASE STATES //
-                { new PlayerIdle(controller,  0) },                 // Idle state
-                { new PlayerLanded(controller, 1) },                // Landed state
-                //{ StateTypes.CrouchIdle, new PlayerCrouchIdle(controller,  1) },         // Crouch idle state
-                { new PlayerWalking(controller, 3) },               // Walking State
-                //{ StateTypes.CrouchWalking, new PlayerCrouchWalking(controller, 3)},    // Crouch walking state
-                { new PlayerSprinting(controller, 4) },             // Sprinting State
-                { new PlayerFalling(controller, 5) },               // Falling state
-                { new PlayerJump(controller, 7)},                   // Jumping state
-                { new PlayerRoll(controller, 8)},                   // Rolling state
-                
-                // LEDGE MANTLING STATES //
-                { new PlayerMantleOneMeter(controller, 9)},         // Mantle state (1 meter)
-                { new PlayerMantleTwoMeter(controller, 10)},        // Mantle state (2 meter)
-                { new PlayerMantleTwoMeterAir(controller, 11)},     // Mantle state (2 meter air)
-                
-                // LEDGE CLIMBING STATES // 
-                { new PlayerLedgeStart(controller, 30) },           // Ledge climb starts
-                { new PlayerLedgeLeave(controller, 31) },           // Ledge climb ends
-                { new PlayerLedgeClimb(controller, 20) },            // Ledge climb idle
-            };
-            sortedStates = states.OrderByDescending(state => state.Priority).ToList();
-            
-            // Subscribe to the event
-            StateChanged += (_, newState) => OnStateChanged(newState);
-            
-            // Assign the starting state
-            CurrentState = states[0];
+                Debug.LogError("No states assigned in PlayerStateController.");
+                return;
+            }
+
+            OrganizeStates();
+
+            // Initialize each state
+            foreach (var state in sortedStates)
+                state.InitializeController(controller);
+
+            // Start the idle state
+            CurrentState = sortedStates[^1];
         }
 
-        // Called every frame
         public void Update()
         {
             // Make sure there is a current state
@@ -65,6 +50,21 @@ namespace Soulslike.Player.Controller
 
             // Update the current state
             CurrentState.Update();
+        }
+        
+        // Organizes the states based on their priority
+        private void OrganizeStates()
+        {
+            
+            // Make sure the states exist
+            if (sortedStates == null || sortedStates.Count == 0)
+            {
+                if (Application.isPlaying)
+                    Debug.LogError("No states assigned in PlayerStateController.");
+                return;
+            }
+            
+            sortedStates = sortedStates.OrderByDescending(s => s.Priority).ToList();
         }
         
         // Called every frame to check if the current state needs to be changed

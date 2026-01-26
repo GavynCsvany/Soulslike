@@ -1,15 +1,17 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using Soulslike.Utility;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Climbing
 {
+    [Serializable]
     public class PlayerLedgeLeave: PlayerState
     {
         
         // Class construction with priority
-        public PlayerLedgeLeave(PlayerController controller, int priority = 22) : base(controller,  priority)
+        public PlayerLedgeLeave(int priority = 22) : base(priority)
         {
             StateType = StateTypes.LedgeEnd;
         }

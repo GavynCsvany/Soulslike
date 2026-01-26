@@ -1,52 +1,55 @@
-﻿using Soulslike.Core;
+﻿using System;
+using Sirenix.OdinInspector;
+using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Basic_Locomotion
 {
+    [Serializable]
     public class PlayerWalking : PlayerState
     {
 
-        // Class construction with priority
-        public PlayerWalking(PlayerController controller, int priority = 1) : base(controller, priority)
+        // Class construction
+        public PlayerWalking()
         {
-            // Change the state type
             StateType = StateTypes.Walking;
-            
-            // Assign the player components
-            cam = controller.cam.transform; // Camera
-            characterController = controller.characterController; // Character controller
-            transform = controller.transform; // Transform
+            Priority = 2;
         }
 
         // Movement variables
+        [SerializeField, ShowInInspector, BoxGroup("Movement Settings")] 
         protected bool UseRootMotion = true;
-        protected Vector3 movementDirection => Controller.MovementDirection;
-        private float targetAngle => Controller.TargetMovementAngle;
         
         // Turning variables
-        protected virtual float turnTime {
-            get => Controller.WalkTurnTime;
-            set => Controller.WalkTurnTime = value;
-        }
+        [SerializeField, ShowInInspector, BoxGroup("Movement Settings")]
+        protected float turnTime = 0.1f;
         private float turnVelocity;
 
         // Speed variables
-        protected virtual float speed {
-            get => Controller.WalkSpeed;
-            set => Controller.WalkSpeed = value;
-        }
+        [SerializeField, ShowInInspector, BoxGroup("Movement Settings")]
+        protected float speed = 3;
         
         // Controller variables
-        protected readonly Transform cam;
-        protected readonly CharacterController characterController;
-        protected readonly Transform transform;
+        protected Transform cam;
+        protected CharacterController characterController;
+        protected Transform transform;
+        
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
+            
+            // Assign the player components
+            cam = controller.cam.transform;
+            characterController = controller.characterController;
+            transform = controller.transform;
+        }
 
         public override bool CanUse()
         {
             
             // Check if the player wants to move
-            if (movementDirection.Equals(Vector3.zero)) return false;
+            if (Controller.MovementDirection.Equals(Vector3.zero)) return false;
             
             // Check if there is anything blocking the player
             if(Controller.ObstacleDetected) return false;
@@ -125,10 +128,11 @@ namespace Soulslike.Player.States.Basic_Locomotion
         
         private void Move()
         {
-            bool moving = movementDirection.magnitude >= 0.1f;
+            var dir = Controller.MovementDirection;
+            bool moving = dir.magnitude >= 0.1f;
             
             // Rotate the player
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnVelocity, turnTime);
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, Controller.TargetMovementAngle, ref turnVelocity, turnTime);
             transform.rotation = (moving) ? Quaternion.Euler(0f, angle, 0f) : transform.rotation;
 
             // Check if the player wants to move
@@ -136,7 +140,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             
             // Move the player
             if (UseRootMotion) return;
-            characterController.Move(movementDirection * (speed * Time.deltaTime));
+            characterController.Move(dir * (speed * Time.deltaTime));
         }
 
         public override void OnFinished()

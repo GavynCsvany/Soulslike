@@ -21607,40 +21607,824 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 560c7d3b00054beaa7cc8e567af3a7cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Soulslike.Player.Controller.PlayerController
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 947591845}
+    - {fileID: 0}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: InputScheme
+      Entry: 7
+      Data: 0|Soulslike.Player.Input.InputController, Assembly-CSharp
+    - Name: rollWindow
+      Entry: 4
+      Data: 0.2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: LocomotionController
+      Entry: 7
+      Data: 1|Soulslike.Player.Controller.PlayerLocomotionController, Assembly-CSharp
+    - Name: MovementDirection
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: TargetAngle
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: stateController
+      Entry: 7
+      Data: 2|Soulslike.Player.Controller.PlayerStateController, Assembly-CSharp
+    - Name: CanChangeState
+      Entry: 5
+      Data: true
+    - Name: StateChanged
+      Entry: 6
+      Data: 
+    - Name: sortedStates
+      Entry: 7
+      Data: 3|System.Collections.Generic.List`1[[Soulslike.Player.States.PlayerState,
+        Assembly-CSharp]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 11
+    - Name: 
+      Entry: 7
+      Data: 4|Soulslike.Player.States.Ledge_Climbing.PlayerLedgeClimb, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 11
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 20
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: false
+    - Name: IsLedgeGrabEnabled
+      Entry: 5
+      Data: true
+    - Name: ledgeLeaveCooldown
+      Entry: 4
+      Data: 1
+    - Name: MaxAngle
+      Entry: 3
+      Data: 95
+    - Name: EdgeZOffset
+      Entry: 4
+      Data: 0.3
+    - Name: Cooldown
+      Entry: 4
+      Data: 0.2
+    - Name: DetectionRadius
+      Entry: 4
+      Data: 1.2
+    - Name: RootPosLerpSpeed
+      Entry: 4
+      Data: 8
+    - Name: RootRotLerpSpeed
+      Entry: 4
+      Data: 10
+    - Name: MinAlignment
+      Entry: 4
+      Data: 0.4
+    - Name: HandSpeed
+      Entry: 4
+      Data: 3
+    - Name: MinDistCovered
+      Entry: 4
+      Data: 0.6
+    - Name: OriginOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 1.5
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: RayAmount
+      Entry: 3
+      Data: 10
+    - Name: RayOffset
+      Entry: 4
+      Data: 0.1
+    - Name: RayDistance
+      Entry: 4
+      Data: 0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 5|Soulslike.Player.States.Ledge_Mantling.PlayerMantleTwoMeterAir, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 7
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 11
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: TurnTowardsTarget
+      Entry: 5
+      Data: true
+    - Name: TurnSpeed
+      Entry: 3
+      Data: 500
+    - Name: MustPressJump
+      Entry: 5
+      Data: false
+    - Name: MustBeGrounded
+      Entry: 5
+      Data: false
+    - Name: MinHeight
+      Entry: 4
+      Data: 1.5
+    - Name: MaxHeight
+      Entry: 4
+      Data: 2.3
+    - Name: AnimationName
+      Entry: 1
+      Data: Mantle_2M_Air
+    - Name: MultipleAnimations
+      Entry: 5
+      Data: false
+    - Name: FinalTag
+      Entry: 1
+      Data: Last
+    - Name: TransitionTime
+      Entry: 4
+      Data: 0.1
+    - Name: MatchTarget
+      Entry: 3
+      Data: 4
+    - Name: TargetMatchStartTime
+      Entry: 4
+      Data: 0.02
+    - Name: TargetMatchEndTime
+      Entry: 4
+      Data: 0.15
+    - Name: TargetMatchOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.2
+    - Name: 
+      Entry: 4
+      Data: -0.075
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 6|Soulslike.Player.States.Ledge_Mantling.PlayerMantleTwoMeter, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 7
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 10
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: TurnTowardsTarget
+      Entry: 5
+      Data: true
+    - Name: TurnSpeed
+      Entry: 3
+      Data: 500
+    - Name: MustPressJump
+      Entry: 5
+      Data: true
+    - Name: MustBeGrounded
+      Entry: 5
+      Data: true
+    - Name: MinHeight
+      Entry: 4
+      Data: 1.5
+    - Name: MaxHeight
+      Entry: 4
+      Data: 2.5
+    - Name: AnimationName
+      Entry: 1
+      Data: Mantle_2M
+    - Name: MultipleAnimations
+      Entry: 5
+      Data: false
+    - Name: FinalTag
+      Entry: 1
+      Data: Last
+    - Name: TransitionTime
+      Entry: 4
+      Data: 0.1
+    - Name: MatchTarget
+      Entry: 3
+      Data: 4
+    - Name: TargetMatchStartTime
+      Entry: 4
+      Data: 0.02
+    - Name: TargetMatchEndTime
+      Entry: 4
+      Data: 0.15
+    - Name: TargetMatchOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.2
+    - Name: 
+      Entry: 4
+      Data: -0.075
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 7|Soulslike.Player.States.Ledge_Mantling.PlayerMantleOneMeter, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 7
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 9
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: TurnTowardsTarget
+      Entry: 5
+      Data: true
+    - Name: TurnSpeed
+      Entry: 3
+      Data: 500
+    - Name: MustPressJump
+      Entry: 5
+      Data: true
+    - Name: MustBeGrounded
+      Entry: 5
+      Data: true
+    - Name: MinHeight
+      Entry: 4
+      Data: 0.6
+    - Name: MaxHeight
+      Entry: 4
+      Data: 1.5
+    - Name: AnimationName
+      Entry: 1
+      Data: Mantle_1M
+    - Name: MultipleAnimations
+      Entry: 5
+      Data: false
+    - Name: FinalTag
+      Entry: 1
+      Data: Last
+    - Name: TransitionTime
+      Entry: 4
+      Data: 0.1
+    - Name: MatchTarget
+      Entry: 3
+      Data: 4
+    - Name: TargetMatchStartTime
+      Entry: 4
+      Data: 0.15
+    - Name: TargetMatchEndTime
+      Entry: 4
+      Data: 0.25
+    - Name: TargetMatchOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0.2
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 8|Soulslike.Player.States.Actions.PlayerRoll, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 5
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 8
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: animationName
+      Entry: 1
+      Data: Roll
+    - Name: additiveRollSpeed
+      Entry: 4
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 9|Soulslike.Player.States.Actions.PlayerJump, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 6
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 7
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: UseRootMotion
+      Entry: 5
+      Data: false
+    - Name: turnTime
+      Entry: 4
+      Data: 0.1
+    - Name: speed
+      Entry: 4
+      Data: 5
+    - Name: jumpForce
+      Entry: 4
+      Data: 9
+    - Name: forwardJumpMultiplier
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 10|Soulslike.Player.States.Basic_Locomotion.PlayerFalling, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 2
+    - Name: IncompatibleStates
+      Entry: 7
+      Data: 11|System.Collections.Generic.List`1[[Soulslike.Core.StateTypes, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 6
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 5
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: false
+    - Name: UseRootMotion
+      Entry: 5
+      Data: false
+    - Name: turnTime
+      Entry: 4
+      Data: 0.1
+    - Name: speed
+      Entry: 4
+      Data: 5
+    - Name: animatorFallTime
+      Entry: 1
+      Data: Fall_Time
+    - Name: ledgeRayOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -0.05
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ledgeRayCount
+      Entry: 3
+      Data: 8
+    - Name: ledgeCheckDistance
+      Entry: 4
+      Data: 0.6
+    - Name: ledgePushStrength
+      Entry: 4
+      Data: 1.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 12|Soulslike.Player.States.Actions.PlayerSprinting, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 4
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 4
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: false
+    - Name: UseRootMotion
+      Entry: 5
+      Data: true
+    - Name: turnTime
+      Entry: 4
+      Data: 0.06
+    - Name: speed
+      Entry: 4
+      Data: 6
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 13|Soulslike.Player.States.Basic_Locomotion.PlayerWalking, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 1
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 2
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: false
+    - Name: UseRootMotion
+      Entry: 5
+      Data: true
+    - Name: turnTime
+      Entry: 4
+      Data: 0.1
+    - Name: speed
+      Entry: 4
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 14|Soulslike.Player.States.Basic_Locomotion.PlayerLanded, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 3
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 1
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: true
+    - Name: animatorFallTime
+      Entry: 1
+      Data: Fall_Time
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 15|Soulslike.Player.States.Basic_Locomotion.PlayerIdle, Assembly-CSharp
+    - Name: StateType
+      Entry: 3
+      Data: 0
+    - Name: IncompatibleStates
+      Entry: 6
+      Data: 
+    - Name: Priority
+      Entry: 3
+      Data: 0
+    - Name: IsFinished
+      Entry: 5
+      Data: false
+    - Name: HasExitTime
+      Entry: 5
+      Data: false
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: GroundController
+      Entry: 7
+      Data: 16|Soulslike.Player.Controller.PlayerGroundController, Assembly-CSharp
+    - Name: GravityMultiplier
+      Entry: 4
+      Data: 2.5
+    - Name: Gravity
+      Entry: 4
+      Data: -9.8
+    - Name: GravityEnabled
+      Entry: 5
+      Data: true
+    - Name: GravityVelocity
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: -1
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: groundDrag
+      Entry: 4
+      Data: 20
+    - Name: airDrag
+      Entry: 4
+      Data: 2
+    - Name: AirTime
+      Entry: 4
+      Data: 0.0612464026
+    - Name: IsGrounded
+      Entry: 5
+      Data: false
+    - Name: LastGroundedPosition
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 4.92486429
+    - Name: 
+      Entry: 4
+      Data: 2.9541297
+    - Name: 
+      Entry: 4
+      Data: 1.93619251
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: GroundCheck
+      Entry: 10
+      Data: 0
+    - Name: GroundMask
+      Entry: 7
+      Data: UnityEngine.LayerMask, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: GroundSphereRadius
+      Entry: 4
+      Data: 0.4
+    - Name: GroundRaycastDistance
+      Entry: 4
+      Data: 0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: VelocityController
+      Entry: 7
+      Data: 17|Soulslike.Player.Controller.PlayerVelocityController, Assembly-CSharp
+    - Name: HorizontalVelocity
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ForwardVelocity
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: EnvironmentScanner
+      Entry: 7
+      Data: 18|Soulslike.Player.Traversal.EnvironmentScanner, Assembly-CSharp
+    - Name: detectionOffset
+      Entry: 7
+      Data: UnityEngine.Vector3, UnityEngine.CoreModule
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 4
+      Data: 0.2
+    - Name: 
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ObstacleDetectedInfo
+      Entry: 7
+      Data: UnityEngine.RaycastHit, UnityEngine.PhysicsModule
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: ObstacleDetected
+      Entry: 5
+      Data: false
+    - Name: obstacleDetectionDistance
+      Entry: 4
+      Data: 0.9
+    - Name: rayAmount
+      Entry: 3
+      Data: 10
+    - Name: MantleableObstacleInfo
+      Entry: 7
+      Data: UnityEngine.RaycastHit, UnityEngine.PhysicsModule
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: MantleableObstacleDetected
+      Entry: 5
+      Data: false
+    - Name: MantleableObstacleHeightDifference
+      Entry: 4
+      Data: 0
+    - Name: mantleRayLength
+      Entry: 4
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: LedgeController
+      Entry: 7
+      Data: 19|Soulslike.Player.Controller.PlayerLedgeController, Assembly-CSharp
+    - Name: IsLedgeGrabEnabled
+      Entry: 5
+      Data: true
+    - Name: LedgeMask
+      Entry: 7
+      Data: UnityEngine.LayerMask, UnityEngine.CoreModule
+    - Name: 
+      Entry: 3
+      Data: 128
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: OnLedge
+      Entry: 5
+      Data: false
+    - Name: DetectedLedge
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
   characterController: {fileID: 95810303378488749}
   cam: {fileID: 330585545}
   animator: {fileID: 95810303378488747}
-  LeftHandIK: {fileID: 1322687695}
-  RightHandIK: {fileID: 1076388654}
-  FullBodyBipedIK: {fileID: 0}
   RightFoot: {fileID: 4426137845505277}
   LeftFoot: {fileID: 4311098000154921}
-  WalkSpeed: 6
-  WalkTurnTime: 0.1
-  SprintSpeed: 8
-  SprintTurnTime: 0.06
-  CrouchWalkSpeed: 3
-  CrouchWalkTurnTime: 0.1
-  AdditiveRollSpeed: 5
-  JumpPower: 9.2
-  EdgeRayOffset: {x: 0, y: -0.05, z: 0}
-  EdgeRayCount: 8
-  EdgeCheckDistance: 0.6
-  EdgePushStrength: 1.5
-  GroundCheck: {fileID: 947591845}
-  GroundMask:
-    serializedVersion: 2
-    m_Bits: 1
-  GroundRaycastDistance: 0.3
-  GroundSphereRadius: 0.26
-  LedgeMask:
-    serializedVersion: 2
-    m_Bits: 128
-  LedgeDetectionOffset: {x: 0, y: 1.5, z: 0}
-  LedgeDetectionRayAmount: 15
-  LedgeDetectionRayOffset: 0.05
-  LedgeDetectionDistance: 0.3
-  LedgeOffset: {x: 0, y: 1.875, z: 0.4}
+  LeftHandIK: {fileID: 1322687695}
+  RightHandIK: {fileID: 1076388654}
+  FullBodyBipedIK: {fileID: 95810303378488750}
+  GroundController:
+    GravityMultiplier: 2.5
+    Gravity: -9.8
+    GravityEnabled: 1
+    GravityVelocity: {x: 0, y: -1, z: 0}
+    groundDrag: 20
+    airDrag: 2
+    AirTime: 0.061246403
+    IsGrounded: 0
+    LastGroundedPosition: {x: 4.9248643, y: 2.9541297, z: 1.9361925}
+    GroundCheck: {fileID: 947591845}
+    GroundMask:
+      serializedVersion: 2
+      m_Bits: 1
+    GroundSphereRadius: 0.4
+    GroundRaycastDistance: 0.5
+  VelocityController:
+    HorizontalVelocity: {x: 0, y: 0, z: 0}
+    ForwardVelocity: 0
+  LedgeController:
+    IsLedgeGrabEnabled: 1
+    LedgeMask:
+      serializedVersion: 2
+      m_Bits: 128
+    OnLedge: 0
+    DetectedLedge: {fileID: 0}
 --- !u!143 &95810303378488749
 CharacterController:
   m_ObjectHideFlags: 0

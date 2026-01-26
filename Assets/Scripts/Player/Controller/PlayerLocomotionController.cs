@@ -1,31 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace Soulslike.Player.Controller
 {
+    [Serializable]
     public class PlayerLocomotionController
     {
         
         // Player components
         private PlayerController Controller;
-        private Transform transform => Controller.transform;
-        private Transform cameraTransform => Controller.cam.transform;
-        
-        // Input variables
-        private Vector2 inputVector => Controller.DesiredMovementVector;
+        private Transform cameraTransform;
         
         // The movement vector
-        public Vector3 MovementDirection;
-        public float TargetAngle;
-        
-        // Class construction
-        public PlayerLocomotionController(PlayerController controller)
+        [ReadOnly] public Vector3 MovementDirection;
+        [ReadOnly] public float TargetAngle;
+
+        public void Initialize(PlayerController controller)
         {
             Controller = controller;
+            cameraTransform = Controller.cam.transform;
         }
         
-        // Called every frame
         public void Update()
         {
+            Vector2 inputVector = Controller.DesiredMovementVector;
             
             // Get the target movement angle
             var target = GetTargetAngle(inputVector.normalized);

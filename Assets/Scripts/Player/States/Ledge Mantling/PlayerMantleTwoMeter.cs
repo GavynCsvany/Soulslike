@@ -1,15 +1,18 @@
-﻿using Soulslike.Player.Controller;
+﻿using System;
+using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Ledge_Mantling
 {
+    [Serializable]
     public sealed class PlayerMantleTwoMeter : PlayerMantle
     {
         
         // Class construction
-        public PlayerMantleTwoMeter(PlayerController controller, int priority = 12) : base(controller, priority)
+        public PlayerMantleTwoMeter()
         {
-
+            Priority = 10;
+            
             // Animation settings
             AnimationName = "Mantle_2M";
             TransitionTime = 0.1f;

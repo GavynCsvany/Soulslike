@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using Soulslike.Core;
 using Soulslike.Player.Controller;
 using UnityEngine;
 
 namespace Soulslike.Player.States.Basic_Locomotion
 {
+    [Serializable]
     public class PlayerFalling : PlayerWalking
     {
 
-        // Class constructor
-        public PlayerFalling(PlayerController controller, int priority = 10) : base(controller, priority)
+        // Class construction
+        public PlayerFalling()
         {
             // Assign the state variables
             StateType =  StateTypes.Falling;
+            Priority = 5;
             
             UseRootMotion = false;
             
@@ -23,17 +27,40 @@ namespace Soulslike.Player.States.Basic_Locomotion
             };
         }
         
-        // Animation variables
+        // Time spent falling
+        [BoxGroup("Fall Settings"), LabelWidth(140)]
+        [ShowInInspector, ReadOnly]
         private float fallTime = 0f;
-        private int animationFallTime = Animator.StringToHash("Fall_Time");
+        
+        // Animation variables
+        [SerializeField, ShowInInspector, BoxGroup("Fall Settings"), LabelText("Animator Parameter"), LabelWidth(140)]
+        private string animatorFallTime = "Fall_Time";
+        private int fallTimeParam;
+        
+        // Edge detection offset
+        [ShowInInspector, SerializeField, BoxGroup("Fall Settings"), LabelWidth(140)]
+        private Vector3 ledgeRayOffset = new Vector3(0f, -0.05f, 0f);
+        
+        // Amount of rays to use
+        [ShowInInspector,  SerializeField, BoxGroup("Fall Settings"), LabelWidth(140)]
+        private int ledgeRayCount = 8;
+        
+        // Edge detection radius
+        [ShowInInspector, SerializeField, BoxGroup("Fall Settings"), LabelWidth(140)]
+        private float ledgeCheckDistance = 0.6f;
 
-        // Edge detection variables
-        private Vector3 ledgeRayOffset => Controller.EdgeRayOffset;
-        private int ledgeRayCount => Controller.EdgeRayCount;
-        private float ledgeCheckDistance => Controller.EdgeCheckDistance;
-        private float ledgePushStrength => Controller.EdgePushStrength;
+        // How strong of a push to give the player
+        [ShowInInspector, SerializeField, BoxGroup("Fall Settings"), LabelWidth(140)]
+        private float ledgePushStrength = 1.5f;
 
-        // Whether the state can be used
+        public override void InitializeController(PlayerController controller)
+        {
+            base.InitializeController(controller);
+            
+            // Assign the animation
+            fallTimeParam = Animator.StringToHash(animatorFallTime);
+        }
+        
         public override bool CanUse()
         {
 
@@ -63,7 +90,7 @@ namespace Soulslike.Player.States.Basic_Locomotion
             
             // Increment the fall time
             fallTime += Time.deltaTime;
-            Animator.SetFloat(animationFallTime, fallTime);
+            Animator.SetFloat(fallTimeParam, fallTime);
 
             // Move the player away from any edges they might get caught on
             if (!ApplyLedgeRepulsion())
